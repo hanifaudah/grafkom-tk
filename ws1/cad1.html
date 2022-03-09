@@ -1,20 +1,28 @@
 <html>
+<head>
+    <link rel="stylesheet" href="./ws1.css">
+</head>
+<body>
+    <div>
+        <canvas id="gl-canvas" width="512"" height="512"</canvas>
+    </div>
+    <div id="tool-box">
+        <div id = "color-picker" size = "7">
+            <option value = "0"></option>
+            <option value = "1"></option>
+            <option value = "2"></option>
+            <option value = "3"></option>
+            <option value = "4"></option>
+            <option value = "5"></option>
+            <option value = "6"></option>
+            <option value = "7"></option>
+        </select>
+    </div>
 
-<div>
-<canvas id="gl-canvas" width="512"" height="512"</canvas>
-</div>
 
-<div>
-<select id = "mymenu" size = "7">
-    <option value = "0">Black</option>
-    <option value = "1">Red</option>
-    <option value = "2">Yellow</option>
-    <option value = "3">Green</option>
-    <option value = "4">Blue</option>
-    <option value = "5">Magenta</option>
-    <option value = "6">Cyan</option>
-</select>
-</div>
+    
+    
+</body>
 
 <script id="vertex-shader" type="x-shader/x-vertex">
 #version 300 es

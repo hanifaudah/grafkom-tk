@@ -1,0 +1,14 @@
+body {
+  #tool-box {
+    #color-picker {
+      display: flex;
+      gap: 0.2em;
+      option {
+        display: inline-block;
+        border: 1px solid black;
+        width: 2em;
+        height: 2em;
+      }
+    }
+  }
+}
