@@ -1,5 +1,29 @@
 body {
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+
+  label.title {
+    font-weight: bold;
+  }
+
   #tool-box {
+    border: 2px solid black;
+    width: max-content;
+    height: max-content;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    padding: 1em;
+
+    .btn {
+      background: none;
+      cursor: pointer;
+      height: 2em;
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+
     #color-picker {
       display: flex;
       gap: 0.2em;
@@ -8,6 +32,22 @@ body {
         border: 1px solid black;
         width: 2em;
         height: 2em;
+      }
+    }
+
+    #line-size {
+      option {
+        display: inline-block;
+        border: 1px solid black;
+        width: 2em;
+        text-align: center;
+        cursor: pointer;
+        font-weight: bold;
+        &.chosen,
+        &:hover {
+          background: black;
+          color: white;
+        }
       }
     }
   }

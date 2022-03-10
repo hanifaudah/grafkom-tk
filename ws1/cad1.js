@@ -12,6 +12,8 @@ var t = [];
 
 const state = {
   cIndex: 0,
+  lineSizeIndex: 0,
+  animationIndex: 0,
 };
 
 var colors = [
@@ -27,8 +29,47 @@ var colors = [
 
 init();
 
+function renderToolBox() {
+  // render line size
+  var lineSize = document.getElementById("line-size");
+  for (let i = 0; i < lineSize.children.length; i++) {
+    lineSize.children[i].addEventListener("click", () => {
+      state.lineSizeIndex = i;
+      for (let i = 0; i < lineSize.children.length; i++) {
+        lineSize.children[i].classList.remove("chosen");
+      }
+      lineSize.children[i].classList.add("chosen");
+    });
+    if (state.lineSizeIndex === i) {
+      lineSize.children[i].classList.add("chosen");
+    }
+  }
+
+  // render color picker
+  var m = document.getElementById("color-picker");
+  for (let i = 0; i < colors.length; i++) {
+    const rgb = colors[i].slice(0, 3).map((x) => x * 255);
+    m.children[i].setAttribute("style", `background-color:rgb(${[rgb]})`);
+    m.children[i].addEventListener("click", (e) => {
+      state.cIndex = Number(e.target.value);
+    });
+  }
+
+  // render animation options
+  var animationOptions = document.getElementById("animation-options");
+  for (let i = 0; i < lineSize.children.length; i++) {
+    animationOptions.children[i].addEventListener("click", () => {
+      state.animationIndex = i;
+    });
+    if (state.animationIndex === i) {
+      animationOptions.children[i].setAttribute("checked", true);
+    }
+  }
+}
+
 function init() {
   canvas = document.getElementById("gl-canvas");
+  renderToolBox();
 
   gl = canvas.getContext("webgl2");
   if (!gl) alert("WebGL 2.0 isn't available");
@@ -58,15 +99,6 @@ function init() {
   var colorLoc = gl.getAttribLocation(program, "aColor");
   gl.vertexAttribPointer(colorLoc, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(colorLoc);
-
-  var m = document.getElementById("color-picker");
-  for (let i = 0; i < colors.length; i++) {
-    const rgb = colors[i].slice(0, 3).map((x) => x * 255);
-    m.children[i].setAttribute("style", `background-color:rgb(${[rgb]})`);
-    m.children[i].addEventListener("click", (e) => {
-      state.cIndex = Number(e.target.value);
-    });
-  }
 
   canvas.addEventListener("mousedown", function (event) {
     gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
