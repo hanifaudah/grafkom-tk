@@ -8,12 +8,17 @@ var maxNumPositions = 3 * maxNumTriangles;
 var index = 0;
 var first = true;
 
-var t = [];
+var tt;
+var numPolygons = 0;
+var numPositions = [];
+numPositions[0] = 0;
+var start = [0];
 
 const state = {
   cIndex: 0,
   lineSizeIndex: 0,
   animationIndex: 0,
+  shapeIndex: 0
 };
 
 var colors = [
@@ -46,13 +51,20 @@ function renderToolBox() {
   }
 
   // render color picker
-  var m = document.getElementById("color-picker");
+  var colorPicker = document.getElementById("color-picker");
   for (let i = 0; i < colors.length; i++) {
     const rgb = colors[i].slice(0, 3).map((x) => x * 255);
-    m.children[i].setAttribute("style", `background-color:rgb(${[rgb]})`);
-    m.children[i].addEventListener("click", (e) => {
+    colorPicker.children[i].setAttribute("style", `background-color:rgb(${[rgb]})`);
+    colorPicker.children[i].addEventListener("click", e => {
       state.cIndex = Number(e.target.value);
+      for (let i = 0; i < colorPicker.children.length; i++) {
+        colorPicker.children[i].classList.remove("chosen");
+      }
+      colorPicker.children[i].classList.add("chosen");
     });
+    if (state.cIndex === i) {
+      colorPicker.children[i].classList.add("chosen");
+    }
   }
 
   // render animation options
@@ -63,6 +75,21 @@ function renderToolBox() {
     });
     if (state.animationIndex === i) {
       animationOptions.children[i].setAttribute("checked", true);
+    }
+  }
+
+  // shape picker
+  var shapePicker = document.getElementById("shape-picker");
+  for (let i = 0; i < shapePicker.children.length; i++) {
+    shapePicker.children[i].addEventListener("click", () => {
+      state.shapeIndex= i;
+      for (let i = 0; i < shapePicker.children.length; i++) {
+        shapePicker.children[i].classList.remove("chosen");
+      }
+      shapePicker.children[i].classList.add("chosen");
+    });
+    if (state.shapeIndex === i) {
+      shapePicker.children[i].classList.add("chosen");
     }
   }
 
@@ -80,64 +107,58 @@ function init() {
 
   renderToolBox();
 
+  canvas.addEventListener("mousedown", function (event) {
+    t = vec2(
+      (2 * event.clientX) / canvas.width - 1,
+      (2 * (canvas.height - event.clientY)) / canvas.height - 1
+    );
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 8 * index, flatten(t));
+
+    tt = vec4(colors[state.cIndex]);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 16 * index, flatten(tt));
+
+    numPositions[numPolygons]++;
+    index++;
+
+    if (numPositions[numPolygons] === state.shapeIndex + 2) {
+      numPolygons++;
+      numPositions[numPolygons] = 0;
+      start[numPolygons] = index;
+      render();
+    }
+  });
+
   gl.viewport(0, 0, canvas.width, canvas.height);
   gl.clearColor(0.8, 0.8, 0.8, 1.0);
   gl.clear(gl.COLOR_BUFFER_BIT);
-
   //
   //  Load shaders and initialize attribute buffers
   //
   var program = initShaders(gl, "vertex-shader", "fragment-shader");
   gl.useProgram(program);
 
-  var vBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
+  var bufferId = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
   gl.bufferData(gl.ARRAY_BUFFER, 8 * maxNumPositions, gl.STATIC_DRAW);
+  var postionLoc = gl.getAttribLocation(program, "aPosition");
+  gl.vertexAttribPointer(postionLoc, 2, gl.FLOAT, false, 0, 0);
+  gl.enableVertexAttribArray(postionLoc);
 
-  var positionLoc = gl.getAttribLocation(program, "aPosition");
-  gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(positionLoc);
-
-  var cBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
+  var cBufferId = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
   gl.bufferData(gl.ARRAY_BUFFER, 16 * maxNumPositions, gl.STATIC_DRAW);
-
   var colorLoc = gl.getAttribLocation(program, "aColor");
   gl.vertexAttribPointer(colorLoc, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(colorLoc);
-
-  canvas.addEventListener("mousedown", function (event) {
-    gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-    if (first) {
-      first = false;
-      gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-      t[0] = vec2(
-        (2 * event.clientX) / canvas.width - 1,
-        (2 * (canvas.height - event.clientY)) / canvas.height - 1
-      );
-    } else {
-      first = true;
-      t[2] = vec2(
-        (2 * event.clientX) / canvas.width - 1,
-        (2 * (canvas.height - event.clientY)) / canvas.height - 1
-      );
-      t[1] = vec2(t[0][0], t[2][1]);
-      t[3] = vec2(t[2][0], t[0][1]);
-      for (var i = 0; i < 4; i++)
-        gl.bufferSubData(gl.ARRAY_BUFFER, 8 * (index + i), flatten(t[i]));
-      index += 4;
-
-      gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-      var tt = vec4(colors[state.cIndex]);
-      for (var i = 0; i < 4; i++)
-        gl.bufferSubData(gl.ARRAY_BUFFER, 16 * (index - 4 + i), flatten(tt));
-    }
-  });
-  render();
 }
 
 function render() {
   gl.clear(gl.COLOR_BUFFER_BIT);
-  for (var i = 0; i < index; i += 4) gl.drawArrays(gl.TRIANGLE_FAN, i, 4);
-  requestAnimationFrame(render);
+
+  for (var i = 0; i < numPolygons; i++) {
+    gl.drawArrays(gl.TRIANGLE_FAN, start[i], numPositions[i]);
+  }
 }

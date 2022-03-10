@@ -32,6 +32,15 @@ body {
         border: 1px solid black;
         width: 2em;
         height: 2em;
+        cursor: pointer;
+
+        &:hover {
+          opacity: .8;
+        }
+
+        &.chosen {
+          border-width: 3px;
+        }
       }
     }
 
@@ -47,6 +56,69 @@ body {
         &:hover {
           background: black;
           color: white;
+        }
+      }
+    }
+
+    #shape-picker {
+      display: flex;
+      gap: .5em;
+      div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid black;
+        width: 2em;
+        height: 2em;
+        cursor: pointer;
+        &:hover {
+          opacity: .8;
+        }
+
+        &.chosen {
+          border-width: 3px;
+        }
+
+        .line {
+          border: 2px solid red;
+          height: 0;
+        }
+
+        .triangle {
+          width: 0;
+          height: 0;
+          border-left: 10px solid transparent;
+          border-right: 10px solid transparent;
+          border-bottom: 20px solid red;
+        }
+
+        .square {
+          width: 20px;
+          height: 20px;
+          background: red;
+        }
+
+        .pentagon {
+          margin-top: 5px;
+          font-size: .2px;
+          position: relative;
+          width: 54em;
+          box-sizing: content-box;
+          border-width: 50em 18em 0;
+          border-style: solid;
+          border-color: red transparent;
+
+          &:before {
+            content: "";
+            position: absolute;
+            height: 0;
+            width: 0;
+            top: -85em;
+            left: -18em;
+            border-width: 0 45em 35em;
+            border-style: solid;
+            border-color: transparent transparent red;
+          }
         }
       }
     }
