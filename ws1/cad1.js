@@ -65,14 +65,20 @@ function renderToolBox() {
       animationOptions.children[i].setAttribute("checked", true);
     }
   }
+
+  // clear button
+  document.getElementById("clear-btn").addEventListener("click", () => {
+    // do something
+  });
 }
 
 function init() {
   canvas = document.getElementById("gl-canvas");
-  renderToolBox();
 
   gl = canvas.getContext("webgl2");
   if (!gl) alert("WebGL 2.0 isn't available");
+
+  renderToolBox();
 
   gl.viewport(0, 0, canvas.width, canvas.height);
   gl.clearColor(0.8, 0.8, 0.8, 1.0);
