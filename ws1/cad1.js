@@ -8,7 +8,7 @@ var maxNumPositions = 3 * maxNumTriangles;
 var index = 0;
 var first = true;
 
-var tt;
+var tt, t;
 var numPolygons = 0;
 var numPositions = [];
 numPositions[0] = 0;
@@ -18,7 +18,7 @@ const state = {
   cIndex: 0,
   lineSizeIndex: 0,
   animationIndex: 0,
-  shapeIndex: 0
+  shapeIndex: 1
 };
 
 var colors = [
@@ -34,7 +34,7 @@ var colors = [
 
 init();
 
-function renderToolBox() {
+function renderToolBox(gl) {
   // render line size
   var lineSize = document.getElementById("line-size");
   for (let i = 0; i < lineSize.children.length; i++) {
@@ -96,6 +96,12 @@ function renderToolBox() {
   // clear button
   document.getElementById("clear-btn").addEventListener("click", () => {
     // do something
+    colors.forEach(color => {
+      gl.clearColor(...color)
+      gl.clear(gl.COLOR_BUFFER_BIT);
+    })
+    gl.clearColor(0.8, 0.8, 0.8, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
   });
 }
 
@@ -105,7 +111,7 @@ function init() {
   gl = canvas.getContext("webgl2");
   if (!gl) alert("WebGL 2.0 isn't available");
 
-  renderToolBox();
+  renderToolBox(gl);
 
   canvas.addEventListener("mousedown", function (event) {
     t = vec2(
