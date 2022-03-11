@@ -1,0 +1,111 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+}
+body label.title {
+  font-weight: bold;
+}
+body #tool-box {
+  border: 2px solid black;
+  width: max-content;
+  height: max-content;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding: 1em;
+}
+body #tool-box .btn {
+  background: none;
+  cursor: pointer;
+  height: 2em;
+}
+body #tool-box .btn:hover {
+  opacity: 0.8;
+}
+body #tool-box #color-picker {
+  display: flex;
+  gap: 0.2em;
+}
+body #tool-box #color-picker option {
+  display: inline-block;
+  border: 1px solid black;
+  width: 2em;
+  height: 2em;
+  cursor: pointer;
+}
+body #tool-box #color-picker option:hover {
+  opacity: 0.8;
+}
+body #tool-box #color-picker option.chosen {
+  border-width: 3px;
+}
+body #tool-box #line-size option {
+  display: inline-block;
+  border: 1px solid black;
+  width: 2em;
+  text-align: center;
+  cursor: pointer;
+  font-weight: bold;
+}
+body #tool-box #line-size option.chosen, body #tool-box #line-size option:hover {
+  background: black;
+  color: white;
+}
+body #tool-box #shape-picker {
+  display: flex;
+  gap: 0.5em;
+}
+body #tool-box #shape-picker div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  width: 2em;
+  height: 2em;
+  cursor: pointer;
+}
+body #tool-box #shape-picker div:hover {
+  opacity: 0.8;
+}
+body #tool-box #shape-picker div.chosen {
+  border-width: 3px;
+}
+body #tool-box #shape-picker div .line {
+  border: 2px solid red;
+  height: 0;
+}
+body #tool-box #shape-picker div .triangle {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 20px solid red;
+}
+body #tool-box #shape-picker div .square {
+  width: 20px;
+  height: 20px;
+  background: red;
+}
+body #tool-box #shape-picker div .pentagon {
+  margin-top: 5px;
+  font-size: 0.2px;
+  position: relative;
+  width: 54em;
+  box-sizing: content-box;
+  border-width: 50em 18em 0;
+  border-style: solid;
+  border-color: red transparent;
+}
+body #tool-box #shape-picker div .pentagon:before {
+  content: "";
+  position: absolute;
+  height: 0;
+  width: 0;
+  top: -85em;
+  left: -18em;
+  border-width: 0 45em 35em;
+  border-style: solid;
+  border-color: transparent transparent red;
+}
+
+/*# sourceMappingURL=index.css.map */
