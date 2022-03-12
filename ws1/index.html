@@ -1,43 +1,55 @@
 <html>
+
 <head>
     <link rel="stylesheet" href="index.css">
 </head>
+
 <body>
     <div>
-        <canvas id="gl-canvas" width="512"" height="512"</canvas>
+        <canvas id="gl-canvas" width="512"" height=" 512"</canvas>
     </div>
     <div id="tool-box">
         <button class="btn" id="clear-btn">Clear Canvas</button>
         <div>
             <label class="title">Shape</label>
-            <div id = "shape-picker" size = "8">
-                <div value = "2"><div class="line"></div></div>
-                <div value = "3"><div class="triangle"></div></div>
-                <div value = "4"><div class="square"></div></div>
-                <div value = "5"><div class="pentagon"></div></div>
-                <div value = "6" id="polygon-select"><div class="polygon"></div></div>
+            <div id="shape-picker" size="8">
+                <div value="2">
+                    <div class="line"></div>
+                </div>
+                <div value="3">
+                    <div class="triangle"></div>
+                </div>
+                <div value="4">
+                    <div class="square"></div>
+                </div>
+                <div value="5">
+                    <div class="pentagon"></div>
+                </div>
+                <div value="6">
+                    <div class="polygon"></div>
+                </div>
             </div>
             <button class="end-polygon" id="end-polygon">End Polygon</button>
         </div>
         <div>
             <label class="title">Colors</label>
-            <div id = "color-picker" size = "8">
-                <option value = "0"></option>
-                <option value = "1"></option>
-                <option value = "2"></option>
-                <option value = "3"></option>
-                <option value = "4"></option>
-                <option value = "5"></option>
-                <option value = "6"></option>
-                <option value = "7"></option>
+            <div id="color-picker" size="8">
+                <option value="0"></option>
+                <option value="1"></option>
+                <option value="2"></option>
+                <option value="3"></option>
+                <option value="4"></option>
+                <option value="5"></option>
+                <option value="6"></option>
+                <option value="7"></option>
             </div>
         </div>
         <div>
             <label class="title">Line Size</label>
-            <div id = "line-size" size = "3">
-                <option value = "0">1</option>
-                <option value = "1">2</option>
-                <option value = "2">3</option>
+            <div id="line-size" size="3">
+                <option value="0">1</option>
+                <option value="1">2</option>
+                <option value="2">3</option>
             </div>
         </div>
         <div>
@@ -48,15 +60,15 @@
                 <input type="radio" id="scale" name="animation" value="1">
                 <label for="scale">Scale</label>
             </div>
-            <button class="btn">Run</button>
-            <button class="btn">Stop</button>
+            <button class="btn" id="run">Run</button>
+            <button class="btn" id="stop">Stop</button>
             <button class="btn">Reset</button>
         </div>
     </div>
 
 
-    
-    
+
+
 </body>
 
 <script id="vertex-shader" type="x-shader/x-vertex">
@@ -66,11 +78,20 @@ in vec4 aPosition;
 in vec4 aColor;
 
 out vec4 vColor;
+uniform float uTheta;
 
 void main()
 {
-    gl_Position = aPosition;
+
+    float s = sin(uTheta);
+    float c = cos(uTheta);
+
+    gl_Position.x = -s*aPosition.y + c*aPosition.x;
+    gl_Position.y =  s*aPosition.x + c*aPosition.y;
+    gl_Position.z = 0.0;
+    gl_Position.w = 1.0; 
     vColor = aColor;
+
 }
 </script>
 
@@ -87,9 +108,6 @@ void main()
     fColor = vColor;
 }
 </script>
-
-
-
 
 
 <script src="../Common/initShaders.js"></script>

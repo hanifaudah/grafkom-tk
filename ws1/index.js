@@ -42,6 +42,10 @@ var colors = [
   vec4(0.98, 0.59, 0.01, 1.0), // orange
 ];
 
+var loop = 0;
+var theta = 0.0;
+var thetaLoc;
+
 init();
 
 function renderToolBox(gl) {
@@ -186,15 +190,31 @@ function init() {
   var colorLoc = gl.getAttribLocation(program, "aColor");
   gl.vertexAttribPointer(colorLoc, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(colorLoc);
+
+  thetaLoc = gl.getUniformLocation(program, "uTheta");
+
+  document.getElementById("run").onclick = function () { loop = 1; };
+  document.getElementById("stop").onclick = function () { loop = 0; };
+
 }
 
 function render() {
+
   gl.clear(gl.COLOR_BUFFER_BIT);
   for (var i = 0; i < numPolygons; i++) {
     gl.drawArrays(gl.TRIANGLE_FAN, start[i], numPositions[i]);
   }
 
+  if (loop == 1) {
+    theta += 1.0;
+  }
+  else {
+    theta = 0.0;
+  }
+  gl.uniform1f(thetaLoc, theta);
+
   for (var i = 0; i < numPolygons; i++) {
     gl.drawArrays(gl.LINES, start[i], numPositions[i]);
   }
+  requestAnimationFrame(render);
 }
