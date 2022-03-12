@@ -18,10 +18,19 @@ const state = {
   cIndex: 0,
   lineSizeIndex: 5,
   animationIndex: 0,
-  shapeIndex: 2
+  shapeIndex: 2,
 };
 
 const linePoints = []
+function getShapeMode(shapeIndex) {
+  return {
+    2 : 'line',
+    3 : 'triangle',
+    4 : 'rectangle',
+    5 : 'pentagon',
+    6 : 'polygon',
+  }[shapeIndex]
+}
 
 var colors = [
   vec4(0.0, 0.0, 0.0, 1.0), // black
@@ -86,6 +95,7 @@ function renderToolBox(gl) {
   }
 
   // shape picker
+  const endPolygonButton = document.querySelector('#end-polygon')
   var shapePicker = document.getElementById("shape-picker");
   for (let i = 0; i < shapePicker.children.length; i++) {
     const val = Number(shapePicker.children[i].getAttribute("value"))
@@ -93,8 +103,12 @@ function renderToolBox(gl) {
       state.shapeIndex = val;
       for (let i = 0; i < shapePicker.children.length; i++) {
         shapePicker.children[i].classList.remove("chosen");
+        endPolygonButton.classList.remove('show')
       }
       shapePicker.children[i].classList.add("chosen");
+      if (getShapeMode(state.shapeIndex) == 'polygon') {
+        endPolygonButton.classList.add('show')
+      }
     });
     if (state.shapeIndex === val) {
       shapePicker.children[i].classList.add("chosen");
@@ -161,11 +175,22 @@ function init() {
       }
     }
     
-    if (numPositions[numPolygons] === state.shapeIndex) {
+    function renderShape() {
       numPolygons++;
       numPositions[numPolygons] = 0;
       start[numPolygons] = index;
       render();
+    }
+
+    const endPolygonButton = document.querySelector('#end-polygon')
+    if (getShapeMode(state.shapeIndex) === 'polygon') {
+      endPolygonButton.addEventListener('click', function() {
+        renderShape()
+      })
+    } else {
+      if (numPositions[numPolygons] === state.shapeIndex) {
+        renderShape()
+      }
     }
   });
 
