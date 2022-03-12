@@ -18,7 +18,7 @@ const state = {
   cIndex: 0,
   lineSizeIndex: 0,
   animationIndex: 0,
-  shapeIndex: 1
+  shapeIndex: 2
 };
 
 var colors = [
@@ -81,14 +81,15 @@ function renderToolBox(gl) {
   // shape picker
   var shapePicker = document.getElementById("shape-picker");
   for (let i = 0; i < shapePicker.children.length; i++) {
+    const val = Number(shapePicker.children[i].getAttribute("value"))
     shapePicker.children[i].addEventListener("click", () => {
-      state.shapeIndex= i;
+      state.shapeIndex = val;
       for (let i = 0; i < shapePicker.children.length; i++) {
         shapePicker.children[i].classList.remove("chosen");
       }
       shapePicker.children[i].classList.add("chosen");
     });
-    if (state.shapeIndex === i) {
+    if (state.shapeIndex === val) {
       shapePicker.children[i].classList.add("chosen");
     }
   }
@@ -129,7 +130,7 @@ function init() {
     numPositions[numPolygons]++;
     index++;
 
-    if (numPositions[numPolygons] === state.shapeIndex + 2) {
+    if (numPositions[numPolygons] === state.shapeIndex) {
       numPolygons++;
       numPositions[numPolygons] = 0;
       start[numPolygons] = index;
