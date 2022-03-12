@@ -148,7 +148,7 @@ function init() {
 
     gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
     gl.bufferSubData(gl.ARRAY_BUFFER, 16 * index, flatten(tt));
-
+    
     numPositions[numPolygons]++;
     index++;
 
@@ -156,8 +156,10 @@ function init() {
       linePoints[numPositions[numPolygons] - 1] = vec2(event.clientX, event.clientY)
       if (numPositions[numPolygons] === 2) {
         const rasterisedPoints = getDiagonal(linePoints[0][0], linePoints[0][1], linePoints[1][0], linePoints[1][1], state.lineSizeIndex)
-        
-        for (let i = 0; i < 2; i++) {
+        numPositions[numPolygons] -= 2;
+        index -= 2;
+
+        for (let i = 0; i < 4; i++) {
           t = vec2(
             (2 * rasterisedPoints[i][0]) / canvas.width - 1,
             (2 * (canvas.height - rasterisedPoints[i][1])) / canvas.height - 1
@@ -165,13 +167,15 @@ function init() {
           gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
           gl.bufferSubData(gl.ARRAY_BUFFER, 8 * index, flatten(t));
 
+          tt = vec4(colors[state.cIndex]);
+
+          gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
+          gl.bufferSubData(gl.ARRAY_BUFFER, 16 * index, flatten(tt));
+
           numPositions[numPolygons]++;
           index++;
         }
-        numPolygons++;
-        numPositions[numPolygons] = 0;
-        start[numPolygons] = index;
-        render();
+        renderShape()
       }
     }
     
@@ -221,7 +225,6 @@ function init() {
 
   document.getElementById("run").onclick = function () { loop = 1; };
   document.getElementById("stop").onclick = function () { loop = 0; };
-
 }
 
 function getDiagonal(x1, y1, x2, y2, distance) {
@@ -235,14 +238,14 @@ function getDiagonal(x1, y1, x2, y2, distance) {
   const origin1 = vec2(x1, y1)
   const p1 = (add(mult(rotation, subtract(point1, origin1)), origin1))
   
-  const p2 = (add(mult(rotation180, subtract(point1, origin1)), origin1))
+  const p2 = (add(mult(rotation180, subtract(p1, origin1)), origin1))
 
 
   const point3 = vec2(x2, y2 - distance/2)
   const origin2 = vec2(x2, y2)
   const p3 = (add(mult(rotation, subtract(point3, origin2)), origin2))
 
-  const p4 = (add(mult(rotation180, subtract(point3, origin1)), origin1))
+  const p4 = (add(mult(rotation180, subtract(p3, origin2)), origin2))
 
   return [
     p1,
