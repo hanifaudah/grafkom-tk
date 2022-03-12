@@ -14,13 +14,19 @@ body #tool-box {
   gap: 1em;
   padding: 1em;
 }
-body #tool-box .btn {
+body #tool-box .btn, body #tool-box .end-polygon {
   background: none;
   cursor: pointer;
   height: 2em;
 }
-body #tool-box .btn:hover {
+body #tool-box .btn:hover, body #tool-box .end-polygon:hover {
   opacity: 0.8;
+}
+body #tool-box .end-polygon {
+  display: none;
+}
+body #tool-box .end-polygon.show {
+  display: inline-block;
 }
 body #tool-box #color-picker {
   display: flex;
@@ -106,6 +112,14 @@ body #tool-box #shape-picker div .pentagon:before {
   border-width: 0 45em 35em;
   border-style: solid;
   border-color: transparent transparent red;
+}
+body #tool-box #shape-picker div .polygon {
+  font-size: 0.17em;
+  border-bottom: 6.25em solid red;
+  border-left: 1.5625em solid transparent;
+  border-right: 1.5625em solid transparent;
+  height: 0;
+  width: 6.25em;
 }
 
 /*# sourceMappingURL=index.css.map */

@@ -15,13 +15,21 @@ body {
     gap: 1em;
     padding: 1em;
 
-    .btn {
+    .btn, .end-polygon {
       background: none;
       cursor: pointer;
       height: 2em;
       &:hover {
         opacity: 0.8;
       }
+    }
+
+    .end-polygon {
+      display: none;
+    }
+
+    .end-polygon.show {
+      display: inline-block;
     }
 
     #color-picker {
@@ -120,6 +128,15 @@ body {
             border-style: solid;
             border-color: transparent transparent red;
           }
+        }
+
+        .polygon {
+          font-size: 0.17em;
+          border-bottom: 6.25em solid red;
+          border-left: 1.5625em solid transparent;
+          border-right: 1.5625em solid transparent;
+          height: 0;
+          width: 6.25em;
         }
       }
     }
