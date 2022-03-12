@@ -167,4 +167,8 @@ function render() {
   for (var i = 0; i < numPolygons; i++) {
     gl.drawArrays(gl.TRIANGLE_FAN, start[i], numPositions[i]);
   }
+
+  for (var i = 0; i < numPolygons; i++) {
+    gl.drawArrays(gl.LINES, start[i], numPositions[i]);
+  }
 }
