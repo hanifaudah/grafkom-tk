@@ -16,10 +16,12 @@ var start = [0];
 
 const state = {
   cIndex: 0,
-  lineSizeIndex: 0,
+  lineSizeIndex: 5,
   animationIndex: 0,
   shapeIndex: 2
 };
+
+const linePoints = []
 
 var colors = [
   vec4(0.0, 0.0, 0.0, 1.0), // black
@@ -42,14 +44,15 @@ function renderToolBox(gl) {
   // render line size
   var lineSize = document.getElementById("line-size");
   for (let i = 0; i < lineSize.children.length; i++) {
+    const val = Number(lineSize.children[i].getAttribute("value"))
     lineSize.children[i].addEventListener("click", () => {
-      state.lineSizeIndex = i;
+      state.lineSizeIndex = val;
       for (let i = 0; i < lineSize.children.length; i++) {
         lineSize.children[i].classList.remove("chosen");
       }
       lineSize.children[i].classList.add("chosen");
     });
-    if (state.lineSizeIndex === i) {
+    if (state.lineSizeIndex === val) {
       lineSize.children[i].classList.add("chosen");
     }
   }
@@ -117,6 +120,7 @@ function init() {
   if (!gl) alert("WebGL 2.0 isn't available");
 
   renderToolBox(gl);
+  gl.lineWidth(10.0)
 
   canvas.addEventListener("mousedown", function (event) {
     t = vec2(
@@ -134,7 +138,29 @@ function init() {
     numPositions[numPolygons]++;
     index++;
 
+    if (state.shapeIndex === 2) {
+      linePoints[numPositions[numPolygons] - 1] = vec2(event.clientX, event.clientY)
+      if (numPositions[numPolygons] === 2) {
+        const rasterisedPoints = getDiagonal(linePoints[0][0], linePoints[0][1], linePoints[1][0], linePoints[1][1], state.lineSizeIndex)
+        
+        for (let i = 0; i < 2; i++) {
+          t = vec2(
+            (2 * rasterisedPoints[i][0]) / canvas.width - 1,
+            (2 * (canvas.height - rasterisedPoints[i][1])) / canvas.height - 1
+          );
+          gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
+          gl.bufferSubData(gl.ARRAY_BUFFER, 8 * index, flatten(t));
 
+          numPositions[numPolygons]++;
+          index++;
+        }
+        numPolygons++;
+        numPositions[numPolygons] = 0;
+        start[numPolygons] = index;
+        render();
+      }
+    }
+    
     if (numPositions[numPolygons] === state.shapeIndex) {
       numPolygons++;
       numPositions[numPolygons] = 0;
@@ -173,6 +199,34 @@ function init() {
 
 }
 
+function getDiagonal(x1, y1, x2, y2, distance) {
+  const run = x2 - x1
+  const rise = y2 - y1
+  const hyp = Math.sqrt(Math.pow(rise, 2) + Math.pow(run, 2))
+  const rotation = mat2(run/hyp, -rise/hyp, rise/hyp, run/hyp)
+  const rotation180 = mat2(-1, 0, 0, -1)
+
+  const point1 = vec2(x1, y1 + distance/2)
+  const origin1 = vec2(x1, y1)
+  const p1 = (add(mult(rotation, subtract(point1, origin1)), origin1))
+  
+  const p2 = (add(mult(rotation180, subtract(point1, origin1)), origin1))
+
+
+  const point3 = vec2(x2, y2 - distance/2)
+  const origin2 = vec2(x2, y2)
+  const p3 = (add(mult(rotation, subtract(point3, origin2)), origin2))
+
+  const p4 = (add(mult(rotation180, subtract(point3, origin1)), origin1))
+
+  return [
+    p1,
+    p2,
+    p3,
+    p4
+  ]
+}
+
 function render() {
 
   gl.clear(gl.COLOR_BUFFER_BIT);
@@ -188,8 +242,8 @@ function render() {
   }
   gl.uniform1f(thetaLoc, theta);
 
-  for (var i = 0; i < numPolygons; i++) {
-    gl.drawArrays(gl.LINES, start[i], numPositions[i]);
-  }
+  // for (var i = 0; i < numPolygons; i++) {
+  //   gl.drawArrays(gl.LINES, start[i], numPositions[i]);
+  // }
   requestAnimationFrame(render);
 }
