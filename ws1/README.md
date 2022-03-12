@@ -4,13 +4,16 @@
 **Shapes**
 
 - [ ] Garis
-- [ ] Segitiga
-- [ ] Segiempat
+- [x] Segitiga
+- [x] Segiempat
 - [ ] Segibanyak Bonus
 - [ ] Lingkaran
 ...  
 
 **Menu**
 - [ ] Shape picker
-- [ ] Color picker
+- [x] Color picker
 - [ ] Line Thickness
+
+**Other**
+- [ ] Animations
