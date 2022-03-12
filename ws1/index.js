@@ -95,13 +95,13 @@ function renderToolBox(gl) {
 
   // clear button
   document.getElementById("clear-btn").addEventListener("click", () => {
-    // do something
-    colors.forEach(color => {
-      gl.clearColor(...color)
-      gl.clear(gl.COLOR_BUFFER_BIT);
-    })
-    gl.clearColor(0.8, 0.8, 0.8, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    numPolygons = 0
+    numPositions = [];
+    numPositions[0] = 0;
+    start = [0];
+    index = 0;
+    first = true;
+    render()
   });
 }
 
@@ -163,7 +163,6 @@ function init() {
 
 function render() {
   gl.clear(gl.COLOR_BUFFER_BIT);
-
   for (var i = 0; i < numPolygons; i++) {
     gl.drawArrays(gl.TRIANGLE_FAN, start[i], numPositions[i]);
   }
