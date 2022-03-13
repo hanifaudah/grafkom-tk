@@ -1,6 +1,7 @@
 # Dokumentasi WS1
 ## Cara Menjalankan Program
 1. Jalankan file `index.html` ada di root directory
+2. Tekan `WS1` pada list
 
 ## Pembagian tugas
 | Nama                                 |Tugas |
