@@ -1,3 +1,16 @@
+const shapeColors = [
+  [0.245, 0.067 , 0.412,  1], // Dark Purple
+  [0.208, 0.345 , 0.604,  1], // Blue
+  [0.945, 0.29  , 0.086,  1], // Orange
+  [0.988, 0.6   , 0.094,  1], // Light Orange 
+  [0.217, 0.442 , 0.867,  1], // Light Blue 
+]
+
+function selectRandom(array) {
+  return array[~~(Math.random() * array.length)]
+}
+
+
 // Initiated and modified from https://github.com/idofilin/webgl-by-example/tree/master/raining-rectangles
 ;(function(){
     "use strict"
@@ -15,8 +28,7 @@
     
       rainingRect = new Rectangle();
       timer = setTimeout(drawAnimation, 17);
-      document.querySelector("canvas")
-          .addEventListener("click", playerClick, false);
+      document.querySelector("canvas").addEventListener("click", playerClick, false);
       var displays = document.querySelectorAll("strong");
       scoreDisplay = displays[0];  
       missesDisplay = displays[1]; 
@@ -25,8 +37,8 @@
     var score = 0,
       misses = 0;
     function drawAnimation () {
-      gl.scissor(rainingRect.position[0], rainingRect.position[1], 
-          rainingRect.size[0] , rainingRect.size[1]);
+      gl.scissor(rainingRect.position[0], rainingRect.position[1], rainingRect.size[0] , rainingRect.size[1]);
+      gl.clear(gl.COLOR_BUFFER_BIT);
       gl.clear(gl.COLOR_BUFFER_BIT);
       rainingRect.position[1] -= rainingRect.velocity;
       if (rainingRect.position[1] < 0) {
@@ -81,7 +93,7 @@
       ];
       rect.velocity = 1.0 + 6.0*Math.random();
       rect.color = getRandomVector();
-      gl.clearColor(rect.color[0], rect.color[1], rect.color[2], 1.0);
+      gl.clearColor(...selectRandom(shapeColors));
       function getRandomVector() {
         return [Math.random(), Math.random(), Math.random()];
       }
@@ -91,16 +103,12 @@
       var canvas = document.querySelector("canvas");
       canvas.width = canvas.clientWidth;
       canvas.height = canvas.clientHeight;
-      var gl = canvas.getContext("webgl") 
-        || canvas.getContext("experimental-webgl");
+      var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
       if (!gl) {
-        var paragraph = document.querySelector("p");
-        paragraph.innerHTML = "Failed to get WebGL context."
-          + "Your browser or device may not support WebGL.";
+        alert("Failed to get WebGL context. Your browser or device may not support WebGL.")
         return null;
       }
-      gl.viewport(0, 0, 
-        gl.drawingBufferWidth, gl.drawingBufferHeight);
+      gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT);
       return gl;
