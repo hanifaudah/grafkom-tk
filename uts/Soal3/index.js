@@ -119,9 +119,7 @@ function drawHydrogen() {
   var scaleState = rootScaleState[0];
   var maxScale = 3;
   var scaleGrowth = 0.01;
-  var count = geometry["I"].length;
-
-  setGeometry(gl, "I");
+  var count = setGeometry(gl, "I");
 
   initColorBuffers();
 
@@ -164,8 +162,7 @@ function drawLetterD() {
   var maxScale = 3;
   var scaleGrowth = 0.01;
 
-  var count = geometry["D"].length;
-  setGeometry(gl, "D");
+  var count = setGeometry(gl, "D");
 
   initColorBuffers();
 

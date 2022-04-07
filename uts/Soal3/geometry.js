@@ -1,6 +1,6 @@
 var geometry = {
-  I: flatten(getCubeVertices().positions),
-  D: flatten(getCubeVertices().positions),
+  I: getCubeVertices(),
+  D: getCubeVertices(),
 };
 
 function getCubeVertices() {
@@ -28,14 +28,14 @@ function getCubeVertices() {
     ];
 
     var vertexColors = [
-      vec4(0.0, 0.0, 0.0, 1.0), // black
-      vec4(1.0, 0.0, 0.0, 1.0), // red
-      vec4(1.0, 1.0, 0.0, 1.0), // yellow
-      vec4(0.0, 1.0, 0.0, 1.0), // green
-      vec4(0.0, 0.0, 1.0, 1.0), // blue
-      vec4(1.0, 0.0, 1.0, 1.0), // magenta
-      vec4(0.0, 1.0, 1.0, 1.0), // cyan
-      vec4(1.0, 1.0, 1.0, 1.0), // white
+      vec3(0.0, 0.0, 0.0), // black
+      vec3(1.0, 0.0, 0.0), // red
+      vec3(1.0, 1.0, 0.0), // yellow
+      vec3(0.0, 1.0, 0.0), // green
+      vec3(0.0, 0.0, 1.0), // blue
+      vec3(1.0, 0.0, 1.0), // magenta
+      vec3(0.0, 1.0, 1.0), // cyan
+      vec3(1.0, 1.0, 1.0), // white
     ];
 
     // We need to parition the quad into two triangles in order for
@@ -54,16 +54,17 @@ function getCubeVertices() {
     }
   }
   colorCube();
-  return { positions, colors };
+  return { positions: flatten(positions), colors: flatten(colors) };
 }
 
 // Fill the buffer with the values that define the determined letter in the argument
 function setGeometry(gl, letter) {
   gl.bufferData(
     gl.ARRAY_BUFFER,
-    new Float32Array(geometry[letter]),
+    new Float32Array(geometry[letter].positions),
     gl.STATIC_DRAW
   );
+  return geometry[letter].positions.length;
 }
 
 // Determine color for each letter
@@ -74,7 +75,7 @@ var colorSpace = {
 
 // Fill the buffer with colors for the determined letter in the argument
 function setColors(gl, letter) {
-  var temp = Array(geometry[letter].length / 3)
+  var temp = Array(geometry[letter].positions.length / 3)
     .fill()
     .map(() => colorSpace[letter]);
   var arrColor = [];
