@@ -4,7 +4,6 @@ import { setColors, setGeometry, geometry } from "./geometry.js";
 
 var canvas;
 var gl;
-var z = 0;
 
 var primitiveType;
 var offset = 0;
@@ -115,16 +114,6 @@ const draw = ({ translation, rotation, scale, count }) => {
   gl.drawArrays(primitiveType, offset, count);
 };
 
-const translate = ({ ranges, translation, translationState, speed }) => {
-  ranges.forEach((range, idx) => {
-    if (translation[idx] >= range[0]) translationState[idx] = false;
-    else if (translation[idx] <= range[1]) translationState[idx] = true;
-    translation[idx] += translationState[idx] ? speed : -1 * speed;
-  });
-
-  return translation;
-};
-
 function drawHydrogen() {
   initPositionBuffers();
 
@@ -138,7 +127,7 @@ function drawHydrogen() {
   setColors(gl, 0);
 
   //rotation
-  // rotation[0] += 0.01;
+  rotation[0] += 0.01;
   rotation[1] += 0.01;
   rotation[2] += 0.01;
 
@@ -166,17 +155,19 @@ function drawOxygen(idx) {
   rotation[1] -= 0.01;
   rotation[2] -= 0.01;
 
+  const revRadius = 100;
+
   translation[0] =
-    100 *
+    revRadius *
       Math.sin(oxygenRevolution[idx - 1][0]) *
       Math.cos(oxygenRevolution[idx - 1][1]) +
     origin[0];
   translation[1] =
-    100 *
+    revRadius *
       Math.sin(oxygenRevolution[idx - 1][0]) *
       Math.sin(oxygenRevolution[idx - 1][1]) +
     origin[1];
-  translation[2] = 100 * Math.cos(oxygenRevolution[idx - 1][0]);
+  translation[2] = revRadius * Math.cos(oxygenRevolution[idx - 1][0]);
 
   oxygenRevolution[idx - 1][0] += (idx === 1 ? -1 : 1) * oxygenRevSpeed[0];
   oxygenRevolution[idx - 1][1] += (idx === 1 ? -1 : 1) * oxygenRevSpeed[1];
