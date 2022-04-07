@@ -1,9 +1,6 @@
-var geometry = {
-  I: getCubeVertices(),
-  D: getCubeVertices(),
-};
+var geometry = [getCubeVertices(), getCubeVertices(20)];
 
-function getCubeVertices() {
+function getCubeVertices(size = 100) {
   var positions = [];
   var colors = [];
   function colorCube() {
@@ -47,7 +44,7 @@ function getCubeVertices() {
     var indices = [a, b, c, a, c, d];
 
     for (var i = 0; i < indices.length; ++i) {
-      positions.push(vertices[indices[i]].map((x) => x * 100));
+      positions.push(vertices[indices[i]].map((x) => x * size));
 
       // for solid colored faces use
       colors.push(vertexColors[a]);
@@ -58,26 +55,26 @@ function getCubeVertices() {
 }
 
 // Fill the buffer with the values that define the determined letter in the argument
-function setGeometry(gl, letter) {
+function setGeometry(gl, idx) {
   gl.bufferData(
     gl.ARRAY_BUFFER,
-    new Float32Array(geometry[letter].positions),
+    new Float32Array(geometry[idx].positions),
     gl.STATIC_DRAW
   );
-  return geometry[letter].positions.length;
+  return geometry[idx].positions.length;
 }
 
 // Determine color for each letter
-var colorSpace = {
-  I: [0, 0, 200],
-  D: [200, 0, 0],
-};
+var colorSpace = [
+  [0, 0, 200],
+  [200, 0, 0],
+];
 
 // Fill the buffer with colors for the determined letter in the argument
-function setColors(gl, letter) {
-  var temp = Array(geometry[letter].positions.length / 3)
+function setColors(gl, idx) {
+  var temp = Array(geometry[idx].positions.length / 3)
     .fill()
-    .map(() => colorSpace[letter]);
+    .map(() => colorSpace[idx]);
   var arrColor = [];
   temp.forEach((color) => {
     arrColor = arrColor.concat(color);

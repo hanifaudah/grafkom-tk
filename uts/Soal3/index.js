@@ -12,23 +12,21 @@ var offset = 0;
 var rootTranslation = [
   [100, 100, 0],
   [400, 100, 0],
-];
-var rootTranslationState = [
-  [true, true, true],
-  [true, true, true],
+  [400, 100, 0],
 ];
 var rootRotation = [
+  [0, 0, 0],
   [0, 0, 0],
   [0, 0, 0],
 ];
 var rootScale = [
   [1.0, 1.0, 1.0],
   [1.0, 1.0, 1.0],
+  [1.0, 1.0, 1.0],
 ];
-var rootScaleState = [
-  [true, true, true],
-  [true, true, true],
-];
+
+var oxygenRotation = [-0.7, -2.3];
+let origin = [];
 
 var matrixLocation;
 
@@ -44,10 +42,21 @@ window.onload = function init() {
   gl = canvas.getContext("webgl2");
   if (!gl) alert("WebGL 2.0 isn't available");
 
-  //
-  //  Configure WebGL
-  //
-  gl.viewport(0, 0, canvas.width, canvas.height);
+  origin = [gl.canvas.width / 2, gl.canvas.height / 2, 0];
+  (rootRotation[1] = [
+    gl.canvas.width / 2 + 100,
+    gl.canvas.height / 2 - 100,
+    0,
+  ]),
+    (rootRotation[2] = [
+      gl.canvas.width / 2 - 100,
+      gl.canvas.height / 2 - 100,
+      0,
+    ]),
+    //
+    //  Configure WebGL
+    //
+    gl.viewport(0, 0, canvas.width, canvas.height);
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
   gl.enable(gl.CULL_FACE); //enable depth buffer
@@ -116,79 +125,51 @@ function drawHydrogen() {
   // get position modifier matrices
   var rotation = rootRotation[0];
   var scale = rootScale[0];
-  var scaleState = rootScaleState[0];
-  var maxScale = 3;
-  var scaleGrowth = 0.01;
-  var count = setGeometry(gl, "I");
+  var count = setGeometry(gl, 0);
 
   initColorBuffers();
 
-  setColors(gl, "I");
+  setColors(gl, 0);
 
   //rotation
   // rotation[0] += 0.01;
   rotation[1] += 0.01;
   rotation[2] += 0.01;
 
-  // scale
-  // for (let i = 0; i < 3; i++) {
-  //   if (scale[0] >= maxScale || scale[0] < 1) scaleState[i] = !scaleState[i];
-  //   scale[i] += scaleState[i] ? scaleGrowth : -1 * scaleGrowth;
-  // }
-
-  let translation = rootTranslation[0];
-  translation = [gl.canvas.width / 2, gl.canvas.height / 2, 0];
-  // translation = translate({
-  //   translation: rootTranslation[0],
-  //   translationState: rootTranslationState[0],
-  //   ranges: [
-  //     [gl.canvas.width / 2, 0],
-  //     [500, 100],
-  //     [10, 0],
-  //   ],
-  //   speed: 1,
-  // });
+  const translation = [gl.canvas.width / 2, gl.canvas.height / 2, 0];
 
   draw({ translation, scale, rotation, count });
 }
 
-function drawLetterD() {
+function drawOxygen(idx) {
   initPositionBuffers();
 
   // get position modifier matrices
-  var rotation = rootRotation[1];
-  var scale = rootScale[1];
-  var scaleState = rootScaleState[1];
-  var maxScale = 3;
-  var scaleGrowth = 0.01;
+  var rotation = rootRotation[idx];
+  var scale = rootScale[idx];
+  var translation = rootTranslation[idx];
 
-  var count = setGeometry(gl, "D");
+  var count = setGeometry(gl, 1);
 
   initColorBuffers();
 
-  setColors(gl, "D");
+  setColors(gl, 1);
 
   // //rotation
   rotation[0] -= 0.01;
   rotation[1] -= 0.01;
   rotation[2] -= 0.01;
 
-  // scale
-  // for (let i = 0; i < 3; i++) {
-  //   if (scale[0] >= maxScale || scale[0] < 1) scaleState[i] = !scaleState[i];
-  //   scale[i] += scaleState[i] ? scaleGrowth : -1 * scaleGrowth;
-  // }
+  translation = [
+    gl.canvas.width / 2 + (idx === 1 ? 1 : -1) * 100,
+    gl.canvas.height / 2 - 100,
+    0,
+  ];
 
-  const translation = translate({
-    translation: rootTranslation[1],
-    translationState: rootTranslationState[1],
-    ranges: [
-      [gl.canvas.width, gl.canvas.width / 2],
-      [gl.canvas.height, 100],
-      [10, 0],
-    ],
-    speed: 1,
-  });
+  translation[0] = 100 * Math.cos(oxygenRotation[idx - 1]) + origin[0];
+  translation[1] = 100 * Math.sin(oxygenRotation[idx - 1]) + origin[1];
+
+  oxygenRotation[idx - 1] += (idx === 1 ? -1 : 1) * 0.01;
 
   draw({ translation, scale, rotation, count });
 }
@@ -197,6 +178,7 @@ function render() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   drawHydrogen();
-  drawLetterD();
+  drawOxygen(1);
+  drawOxygen(2);
   requestAnimationFrame(render); //trigger animation
 }
