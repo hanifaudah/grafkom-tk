@@ -1,6 +1,6 @@
 "use strict";
 import { m4 } from "./utils.js";
-import { setColors, setGeometry, geometry } from "./geometry.js";
+import { setColors, setGeometry } from "./geometry.js";
 
 var canvas;
 var gl;
@@ -15,9 +15,9 @@ var rootTranslation = [
   [400, 100, 0],
 ];
 var rootRotation = [
-  [0, 0, 0],
-  [0, 0, 0],
-  [0, 0, 0],
+  [1, 0, 0],
+  [1, 0, 0],
+  [1, 0, 0],
 ];
 var rootScale = [
   [1.0, 1.0, 1.0],
@@ -114,7 +114,7 @@ const draw = ({ translation, rotation, scale, count }) => {
   gl.drawArrays(primitiveType, offset, count);
 };
 
-function drawHydrogen() {
+function drawOxygen() {
   initPositionBuffers();
 
   // get position modifier matrices
@@ -127,16 +127,14 @@ function drawHydrogen() {
   setColors(gl, 0);
 
   //rotation
-  rotation[0] += 0.01;
-  rotation[1] += 0.01;
-  rotation[2] += 0.01;
+  rotation[1] -= 0.01;
 
   const translation = [gl.canvas.width / 2, gl.canvas.height / 2, 0];
 
   draw({ translation, scale, rotation, count });
 }
 
-function drawOxygen(idx) {
+function drawHydrogen(idx) {
   initPositionBuffers();
 
   // get position modifier matrices
@@ -144,19 +142,19 @@ function drawOxygen(idx) {
   var scale = rootScale[idx];
   var translation = rootTranslation[idx];
 
-  var count = setGeometry(gl, 1);
+  var count = setGeometry(gl, idx);
 
   initColorBuffers();
 
-  setColors(gl, 1);
+  setColors(gl, idx);
 
   // //rotation
-  rotation[0] -= 0.01;
-  rotation[1] -= 0.01;
-  rotation[2] -= 0.01;
+  rotation[1] -= 0.5;
 
   const revRadius = 100;
 
+  // spherical revolution
+  // source: https://stackoverflow.com/questions/2078000/how-to-orbit-around-the-z-axis-in-3d
   translation[0] =
     revRadius *
       Math.sin(oxygenRevolution[idx - 1][0]) *
@@ -178,8 +176,8 @@ function drawOxygen(idx) {
 function render() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  drawHydrogen();
-  drawOxygen(1);
-  drawOxygen(2);
+  drawOxygen();
+  drawHydrogen(1);
+  drawHydrogen(2);
   requestAnimationFrame(render); //trigger animation
 }

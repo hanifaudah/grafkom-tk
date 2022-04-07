@@ -1,8 +1,32 @@
-var geometry = [getCubeVertices(), getCubeVertices(20)];
+var geometry = [getCubeVertices(), getCubeVertices(20), getCubeVertices(20)];
 
 function getCubeVertices(size = 100) {
   var positions = [];
   var colors = [];
+  var vertexColors = [
+    vec3(1.0, 0.8, 0.0), // black
+    vec3(1.0, 0.0, 0.0), // red
+    vec3(1.0, 1.0, 0.0), // yellow
+    vec3(0.0, 1.0, 0.0), // green
+    vec3(0.0, 0.0, 1.0), // blue
+    vec3(1.0, 0.0, 1.0), // magenta
+    vec3(0.0, 1.0, 1.0), // cyan
+    vec3(1.0, 1.0, 1.0), // white
+  ];
+
+  // shuffle colors
+  // source: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+  function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+    }
+  }
+
+  shuffleArray(vertexColors);
+
   function colorCube() {
     quad(1, 0, 3, 2);
     quad(2, 3, 7, 6);
@@ -24,17 +48,6 @@ function getCubeVertices(size = 100) {
       vec3(0.5, -0.5, -0.5),
     ];
 
-    var vertexColors = [
-      vec3(0.0, 0.0, 0.0), // black
-      vec3(1.0, 0.0, 0.0), // red
-      vec3(1.0, 1.0, 0.0), // yellow
-      vec3(0.0, 1.0, 0.0), // green
-      vec3(0.0, 0.0, 1.0), // blue
-      vec3(1.0, 0.0, 1.0), // magenta
-      vec3(0.0, 1.0, 1.0), // cyan
-      vec3(1.0, 1.0, 1.0), // white
-    ];
-
     // We need to parition the quad into two triangles in order for
     // WebGL to be able to render it.  In this case, we create two
     // triangles from the quad indices
@@ -47,10 +60,11 @@ function getCubeVertices(size = 100) {
       positions.push(vertices[indices[i]].map((x) => x * size));
 
       // for solid colored faces use
-      colors.push(vertexColors[a]);
+      colors.push(vertexColors[a].map((x) => x * 200));
     }
   }
   colorCube();
+  console.log(colors);
   return { positions: flatten(positions), colors: flatten(colors) };
 }
 
@@ -64,22 +78,13 @@ function setGeometry(gl, idx) {
   return geometry[idx].positions.length;
 }
 
-// Determine color for each letter
-var colorSpace = [
-  [0, 0, 200],
-  [200, 0, 0],
-];
-
 // Fill the buffer with colors for the determined letter in the argument
 function setColors(gl, idx) {
-  var temp = Array(geometry[idx].positions.length / 3)
-    .fill()
-    .map(() => colorSpace[idx]);
-  var arrColor = [];
-  temp.forEach((color) => {
-    arrColor = arrColor.concat(color);
-  });
-  gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array([...arrColor]), gl.STATIC_DRAW);
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Uint8Array([...geometry[idx].colors]),
+    gl.STATIC_DRAW
+  );
 }
 
 export { setColors, setGeometry, geometry };
