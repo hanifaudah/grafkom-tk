@@ -29,7 +29,7 @@ var oxygenRevolution = [
   [-0.7, 0.7],
   [-2.3, 2.3],
 ];
-var oxygenRevSpeed = [0.2, 0.01, 0.3];
+var oxygenRevSpeed = [0.05, 0.005];
 
 let origin = [];
 
@@ -149,9 +149,9 @@ function drawHydrogen(idx) {
   setColors(gl, idx);
 
   // //rotation
-  rotation[1] -= 0.5;
+  rotation[1] -= 0.2;
 
-  const revRadius = 100;
+  const revRadius = 180;
 
   // spherical revolution
   // source: https://stackoverflow.com/questions/2078000/how-to-orbit-around-the-z-axis-in-3d
