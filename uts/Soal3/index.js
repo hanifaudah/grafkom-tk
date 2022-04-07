@@ -4,6 +4,7 @@ import { setColors, setGeometry, geometry } from "./geometry.js";
 
 var canvas;
 var gl;
+var z = 0;
 
 var primitiveType;
 var offset = 0;
@@ -25,7 +26,12 @@ var rootScale = [
   [1.0, 1.0, 1.0],
 ];
 
-var oxygenRotation = [-0.7, -2.3];
+var oxygenRevolution = [
+  [-0.7, 0.7],
+  [-2.3, 2.3],
+];
+var oxygenRevSpeed = [0.2, 0.01, 0.3];
+
 let origin = [];
 
 var matrixLocation;
@@ -43,20 +49,20 @@ window.onload = function init() {
   if (!gl) alert("WebGL 2.0 isn't available");
 
   origin = [gl.canvas.width / 2, gl.canvas.height / 2, 0];
-  (rootRotation[1] = [
+  (rootTranslation[1] = [
     gl.canvas.width / 2 + 100,
     gl.canvas.height / 2 - 100,
     0,
   ]),
-    (rootRotation[2] = [
+    (rootTranslation[2] = [
       gl.canvas.width / 2 - 100,
       gl.canvas.height / 2 - 100,
       0,
-    ]),
-    //
-    //  Configure WebGL
-    //
-    gl.viewport(0, 0, canvas.width, canvas.height);
+    ]);
+  //
+  //  Configure WebGL
+  //
+  gl.viewport(0, 0, canvas.width, canvas.height);
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
   gl.enable(gl.CULL_FACE); //enable depth buffer
@@ -160,16 +166,20 @@ function drawOxygen(idx) {
   rotation[1] -= 0.01;
   rotation[2] -= 0.01;
 
-  translation = [
-    gl.canvas.width / 2 + (idx === 1 ? 1 : -1) * 100,
-    gl.canvas.height / 2 - 100,
-    0,
-  ];
+  translation[0] =
+    100 *
+      Math.sin(oxygenRevolution[idx - 1][0]) *
+      Math.cos(oxygenRevolution[idx - 1][1]) +
+    origin[0];
+  translation[1] =
+    100 *
+      Math.sin(oxygenRevolution[idx - 1][0]) *
+      Math.sin(oxygenRevolution[idx - 1][1]) +
+    origin[1];
+  translation[2] = 100 * Math.cos(oxygenRevolution[idx - 1][0]);
 
-  translation[0] = 100 * Math.cos(oxygenRotation[idx - 1]) + origin[0];
-  translation[1] = 100 * Math.sin(oxygenRotation[idx - 1]) + origin[1];
-
-  oxygenRotation[idx - 1] += (idx === 1 ? -1 : 1) * 0.01;
+  oxygenRevolution[idx - 1][0] += (idx === 1 ? -1 : 1) * oxygenRevSpeed[0];
+  oxygenRevolution[idx - 1][1] += (idx === 1 ? -1 : 1) * oxygenRevSpeed[1];
 
   draw({ translation, scale, rotation, count });
 }
