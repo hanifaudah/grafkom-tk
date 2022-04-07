@@ -1,19 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Cabin:wght@400;500;700&display=swap');
+
+* {
+  padding: 0;
+  margin: 0;
+  font-family: Cabin;
+}
+
 body {
-    text-align : center;
-  }
-  canvas {
-    display : block;
-    width : 280px;
-    height : 210px;
-    margin : auto;
-    padding : 0;
-    border : none;
-    background-color : black;
-  }
-  button {
-    display : block;
-    font-size : inherit;
-    margin : auto;
-    padding : 0.6em;
-  }
-  
+  background-color: #FAFAFA;
+  text-align: center;
+}
+
+h1 {
+  padding-bottom: 0.5em;
+}
+
+.container {
+  padding: 1em 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+canvas {
+  display: block;
+  width: 400px;
+  height: 400px;
+  margin: auto;
+  padding: 0;
+  border: none;
+  background-color: black;
+  cursor: pointer;
+}
+button {
+  display: block;
+  font-size: inherit;
+  margin: auto;
+  padding: 0.6em;
+}
+
+.subtitle {
+  padding-bottom: 1em;
+}
+
+.score {
+  padding: 0.5em;
+  margin-top: 1em;
+  background-color: #fff0db;
+  width: 400px;
+  border-radius: 6px;
+}
+
+.buttons {
+  padding: 1em 1em;
+  display: flex;
+  justify-content: center;
+  column-gap: 2em;
+}
+
+.option-header {
+  padding-bottom: 0.2em;
+}
+
+select {
+  min-width: 7em;
+  padding: 0.3em 0.5em;
+}
