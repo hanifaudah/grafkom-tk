@@ -1,6 +1,6 @@
 "use strict";
 import { m4 } from "./utils.js";
-import { setColors, setGeometry } from "./geometry.js";
+import { setColors, setGeometry, geometry } from "./geometry.js";
 
 var canvas;
 var gl;
@@ -100,21 +100,28 @@ const draw = ({ translation, rotation, scale, count }) => {
   gl.drawArrays(primitiveType, offset, count);
 };
 
-function drawLetterI() {
+const translate = ({ ranges, translation, translationState, speed }) => {
+  ranges.forEach((range, idx) => {
+    if (translation[idx] >= range[0]) translationState[idx] = false;
+    else if (translation[idx] <= range[1]) translationState[idx] = true;
+    translation[idx] += translationState[idx] ? speed : -1 * speed;
+  });
+
+  return translation;
+};
+
+function drawHydrogen() {
   initPositionBuffers();
 
   // get position modifier matrices
   var rotation = rootRotation[0];
-  var translation = rootTranslation[0];
-  var translationState = rootTranslationState[0];
   var scale = rootScale[0];
   var scaleState = rootScaleState[0];
   var maxScale = 3;
   var scaleGrowth = 0.01;
+  var count = geometry["I"].length;
 
-  translation = [gl.canvas.clientWidth / 2, gl.canvas.clientHeight / 2, 0];
-
-  var count = setGeometry(gl, "I");
+  setGeometry(gl, "I");
 
   initColorBuffers();
 
@@ -122,8 +129,8 @@ function drawLetterI() {
 
   //rotation
   // rotation[0] += 0.01;
-  // rotation[1] += 0.01;
-  // rotation[2] += 0.01;
+  rotation[1] += 0.01;
+  rotation[2] += 0.01;
 
   // scale
   // for (let i = 0; i < 3; i++) {
@@ -131,18 +138,18 @@ function drawLetterI() {
   //   scale[i] += scaleState[i] ? scaleGrowth : -1 * scaleGrowth;
   // }
 
-  //translation
-  // if (translation[0] >= gl.canvas.width / 2) translationState[0] = false;
-  // else if (translation[0] <= 0) translationState[0] = true;
-  // translation[0] += translationState[0] ? 2 : -2;
-
-  // if (translation[1] >= 500) translationState[1] = false;
-  // else if (translation[1] <= 100) translationState[1] = true;
-  // translation[1] += translationState[1] ? 2 : -2;
-
-  // if (translation[2] >= 10) translationState[2] = false;
-  // else if (translation[2] <= 0) translationState[2] = true;
-  // translation[2] += translationState[2] ? 1 : -1;
+  let translation = rootTranslation[0];
+  translation = [gl.canvas.width / 2, gl.canvas.height / 2, 0];
+  // translation = translate({
+  //   translation: rootTranslation[0],
+  //   translationState: rootTranslationState[0],
+  //   ranges: [
+  //     [gl.canvas.width / 2, 0],
+  //     [500, 100],
+  //     [10, 0],
+  //   ],
+  //   speed: 1,
+  // });
 
   draw({ translation, scale, rotation, count });
 }
@@ -152,14 +159,13 @@ function drawLetterD() {
 
   // get position modifier matrices
   var rotation = rootRotation[1];
-  var translation = rootTranslation[1];
-  var translationState = rootTranslationState[1];
   var scale = rootScale[1];
   var scaleState = rootScaleState[1];
   var maxScale = 3;
   var scaleGrowth = 0.01;
 
-  var count = setGeometry(gl, "D");
+  var count = geometry["D"].length;
+  setGeometry(gl, "D");
 
   initColorBuffers();
 
@@ -171,23 +177,21 @@ function drawLetterD() {
   rotation[2] -= 0.01;
 
   // scale
-  for (let i = 0; i < 3; i++) {
-    if (scale[0] >= maxScale || scale[0] < 1) scaleState[i] = !scaleState[i];
-    scale[i] += scaleState[i] ? scaleGrowth : -1 * scaleGrowth;
-  }
+  // for (let i = 0; i < 3; i++) {
+  //   if (scale[0] >= maxScale || scale[0] < 1) scaleState[i] = !scaleState[i];
+  //   scale[i] += scaleState[i] ? scaleGrowth : -1 * scaleGrowth;
+  // }
 
-  //translation
-  if (translation[0] >= gl.canvas.width) translationState[0] = false;
-  else if (translation[0] <= gl.canvas.width / 2) translationState[0] = true;
-  translation[0] += translationState[0] ? 2 : -2;
-
-  if (translation[1] >= gl.canvas.height) translationState[1] = false;
-  else if (translation[1] <= 100) translationState[1] = true;
-  translation[1] += translationState[1] ? 2 : -2;
-
-  if (translation[2] >= 10) translationState[2] = false;
-  else if (translation[2] <= 0) translationState[2] = true;
-  translation[2] += translationState[2] ? 1 : -1;
+  const translation = translate({
+    translation: rootTranslation[1],
+    translationState: rootTranslationState[1],
+    ranges: [
+      [gl.canvas.width, gl.canvas.width / 2],
+      [gl.canvas.height, 100],
+      [10, 0],
+    ],
+    speed: 1,
+  });
 
   draw({ translation, scale, rotation, count });
 }
@@ -195,7 +199,7 @@ function drawLetterD() {
 function render() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  drawLetterI();
+  drawHydrogen();
   drawLetterD();
   requestAnimationFrame(render); //trigger animation
 }

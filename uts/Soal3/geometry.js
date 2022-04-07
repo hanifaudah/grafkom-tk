@@ -1,80 +1,61 @@
 var geometry = {
-  I: [
-    // column front
-    0, 0, 0, 0, 150, 0, 30, 0, 0, 0, 150, 0, 30, 150, 0, 30, 0, 0,
-
-    // column back
-    0, 0, 30, 30, 0, 30, 0, 150, 30, 0, 150, 30, 30, 0, 30, 30, 150, 30,
-
-    // top
-    0, 0, 0, 30, 0, 0, 30, 0, 30, 0, 0, 0, 30, 0, 30, 0, 0, 30,
-
-    // bottom
-    0, 150, 0, 0, 150, 30, 30, 150, 30, 0, 150, 0, 30, 150, 30, 30, 150, 0,
-
-    // left side
-    0, 0, 0, 0, 0, 30, 0, 150, 30, 0, 0, 0, 0, 150, 30, 0, 150, 0,
-
-    // right side
-    30, 0, 0, 30, 150, 30, 30, 0, 30, 30, 0, 0, 30, 150, 0, 30, 150, 30,
-  ],
-  D: [
-    // column front
-    0, 0, 0, 0, 150, 0, 30, 0, 0, 0, 150, 0, 30, 150, 0, 30, 0, 0,
-
-    // column back
-    0, 0, 30, 0, 150, 30, 30, 0, 30, 0, 150, 30, 30, 150, 30, 30, 0, 30,
-
-    // top
-    0, 0, 0, 30, 0, 30, 30, 0, 0, 0, 0, 0, 0, 0, 30, 30, 0, 30,
-
-    // bottom
-    0, 150, 0, 30, 150, 30, 0, 150, 30, 0, 150, 0, 30, 150, 0, 30, 150, 30,
-
-    // left side
-    0, 0, 0, 0, 150, 30, 0, 0, 30, 0, 0, 0, 0, 150, 0, 0, 150, 30,
-
-    // right side
-    30, 0, 0, 30, 0, 30, 30, 150, 30, 30, 0, 0, 30, 150, 30, 30, 150, 0,
-
-    // arch 1 back
-    30, 0, 30, 30, 30, 30, 60, 50, 30, 30, 0, 30, 60, 50, 30, 90, 50, 30,
-
-    // arch 2 back
-    60, 50, 30, 90, 100, 30, 90, 50, 30, 60, 50, 30, 60, 100, 30, 90, 100, 30,
-
-    // arch 3 back
-    30, 150, 30, 90, 100, 30, 60, 100, 30, 30, 150, 30, 60, 100, 30, 30, 120,
-    30,
-
-    // arch 1 front
-    30, 0, 0, 60, 50, 0, 30, 30, 0, 30, 0, 0, 90, 50, 0, 60, 50, 0,
-
-    // arch 2 front
-    60, 50, 0, 90, 50, 0, 90, 100, 0, 60, 50, 0, 90, 100, 0, 60, 100, 0,
-
-    // arch 3 front
-    30, 150, 0, 60, 100, 0, 90, 100, 0, 30, 150, 0, 30, 120, 0, 60, 100, 0,
-
-    // arch 1 out
-    30, 0, 0, 30, 0, 30, 90, 50, 30, 30, 0, 0, 90, 50, 30, 90, 50, 0,
-
-    // arch 2 out
-    90, 50, 0, 90, 50, 30, 90, 100, 30, 90, 50, 0, 90, 100, 30, 90, 100, 0,
-
-    // arch 3 out
-    30, 150, 0, 90, 100, 30, 30, 150, 30, 30, 150, 0, 90, 100, 0, 90, 100, 30,
-
-    // arch 1 in
-    30, 30, 0, 60, 50, 30, 30, 30, 30, 30, 30, 0, 60, 50, 0, 60, 50, 30,
-
-    // arch 2 in
-    60, 50, 0, 60, 100, 30, 60, 50, 30, 60, 50, 0, 60, 100, 0, 60, 100, 30,
-
-    // arch 3 in
-    30, 120, 0, 30, 120, 30, 60, 100, 30, 30, 120, 0, 60, 100, 30, 60, 100, 0,
-  ],
+  I: flatten(getCubeVertices().positions),
+  D: flatten(getCubeVertices().positions),
 };
+
+function getCubeVertices() {
+  var positions = [];
+  var colors = [];
+  function colorCube() {
+    quad(1, 0, 3, 2);
+    quad(2, 3, 7, 6);
+    quad(3, 0, 4, 7);
+    quad(6, 5, 1, 2);
+    quad(4, 5, 6, 7);
+    quad(5, 4, 0, 1);
+  }
+
+  function quad(a, b, c, d) {
+    var vertices = [
+      vec3(-0.5, -0.5, 0.5),
+      vec3(-0.5, 0.5, 0.5),
+      vec3(0.5, 0.5, 0.5),
+      vec3(0.5, -0.5, 0.5),
+      vec3(-0.5, -0.5, -0.5),
+      vec3(-0.5, 0.5, -0.5),
+      vec3(0.5, 0.5, -0.5),
+      vec3(0.5, -0.5, -0.5),
+    ];
+
+    var vertexColors = [
+      vec4(0.0, 0.0, 0.0, 1.0), // black
+      vec4(1.0, 0.0, 0.0, 1.0), // red
+      vec4(1.0, 1.0, 0.0, 1.0), // yellow
+      vec4(0.0, 1.0, 0.0, 1.0), // green
+      vec4(0.0, 0.0, 1.0, 1.0), // blue
+      vec4(1.0, 0.0, 1.0, 1.0), // magenta
+      vec4(0.0, 1.0, 1.0, 1.0), // cyan
+      vec4(1.0, 1.0, 1.0, 1.0), // white
+    ];
+
+    // We need to parition the quad into two triangles in order for
+    // WebGL to be able to render it.  In this case, we create two
+    // triangles from the quad indices
+
+    //vertex color assigned by the index of the vertex
+
+    var indices = [a, b, c, a, c, d];
+
+    for (var i = 0; i < indices.length; ++i) {
+      positions.push(vertices[indices[i]].map((x) => x * 100));
+
+      // for solid colored faces use
+      colors.push(vertexColors[a]);
+    }
+  }
+  colorCube();
+  return { positions, colors };
+}
 
 // Fill the buffer with the values that define the determined letter in the argument
 function setGeometry(gl, letter) {
@@ -83,7 +64,6 @@ function setGeometry(gl, letter) {
     new Float32Array(geometry[letter]),
     gl.STATIC_DRAW
   );
-  return geometry[letter].length;
 }
 
 // Determine color for each letter
