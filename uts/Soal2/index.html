@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="./index.css">
+    <link rel="stylesheet" href="./alert.css">
+</head>
+
+<body>
+    <div class="frame">
+        <canvas id="gl-canvas" width="512" height=" 512"> </canvas>
+    </div>
+
+    <div class="container">
+
+        <form name="form" id="coordinateForm">
+            <div class="center" style="margin-top: 20px;">
+                <h4 class="lbls">Starting Point :</h4>
+                <input type="number" id="x0" placeholder="x0" min="-10" max="10" />
+                <input type="number" id="y0" placeholder="y0" min="-10" max="10" />
+                <h4 class="lbls" style="margin-top: 10px;">End Point :</h4>
+                <input type="number" id="x1" placeholder="x1" min="-10" max="10" />
+                <input type="number" id="y1" placeholder="y1" min="-10" max="10" />
+            </div>
+            <div class="alert alert-warning" role="alert" style="margin-top: 8px;">
+                <p>Input number between -10 until 10 for x and y coordinates</p>
+            </div>
+            <div class="center">
+                <button id="ButtonT" class="btn" type="submit">Draw Line</button>
+            </div>
+        </form>
+
+        <div class="output" id="output"></div>
+    </div>
+    <script id="vertex-shader" type="x-shader/x-vertex">
+    #version 300 es
+
+    in vec4 aPosition;
+
+    void
+    main()
+    {
+        gl_PointSize = 1.0;
+        gl_Position = aPosition;
+    }
+    </script>
+
+    <script id="fragment-shader" type="x-shader/x-fragment">
+    #version 300 es
+
+    precision mediump float;
+    out vec4 fColor;
+
+    void main()
+    {
+        fColor = vec4( 1.0, 1.0, 0.0, 1.0 );
+    }    
+    </script>
+
+
+    <script src="../Common/initShaders.js"></script>
+    <script src="../Common/MVnew.js"></script>
+    <script src="./index.js"></script>
+</body>
+
+</html>
