@@ -10,16 +10,69 @@ function selectRandom(array) {
   return array[~~(Math.random() * array.length)]
 }
 
+const SHAPES = {
+  Square: 'square',
+  Triangle: 'triangle',
+  Circle: 'circle'
+}
+
+const SPEEDS = {
+  Slow: 0.1,
+  Medium: 0.5,
+  Fast: 1
+}
+
+const SIZES = {
+  Small: 0.15,
+  Medium: 0.5,
+  Big: 1
+}
+
+const SPIN = {
+  0 : false,
+  1 : true
+}
+
+function getConst(key) {
+  return {
+    'shape' : SHAPES,
+    'size' : SIZES,
+    'speed': SPEEDS
+  }[key]
+}
+
+var state = {
+  shape: SHAPES.Square,
+  speed: SPEEDS.Fast,
+  size: SIZES.Small,
+  spin: false
+}
+
+function setStateListeners() {
+  const options = document.querySelectorAll('select')
+  Array.from(options).forEach(option => {
+    option.addEventListener('change', () => {
+      setState(option.name, getConst(option.name)[option.value] )
+    })
+  })
+}
+
+function setState(key, value) {
+  state[key] = value
+}
 
 // Initiated and modified from https://github.com/idofilin/webgl-by-example/tree/master/raining-rectangles
 ;(function(){
     "use strict"
     window.addEventListener("load", setupAnimation, false);
-    var gl, 
+    window.addEventListener("load", setStateListeners, false);
+
+    var gl,
       timer,
       rainingRect,
       scoreDisplay,
       missesDisplay;
+   
     function setupAnimation (evt) {
       window.removeEventListener(evt.type, setupAnimation, false);
       if (!(gl = getRenderingContext()))
@@ -83,15 +136,12 @@ function selectRandom(array) {
       // because we want horizontal size, vertical size and
       // position to be determined independently.
       var randNums = getRandomVector();
-      rect.size = [
-        5 + 120 * randNums[0],
-        5 + 120 * randNums[1]
-      ];  
+      rect.size = [ 5 + 120 * state.size, 5 + 120 * state.size ];  
       rect.position = [
         randNums[2]*(gl.drawingBufferWidth - rect.size[0]),
         gl.drawingBufferHeight
       ];
-      rect.velocity = 1.0 + 6.0*Math.random();
+      rect.velocity = 1.0 + 6.0*state.speed;
       rect.color = getRandomVector();
       gl.clearColor(...selectRandom(shapeColors));
       function getRandomVector() {
