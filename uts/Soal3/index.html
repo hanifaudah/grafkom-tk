@@ -10,6 +10,7 @@
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="./index.css" />
     <title>Soal 3</title>
     <script id="vertex-shader" type="x-shader/x-vertex">
       #version 300 es
@@ -62,13 +63,13 @@
         <a class="nav-link" href="../Soal3/index.html">Soal 3</a>
       </li>
     </ul>
-    <div class="container d-flex justify-content-center">
-      <canvas id="gl-canvas" width="800" height="500"></canvas>
+    <div class="container d-flex justify-content-center gap-3">
+      <canvas id="gl-canvas" class="frame" width="800" height="500"></canvas>
       <div id="camera-btns">
-        <button id="default-cam">Camera 0</button>
-        <button id="oxygen-cam">Camera 1 (Oxygen)</button>
-        <button id="hydrogen-1-cam">Camera 2 (Hydrogen-1)</button>
-        <button id="hydrogen-2-cam">Camera 3 (Hydrogen-2)</button>
+        <button class="btn" id="default-cam">Camera 0</button>
+        <button class="btn" id="oxygen-cam">Camera 1 (Oxygen)</button>
+        <button class="btn" id="hydrogen-1-cam">Camera 2 (Hydrogen-1)</button>
+        <button class="btn" id="hydrogen-2-cam">Camera 3 (Hydrogen-2)</button>
       </div>
     </div>
   </body>

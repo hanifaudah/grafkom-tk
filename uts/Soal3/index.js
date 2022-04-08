@@ -77,7 +77,7 @@ window.onload = function init() {
   //  Configure WebGL
   //
   gl.viewport(0, 0, canvas.width, canvas.height);
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+  gl.clearColor(1.0, 1.0, 1.0, 1.0);
 
   gl.enable(gl.CULL_FACE); //enable depth buffer
   gl.enable(gl.DEPTH_TEST);

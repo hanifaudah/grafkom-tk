@@ -4,14 +4,14 @@ function getCubeVertices(size = 100) {
   var positions = [];
   var colors = [];
   var vertexColors = [
-    vec3(1.0, 0.8, 0.0), // black
+    vec3(0.0, 0.0, 0.0), // black
     vec3(1.0, 0.0, 0.0), // red
     vec3(1.0, 1.0, 0.0), // yellow
     vec3(0.0, 1.0, 0.0), // green
     vec3(0.0, 0.0, 1.0), // blue
     vec3(1.0, 0.0, 1.0), // magenta
     vec3(0.0, 1.0, 1.0), // cyan
-    vec3(1.0, 1.0, 1.0), // white
+    vec3(1.0, 0.8, 1.0), // orange
   ];
 
   // shuffle colors
