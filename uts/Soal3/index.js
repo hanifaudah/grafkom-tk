@@ -1,5 +1,5 @@
 "use strict";
-import { m4 } from "./utils.js";
+import { m4, degToRad } from "./utils.js";
 import { setColors, setGeometry } from "./geometry.js";
 
 var canvas;
@@ -29,7 +29,7 @@ var oxygenRevolution = [
   [-0.7, 0.7],
   [-2.3, 2.3],
 ];
-var oxygenRevSpeed = [0.2, 0.01, 0.3];
+var oxygenRevSpeed = [0.05, degToRad(30) / 100];
 
 let origin = [];
 
@@ -41,12 +41,24 @@ var positionBuffer;
 var positionLocation;
 var matrix;
 
+var isDefaultCamera = true;
+var cameraFocus = 0;
+
+var fieldOfViewRadians = degToRad(60);
+// Compute the projection matrix
+var aspect;
+var zNear = 1;
+var zFar = 2000;
+// Compute a matrix for the camera
+var cameraPosition = [0, 0, 0];
+
 window.onload = function init() {
   canvas = document.getElementById("gl-canvas");
 
   gl = canvas.getContext("webgl2");
   if (!gl) alert("WebGL 2.0 isn't available");
 
+  // initiate values
   origin = [gl.canvas.width / 2, gl.canvas.height / 2, 0];
   (rootTranslation[1] = [
     gl.canvas.width / 2 + 100,
@@ -58,6 +70,9 @@ window.onload = function init() {
       gl.canvas.height / 2 - 100,
       0,
     ]);
+
+  aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+
   //
   //  Configure WebGL
   //
@@ -78,7 +93,7 @@ window.onload = function init() {
 
   // Associate out shader variables with our data buffer
   colorLocation = gl.getAttribLocation(program, "a_color");
-
+  renderButtons();
   render(); //default render
 };
 
@@ -100,8 +115,34 @@ function initColorBuffers() {
 }
 
 const draw = ({ translation, rotation, scale, count }) => {
+  // source: https://scele.cs.ui.ac.id/course/view.php?id=3317
+  // handle projection
+  var projectionMatrix = m4.perspective(
+    fieldOfViewRadians,
+    aspect,
+    zNear,
+    zFar
+  );
+
+  var cameraMatrix = m4.lookAt(
+    vec3(...cameraPosition),
+    vec3(...rootTranslation[cameraFocus]),
+    vec3(0, 1, 0)
+  );
+
+  // Make a view matrix from the camera matrix
+  var viewMatrix = m4.inverse(cameraMatrix);
+
+  // Compute a view projection matrix
+  var viewProjectionMatrix = m4.multiply(projectionMatrix, viewMatrix);
+
   // Compute the matrices
   matrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 400);
+
+  // enable or disable default camera
+  if (!isDefaultCamera) {
+    matrix = viewProjectionMatrix;
+  }
   matrix = m4.translate(matrix, translation[0], translation[1], translation[2]);
   matrix = m4.xRotate(matrix, rotation[0]);
   matrix = m4.yRotate(matrix, rotation[1]);
@@ -130,6 +171,7 @@ function drawOxygen() {
   rotation[1] -= 0.01;
 
   const translation = [gl.canvas.width / 2, gl.canvas.height / 2, 0];
+  rootTranslation[0] = translation;
 
   draw({ translation, scale, rotation, count });
 }
@@ -149,9 +191,9 @@ function drawHydrogen(idx) {
   setColors(gl, idx);
 
   // //rotation
-  rotation[1] -= 0.5;
+  rotation[1] -= 0.2;
 
-  const revRadius = 100;
+  const revRadius = 180;
 
   // spherical revolution
   // source: https://stackoverflow.com/questions/2078000/how-to-orbit-around-the-z-axis-in-3d
@@ -180,4 +222,25 @@ function render() {
   drawHydrogen(1);
   drawHydrogen(2);
   requestAnimationFrame(render); //trigger animation
+}
+
+function renderButtons() {
+  document.querySelector("#default-cam").addEventListener("click", () => {
+    isDefaultCamera = true;
+  });
+
+  document.querySelector("#oxygen-cam").addEventListener("click", () => {
+    isDefaultCamera = false;
+    cameraFocus = 0;
+  });
+
+  document.querySelector("#hydrogen-1-cam").addEventListener("click", () => {
+    isDefaultCamera = false;
+    cameraFocus = 1;
+  });
+
+  document.querySelector("#hydrogen-2-cam").addEventListener("click", () => {
+    isDefaultCamera = false;
+    cameraFocus = 2;
+  });
 }
