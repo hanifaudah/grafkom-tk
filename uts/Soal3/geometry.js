@@ -64,7 +64,6 @@ function getCubeVertices(size = 100) {
     }
   }
   colorCube();
-  console.log(colors);
   return { positions: flatten(positions), colors: flatten(colors) };
 }
 

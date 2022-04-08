@@ -1,5 +1,5 @@
 "use strict";
-import { m4 } from "./utils.js";
+import { m4, degToRad } from "./utils.js";
 import { setColors, setGeometry } from "./geometry.js";
 
 var canvas;
@@ -100,8 +100,42 @@ function initColorBuffers() {
 }
 
 const draw = ({ translation, rotation, scale, count }) => {
+  var fieldOfViewRadians = degToRad(60);
+  // Compute the projection matrix
+  var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+  var zNear = 1;
+  var zFar = 2000;
+  var projectionMatrix = m4.perspective(
+    fieldOfViewRadians,
+    aspect,
+    zNear,
+    zFar
+  );
+  // Compute a matrix for the camera
+  var cameraPosition = [0, 0, 0];
+  var cameraMatrix = m4.lookAt(
+    vec3(...cameraPosition),
+    vec3(...rootTranslation[0]),
+    vec3(0, 1, 0)
+  );
+  // console.log(cameraAngleRadians);
+  // cameraAngleRadians += 0.01;
+  // cameraMatrix = m4.translate(
+  //   cameraMatrix,
+  //   rootTranslation[0][0],
+  //   rootTranslation[0][1],
+  //   rootTranslation[0][2]
+  // );
+
+  // Make a view matrix from the camera matrix
+  var viewMatrix = m4.inverse(cameraMatrix);
+
+  // Compute a view projection matrix
+  var viewProjectionMatrix = m4.multiply(projectionMatrix, viewMatrix);
+
   // Compute the matrices
   matrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 400);
+  matrix = viewProjectionMatrix;
   matrix = m4.translate(matrix, translation[0], translation[1], translation[2]);
   matrix = m4.xRotate(matrix, rotation[0]);
   matrix = m4.yRotate(matrix, rotation[1]);
@@ -130,6 +164,7 @@ function drawOxygen() {
   rotation[1] -= 0.01;
 
   const translation = [gl.canvas.width / 2, gl.canvas.height / 2, 0];
+  rootTranslation[0] = translation;
 
   draw({ translation, scale, rotation, count });
 }
