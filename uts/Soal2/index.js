@@ -12,27 +12,6 @@ function init() {
     gl = canvas.getContext('webgl2');
     if (!gl) alert("WebGL 2.0 isn't available");
 
-    // First, initialize the corners of our gasket with three positions.
-    // var pos = [
-    // vec2(0, 0),
-    // vec2(0.5, 0.5),
-    // vec2(0.3, 0.3),
-    // vec2(0.4, 0.3),
-    // vec2(0.5, 0.4),
-    // vec2(0.6, 0.4),
-    // vec2(0.7, 0.5),
-    // vec2(0.8, 0.5),
-    // ];
-
-    // And, add our initial positions into our array of points
-    // for (var i = 0; i < 1; ++i) {
-    //     console.log(i)
-    //     positions.push(pos[i]);
-    // }
-
-    // positions.push(pos[0]);
-    // positions.push(pos[1]);
-
     //
     //  Configure WebGL
     //
@@ -56,8 +35,6 @@ function init() {
 
         midPoint(xAwal, yAwal, xAkhir, yAkhir);
 
-        console.log(positions)
-
         // Load the data into the GPU
         var vBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
@@ -74,46 +51,87 @@ function init() {
 
 function midPoint(X1, Y1, X2, Y2) {
 
-    console.log(X1 + " " + Y1)
-    console.log(X2 + " " + Y2)
+    let xReflect = 1;
+    if (X2 < X1) {
+        X1 = -X1;
+        X2 = -X2;
+        xReflect = -1;
+    }
+
+    let yReflect = 1;
+    if (Y2 < Y1) {
+        Y1 = -Y1;
+        Y2 = -Y2;
+        yReflect = -1;
+    }
 
     // calculate dx & dy
     let dx = X2 - X1;
     let dy = Y2 - Y1;
 
-    // initial value of decision
-    // parameter d
-    let d = dy - (dx / 2);
-    let x = X1, y = Y1;
-
-    // Plot initial given point
-    // putpixel(x,y) can be used to
-    // print pixel of line in graphics
-
-    document.getElementById('output').innerHTML += x + ", " + y + "<br/>";
-    positions.push(vec2(x / 10, y / 10))
-    // console.log(x / 10 + ", " + y / 10)
-
     // iterate through value of X
-    while (x < X2) {
-        x++;
+    if (X1 !== X2) {
 
-        // E or East is chosen
-        if (d < 0)
-            d = d + dy;
+        // initial value of decision
+        // parameter d
+        let d = dy - (dx / 2);
+        let x = X1, y = Y1;
 
-        // NE or North East is chosen
-        else {
-            d += (dy - dx);
-            y++;
+        // Plot initial given point
+        console.log(x * xReflect + "," + y * yReflect)
+        document.getElementById('output').innerHTML += x * xReflect + ", " + y * yReflect + "<br/>";
+        positions.push(vec2((x * xReflect) / 10, (y * yReflect) / 10))
+
+        while (x < X2) {
+            x++;
+
+            // E or East is chosen
+            if (d < 0)
+                d = d + dy;
+
+            // NE or North East is chosen
+            else {
+                d += (dy - dx);
+                y++;
+            }
+
+            // Plot intermediate points
+            // putpixel(x,y) is used to print
+            // pixel of line in graphics
+            console.log(x * xReflect + "," + y * yReflect)
+            document.getElementById('output').innerHTML += x * xReflect + ", " + y * yReflect + "<br/>";
+            positions.push(vec2((x * xReflect) / 10, (y * yReflect) / 10))
         }
+    } else {
 
-        // Plot intermediate points
-        // putpixel(x,y) is used to print
-        // pixel of line in graphics
-        document.getElementById('output').innerHTML += x + ", " + y + "<br/>";
-        positions.push(vec2(x / 10, y / 10))
-        // console.log(x / 10 + ", " + y / 10)
+        // initial value of decision
+        // parameter d
+        let d = dx - (dy / 2);
+        let x = X1, y = Y1;
+
+        // Plot initial given point
+        console.log(x * xReflect + "," + y * yReflect)
+        document.getElementById('output').innerHTML += x * xReflect + ", " + y * yReflect + "<br/>";
+        positions.push(vec2((x * xReflect) / 10, (y * yReflect) / 10))
+
+        while (y < Y2) {
+            y++;
+
+            // N or North is chosen
+            if (d < 0)
+                d = d + dx;
+
+            // NE or North East is chosen
+            else {
+                d += (dx - dy);
+                x++;
+            }
+
+            // Plot intermediate points
+            console.log(x * xReflect + "," + y * yReflect)
+            document.getElementById('output').innerHTML += x * xReflect + ", " + y * yReflect + "<br/>";
+            positions.push(vec2((x * xReflect) / 10, (y * yReflect) / 10))
+        }
     }
 }
 
