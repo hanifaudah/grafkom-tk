@@ -26,8 +26,8 @@ var rootScale = [
 ];
 
 var oxygenRevolution = [
-  [-0.7, 0.7],
-  [-2.3, 2.3],
+  [degToRad(-30), degToRad(30)],
+  [degToRad(-150), degToRad(150)],
 ];
 var oxygenRevSpeed = [0.05, degToRad(30) / 100];
 
@@ -210,7 +210,7 @@ function drawHydrogen(idx) {
   translation[2] = revRadius * Math.cos(oxygenRevolution[idx - 1][0]);
 
   oxygenRevolution[idx - 1][0] += (idx === 1 ? -1 : 1) * oxygenRevSpeed[0];
-  oxygenRevolution[idx - 1][1] += (idx === 1 ? -1 : 1) * oxygenRevSpeed[1];
+  oxygenRevolution[idx - 1][1] += (idx === 1 ? 1 : -1) * oxygenRevSpeed[1];
 
   draw({ translation, scale, rotation, count });
 }
