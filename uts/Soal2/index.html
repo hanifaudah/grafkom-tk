@@ -3,7 +3,6 @@
 
 <head>
     <link rel="stylesheet" href="./index.css">
-    <link rel="stylesheet" href="./alert.css">
 </head>
 
 <body>
@@ -23,10 +22,24 @@
                 <input class="input" type="number" id="y1" placeholder="y1" min="-10" max="10" />
             </div>
             <div class="alert alert-warning" role="alert" style="margin-top: 8px;">
-                <p>Input number between -10 until 10 for x and y coordinates</p>
+                <p>Input number between -10 until 10 for x and y coordinates (all quadrants)</p>
             </div>
-            <div class="center">
+            <div class="centerp">
                 <button id="ButtonT" class="btn" type="submit">Draw Line</button>
+                <div class="option-group">
+                    <h4 class="lbls">Cardinal Points</h4>
+                    <select name="CP" id="CP" onchange="printCP()">
+                        <option disabled selected value style="display: none;"> -- select an option -- </option>
+                        <option value="N">North</option>
+                        <option value="NE">North East</option>
+                        <option value="E">East</option>
+                        <option value="SE">South East</option>
+                        <option value="S">South</option>
+                        <option value="SW">South West</option>
+                        <option value="W">West</option>
+                        <option value="NW">North West</option>
+                    </select>
+                </div>
             </div>
         </form>
 
