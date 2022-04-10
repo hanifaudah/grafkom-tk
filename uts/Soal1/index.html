@@ -12,7 +12,7 @@
   <div class="container">
     <h1> Showering Shapes </h1>
     <p class="subtitle">Catch the shapes before they fall off screen</p>
-    <canvas>Your browser does not seem to support HTML5 canvas.</canvas>
+    <canvas width="400" height="400">Your browser does not seem to support HTML5 canvas.</canvas>
     <p class="score">You caught <strong>0</strong>. You missed <strong>0</strong>.</p>
     <div class="buttons">
       <div class="option-group">
@@ -52,26 +52,33 @@
     </div>
   </div>
 </body>
-<script id="vertex-shader" type="x-shader/x-vertex">
-  #version 300 es
+<script  id="vertex-shader" type="x-shader/x-vertex">
+  attribute vec2 a_position;
   
-  in vec4 vPosition;
-  void main()
-  {
-      gl_Position = vPosition;
+  uniform vec2 u_resolution;
+  
+  void main() {
+     // convert the rectangle points from pixels to 0.0 to 1.0
+     vec2 zeroToOne = a_position / u_resolution;
+  
+     // convert from 0->1 to 0->2
+     vec2 zeroToTwo = zeroToOne * 2.0;
+  
+     // convert from 0->2 to -1->+1 (clipspace)
+     vec2 clipSpace = zeroToTwo - 1.0;
+  
+     gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
   }
   </script>
   
-  <script id="fragment-shader" type="x-shader/x-fragment">
-  #version 300 es
-  
-  precision mediump float;
-  out vec4 fColor;
-  
-  void main()
-  {
-      fColor = vec4( 1.0, 1.0, 1.0, 1.0 );
-  }
+  <script  id="fragment-shader" type="x-shader/x-fragment">
+    precision mediump float;
+    
+    uniform vec4 u_color;
+    
+    void main() {
+       gl_FragColor = u_color;
+    }
   </script>
 <script src="../Common/initShaders.js"></script>
 <script src="../Common/MVnew.js"></script>
