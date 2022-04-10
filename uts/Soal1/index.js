@@ -17,7 +17,7 @@ function selectRandom(array) {
 const SHAPES = {
   Square: "square",
   Triangle: "triangle",
-  Circle: "circle",
+  Hexagon: "hexagon",
 };
 
 const SPEEDS = {
@@ -29,7 +29,7 @@ const SPEEDS = {
 const SIZES = {
   Small: 0.15,
   Medium: 0.5,
-  Big: 1,
+  Big: 0.9,
 };
 
 const SPIN = {
@@ -85,6 +85,9 @@ function resizeCanvasToDisplaySize(canvas) {
     Array.from(options).forEach((option) => {
       option.addEventListener("change", () => {
         setState(option.name, getConst(option.name)[option.value]);
+        hits = 0
+        misses = 0
+        updateScoreDisplay()
         if (option.name === "shape") {
           setupAnimation("load");
         }
@@ -95,7 +98,8 @@ function resizeCanvasToDisplaySize(canvas) {
   window.addEventListener("load", setupAnimation, false);
   window.addEventListener("load", setStateListeners, false);
 
-  var gl, scoreDisplay, shape, missesDisplay;
+  var gl, hitsDisplay, shape, missesDisplay;
+  var hits = 0, misses = 0;
 
   if (!(gl = getRenderingContext())) return;
 
@@ -125,7 +129,7 @@ function resizeCanvasToDisplaySize(canvas) {
       .querySelector("canvas")
       .addEventListener("click", playerClick, false);
     var displays = document.querySelectorAll("strong");
-    scoreDisplay = displays[0];
+    hitsDisplay = displays[0];
     missesDisplay = displays[1];
   }
 
@@ -135,6 +139,8 @@ function resizeCanvasToDisplaySize(canvas) {
         return new Square()
       case SHAPES.Triangle:
         return new Triangle()
+      case SHAPES.Hexagon:
+        return new Hexagon()
     }
   }
 
@@ -183,7 +189,7 @@ function resizeCanvasToDisplaySize(canvas) {
 
   class Triangle {
     constructor () {
-      this.size = state.size * 90
+      this.size = state.size * 75
       this.speed = state.speed * 10
       this.position = this.getInitalPosition()
       this.color = selectRandom(shapeColors)
@@ -218,6 +224,64 @@ function resizeCanvasToDisplaySize(canvas) {
     isClicked(position) {
       const checkX = position[0] > this.vertices[1][0] && position[0] < this.vertices[2][0]
       const checkY = position[1] > this.position[1] && position[1] < this.vertices[1][1]
+      return checkX && checkY
+    }
+  }
+
+  class Hexagon {
+    constructor () {
+      this.size = state.size * 75
+      this.speed = state.speed * 10
+      this.position = this.getInitalPosition()
+      this.color = selectRandom(shapeColors)
+      this.pointCount = 12
+    }
+
+    getInitalPosition () {
+      return [Math.random() * gl.drawingBufferWidth, 0 - this.size]
+    }
+
+    setPoints() {
+      // center of the hexagon
+      const px = this.position[0]
+      const py = this.position[1]
+
+      const offset = this.size * Math.sqrt(3)/2
+
+      const p1 = [px - offset, py]
+      const p2 = [px - this.size/2, py - offset]
+      const p3 = [px - this.size/2, py + offset]
+      const p4 = [px + this.size/2, py - offset]
+      const p5 = [px + this.size/2, py + offset]
+      const p6 = [px + offset, py]
+      
+      this.vertices = [p1,p2,p3, p4, p5, p6]
+      gl.bufferData(
+          gl.ARRAY_BUFFER,
+          new Float32Array([
+              ...p1,
+              ...p2,
+              ...p3,
+
+              ...p2,
+              ...p3,
+              ...p4,
+
+              ...p3,
+              ...p5,
+              ...p4,
+
+              ...p4,
+              ...p5,
+              ...p6,
+          ]),
+          gl.STATIC_DRAW
+      );
+    }
+
+    isClicked(position) {
+      const checkX = position[0] > this.vertices[0][0] && position[0] < this.vertices[5][0]
+      const checkY = position[1] > this.vertices[1][1] && position[1] < this.vertices[2][1]
       return checkX && checkY
     }
   }
@@ -258,17 +322,19 @@ function resizeCanvasToDisplaySize(canvas) {
     }, 17)
   }
 
-  var score = 0,
-  misses = 0;
-
   function updatePosition() {
     shape.position[1] += shape.speed
     if (shape.position[1] > gl.drawingBufferHeight) {
       misses += 1;
-      missesDisplay.innerHTML = misses;
+      updateScoreDisplay()
       shape = getNewShape()
     }
     drawScene();
+  }
+
+  function updateScoreDisplay() {
+    missesDisplay.innerHTML = misses
+    hitsDisplay.innerHTML = hits
   }
 
   function playerClick(evt) {
@@ -278,8 +344,8 @@ function resizeCanvasToDisplaySize(canvas) {
     ];
 
     if (shape.isClicked(cursorPosition)) {
-      score += 1;
-      scoreDisplay.innerHTML = score;
+      hits += 1;
+      updateScoreDisplay()
       shape = getNewShape()
     }
   }
