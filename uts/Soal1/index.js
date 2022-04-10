@@ -117,17 +117,10 @@ function resizeCanvasToDisplaySize(canvas) {
   function setupAnimation(evt) {
     window.removeEventListener(evt.type, setupAnimation, false);
 
-    console.log(state.shape)
-    switch (state.shape) {
-      case SHAPES.Square:
-        shape = new Square() // Setup a square
-        drawScene()
-        break
-      case SHAPES.Triangle:
-        // handle Trianlge
-      case SHAPES.Circle:
-        // handle circle
-    }
+    // Generate shape properties
+    shape = getNewShape()
+    drawScene()
+
     document
       .querySelector("canvas")
       .addEventListener("click", playerClick, false);
@@ -136,12 +129,22 @@ function resizeCanvasToDisplaySize(canvas) {
     missesDisplay = displays[1];
   }
 
+  function getNewShape() {
+    switch (state.shape) {
+      case SHAPES.Square:
+        return new Square()
+      case SHAPES.Triangle:
+        return new Triangle()
+    }
+  }
+
   class Square {
     constructor () {
       this.size = state.size * 90
       this.speed = state.speed * 10
       this.position = this.getInitalPosition()
       this.color = selectRandom(shapeColors)
+      this.pointCount = 6
     }
 
     getInitalPosition () {
@@ -168,7 +171,57 @@ function resizeCanvasToDisplaySize(canvas) {
           gl.STATIC_DRAW
       );
     }
+
+    isClicked(position) {
+      const diffPos = [
+        Math.abs(position[0] - shape.position[0]),
+        Math.abs(position[1] - shape.position[1]),
+      ];
+      return ( diffPos[0] <= shape.size && diffPos[1] <= shape.size )
+    }
   }
+
+  class Triangle {
+    constructor () {
+      this.size = state.size * 90
+      this.speed = state.speed * 10
+      this.position = this.getInitalPosition()
+      this.color = selectRandom(shapeColors)
+      this.pointCount = 3
+    }
+
+    getInitalPosition () {
+      return [Math.random() * gl.drawingBufferWidth, 0 - this.size]
+    }
+
+    setPoints() {
+      const px = this.position[0]
+      const py = this.position[1]
+      const offset = this.size
+
+      // Equilateral Triangle
+      const p1 = [px, py]
+      const p2 = [px - offset, py + Math.sqrt(3) * offset]
+      const p3 = [px + offset, py + Math.sqrt(3) * offset]
+      this.vertices = [p1,p2,p3]
+      gl.bufferData(
+          gl.ARRAY_BUFFER,
+          new Float32Array([
+              ...p1,
+              ...p2,
+              ...p3,
+          ]),
+          gl.STATIC_DRAW
+      );
+    }
+
+    isClicked(position) {
+      const checkX = position[0] > this.vertices[1][0] && position[0] < this.vertices[2][0]
+      const checkY = position[1] > this.position[1] && position[1] < this.vertices[1][1]
+      return checkX && checkY
+    }
+  }
+
 
   // Draw a the scene.
   function drawScene() {
@@ -199,40 +252,23 @@ function resizeCanvasToDisplaySize(canvas) {
     // Draw the rectangle.
     var primitiveType = gl.TRIANGLES;
     offset = 0;
-    var count = 6;
-    gl.drawArrays(primitiveType, offset, count);
+    gl.drawArrays(primitiveType, offset, shape.pointCount);
     setTimeout(() => {
       updatePosition()
     }, 17)
   }
+
+  var score = 0,
+  misses = 0;
 
   function updatePosition() {
     shape.position[1] += shape.speed
     if (shape.position[1] > gl.drawingBufferHeight) {
       misses += 1;
       missesDisplay.innerHTML = misses;
-      shape = new Square();
+      shape = getNewShape()
     }
     drawScene();
-  }
-
-  var score = 0,
-    misses = 0;
-
-  function isClickInsideShape(position) {
-    if (state.shape === SHAPES.Square) {
-      const diffPos = [
-        Math.abs(position[0] - shape.position[0]),
-        Math.abs(position[1] - shape.position[1]),
-      ];
-      return (
-        diffPos[0] <= shape.size && diffPos[1] <= shape.size
-      );
-    } else if (state.shape === SHAPES.Triangle) {
-      const checkX = (position[0] > shape.vertices[1][0] && position[0] < shape.vertices[2][0])
-      const checkY = (position[1] > shape.vertices[1][1] && position[1] < shape.vertices[0][1])
-      return checkX && checkY
-    }
   }
 
   function playerClick(evt) {
@@ -241,14 +277,10 @@ function resizeCanvasToDisplaySize(canvas) {
       evt.pageY - evt.target.offsetTop,
     ];
 
-    if (isClickInsideShape(cursorPosition)) {
+    if (shape.isClicked(cursorPosition)) {
       score += 1;
       scoreDisplay.innerHTML = score;
-      if (state.shape === SHAPES.Square) {
-        shape = new Square()
-      } else if (state.shape === SHAPES.Triangle) {
-        shape = new Triangle()
-      }
+      shape = getNewShape()
     }
   }
 
