@@ -225,22 +225,43 @@ function render() {
 }
 
 function renderButtons() {
-  document.querySelector("#default-cam").addEventListener("click", () => {
+  function clearChosen() {
+    const buttons = document.querySelectorAll("#camera-btns .btn");
+    buttons.forEach((el) => el.classList.remove("chosen"));
+  }
+
+  const defaultCam = document.querySelector("#default-cam");
+  const oxygenCam = document.querySelector("#oxygen-cam");
+  const hydrogen1Cam = document.querySelector("#hydrogen-1-cam");
+  const hydrogen2Cam = document.querySelector("#hydrogen-2-cam");
+
+  // initial state
+  defaultCam.classList.add("chosen");
+
+  defaultCam.addEventListener("click", () => {
     isDefaultCamera = true;
+    clearChosen();
+    defaultCam.classList.add("chosen");
   });
 
-  document.querySelector("#oxygen-cam").addEventListener("click", () => {
+  oxygenCam.addEventListener("click", () => {
     isDefaultCamera = false;
     cameraFocus = 0;
+    clearChosen();
+    oxygenCam.classList.add("chosen");
   });
 
-  document.querySelector("#hydrogen-1-cam").addEventListener("click", () => {
+  hydrogen1Cam.addEventListener("click", () => {
     isDefaultCamera = false;
     cameraFocus = 1;
+    clearChosen();
+    hydrogen1Cam.classList.add("chosen");
   });
 
-  document.querySelector("#hydrogen-2-cam").addEventListener("click", () => {
+  hydrogen2Cam.addEventListener("click", () => {
     isDefaultCamera = false;
     cameraFocus = 2;
+    clearChosen();
+    hydrogen2Cam.classList.add("chosen");
   });
 }
