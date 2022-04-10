@@ -100,6 +100,7 @@ function resizeCanvasToDisplaySize(canvas) {
 
   var gl, hitsDisplay, shape, missesDisplay;
   var hits = 0, misses = 0;
+  var rotation = [0, 0.5];
 
   if (!(gl = getRenderingContext())) return;
 
@@ -111,6 +112,8 @@ function resizeCanvasToDisplaySize(canvas) {
   // lookup uniforms
   var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
   var colorLocation = gl.getUniformLocation(program, "u_color");
+  var translationLocation = gl.getUniformLocation(program, "u_translation");
+  var rotationLocation = gl.getUniformLocation(program, "u_rotation");
 
   // Create a buffer to put positions in
   var positionBuffer = gl.createBuffer();
@@ -151,6 +154,7 @@ function resizeCanvasToDisplaySize(canvas) {
       this.position = this.getInitalPosition()
       this.color = selectRandom(shapeColors)
       this.pointCount = 6
+      this.rotation = [0,1]
     }
 
     getInitalPosition () {
@@ -194,6 +198,7 @@ function resizeCanvasToDisplaySize(canvas) {
       this.position = this.getInitalPosition()
       this.color = selectRandom(shapeColors)
       this.pointCount = 3
+      this.rotation = [0,1]
     }
 
     getInitalPosition () {
@@ -235,6 +240,7 @@ function resizeCanvasToDisplaySize(canvas) {
       this.position = this.getInitalPosition()
       this.color = selectRandom(shapeColors)
       this.pointCount = 12
+      this.rotation = [0,1]
     }
 
     getInitalPosition () {
@@ -307,13 +313,14 @@ function resizeCanvasToDisplaySize(canvas) {
     let offset = 0;        // start at the beginning of the buffer
     gl.vertexAttribPointer(positionLocation, size, type, normalize, stride, offset);
 
-    // set the resolution
-    gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
+    
+    gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);  // set the resolution
+    gl.uniform4fv(colorLocation, shape.color);                            // set the color
+    gl.uniform2fv(translationLocation, shape.position);                   // Set the translation.
+    console.log(shape.rotation)
+    gl.uniform2fv(rotationLocation, vec2(...shape.rotation));                      // Set the rotation.
 
-    // set the color
-    gl.uniform4fv(colorLocation, shape.color);
-
-    // Draw the rectangle.
+    // Draw the shape
     var primitiveType = gl.TRIANGLES;
     offset = 0;
     gl.drawArrays(primitiveType, offset, shape.pointCount);
@@ -324,6 +331,11 @@ function resizeCanvasToDisplaySize(canvas) {
 
   function updatePosition() {
     shape.position[1] += shape.speed
+    if (state.spin) {
+      shape.rotation[0] += 0.01
+      shape.rotation[1] -= 0.01
+    }
+    console.log(state.spin)
     if (shape.position[1] > gl.drawingBufferHeight) {
       misses += 1;
       updateScoreDisplay()
