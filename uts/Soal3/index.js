@@ -125,8 +125,8 @@ const draw = ({ translation, rotation, scale, count }) => {
   );
 
   var cameraMatrix = m4.lookAt(
-    vec3(...cameraPosition),
     vec3(...rootTranslation[cameraFocus]),
+    vec3(...[0, 0, 0]),
     vec3(0, 1, 0)
   );
 
