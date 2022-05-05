@@ -42,16 +42,16 @@ var modelViewMatrix, projectionMatrix;
 // Array of rotation angles (in degrees) for each rotation axis
 
 var theta = {
-  BASE: 30,
+  BASE: 0,
   ARM1: 20,
   ARM2: -40,
   ARM3: 130,
   ARM4: 20,
   ARM5: 0,
-  CLAW1: -10,
-  CLAW2: -10,
-  CLAW3: 10,
-  CLAW4: 10,
+  CLAW1: -30,
+  CLAW2: -30,
+  CLAW3: 30,
+  CLAW4: 30,
 };
 
 var angle = 0;
@@ -60,7 +60,23 @@ var modelViewMatrixLoc;
 
 var vBuffer, cBuffer;
 
-await init();
+const Phase = {
+  BaseSpin: 0,
+  TopCraneLower: 1,
+  BottomCraneLower: 2,
+  ClawGrab: 3,
+  BottomCraneRaise: 4,
+  TopCraneRaise: 5,
+  ClawRelease: 6,
+};
+
+const vel = 0.5
+let currentPhase = Phase.BaseSpin;
+
+(async () => {
+  await init();
+})()
+
 
 //----------------------------------------------------------------------------
 
@@ -156,6 +172,63 @@ async function init() {
 
   renderToolBar();
   render();
+}
+
+// Animations 
+
+function animateNext() {
+  switch (currentPhase) {
+    case Phase.BaseSpin:
+      theta.BASE += vel
+      if (theta.BASE % 45 == 0) {
+        currentPhase = Phase.TopCraneLower
+      }
+      break
+    case Phase.TopCraneLower:
+      if (theta.ARM1 >= 40) {
+        currentPhase = Phase.BottomCraneLower
+      }
+      theta.ARM1 += vel
+      break
+    case Phase.BottomCraneLower:
+      if (theta.ARM4 >= 50) {
+        currentPhase = Phase.ClawGrab
+      }
+      theta.ARM4 += vel
+      break
+    case Phase.ClawGrab:
+      if (theta.CLAW1 >= 0 || theta.CLAW4 <= 0) {
+        currentPhase = Phase.BottomCraneRaise
+      }
+      theta.CLAW1 += vel
+      theta.CLAW2 += vel
+      theta.CLAW3 -= vel
+      theta.CLAW4 -= vel
+      break
+    case Phase.BottomCraneRaise:
+      if (theta.ARM4 <= 20) {
+        currentPhase = Phase.TopCraneRaise
+      }
+      theta.ARM4 -= vel
+      break
+    case Phase.TopCraneRaise:
+      if (theta.ARM1 <= 20) {
+        currentPhase = Phase.ClawRelease
+      }
+      theta.ARM1 -= vel
+      break
+    case Phase.ClawRelease:
+      if (theta.CLAW1 <= -30 || theta.CLAW4 >= 30) {
+        currentPhase = Phase.BaseSpin
+      }
+      theta.CLAW1 -= vel
+      theta.CLAW2 -= vel
+      theta.CLAW3 += vel
+      theta.CLAW4 += vel
+      break
+    default:
+      break
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -274,6 +347,8 @@ function render() {
 
   // claw 4b
   arm({ width: 0.5, height: 1 });
+
+  animateNext()
 
   requestAnimationFrame(render);
 }
