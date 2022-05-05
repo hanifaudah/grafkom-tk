@@ -1,16 +1,11 @@
 "use strict";
 
-// utils
-import { parseOBJ } from "./utils.js";
-
 var canvas, gl, program;
 
 var NumVertices = 36; //(6 faces)(2 triangles/face)(3 vertices/triangle)
 
 var points = [];
 var colors = [];
-
-var parts = [];
 
 var vertices = [
   vec4(-0.5, -0.5, 0.5, 1.0),
@@ -39,18 +34,12 @@ var vertexColors = [
 
 var BASE_HEIGHT = 2.0;
 var BASE_WIDTH = 5.0;
-var LOWER_ARM_HEIGHT = 3;
-var LOWER_ARM_WIDTH = 1;
-var UPPER_ARM_HEIGHT = 5.0;
-var UPPER_ARM_WIDTH = 1;
 
 // Shader transformation matrices
 
 var modelViewMatrix, projectionMatrix;
 
 // Array of rotation angles (in degrees) for each rotation axis
-
-var Base = 0;
 
 var theta = {
   BASE: 30,
@@ -101,6 +90,16 @@ function colorCube() {
 
 //--------------------------------------------------
 
+function renderToolBar() {
+  const sliders = document.querySelectorAll(".form-range");
+  sliders.forEach((el) => {
+    const id = el.getAttribute("id");
+    el.addEventListener("click", (e) => {
+      theta[id] = e.target.value;
+    });
+  });
+}
+
 async function init() {
   canvas = document.getElementById("gl-canvas");
 
@@ -146,16 +145,6 @@ async function init() {
   gl.vertexAttribPointer(colorLoc, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(colorLoc);
 
-  // document.getElementById("slider1").onchange = function(event) {
-  //     theta[0] = event.target.value;
-  // };
-  // document.getElementById("slider2").onchange = function(event) {
-  //      theta[1] = event.target.value;
-  // };
-  // document.getElementById("slider3").onchange = function(event) {
-  //      theta[2] =  event.target.value;
-  // };
-
   modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix");
 
   projectionMatrix = ortho(-10, 10, -10, 10, -10, 10);
@@ -165,14 +154,7 @@ async function init() {
     flatten(projectionMatrix)
   );
 
-  // DEBUG
-  // const response = await fetch("./objs/monkey.obj");
-  const response = await fetch(
-    "https://webglfundamentals.org/webgl/resources/models/cube/cube.obj"
-  );
-  const text = await response.text();
-  parts.push(parseOBJ(text));
-
+  renderToolBar();
   render();
 }
 
@@ -180,17 +162,11 @@ async function init() {
 
 function base() {
   var s = scale(BASE_WIDTH, BASE_HEIGHT, BASE_WIDTH);
-  //console.log("s", s);
   var instanceMatrix = mult(translate(0.0, 0.5 * BASE_HEIGHT, 0.0), s);
-  //var instanceMatrix = mult(s,  translate( 0.0, 0.5 * BASE_HEIGHT, 0.0 ));
-
-  //console.log("instanceMatrix", instanceMatrix);
 
   var t = mult(modelViewMatrix, instanceMatrix);
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(t));
   gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
-
-  //console.log("base", t);
 }
 
 //----------------------------------------------------------------------------
@@ -209,7 +185,7 @@ function arm({ width, height } = {}) {
 function render() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  modelViewMatrix = translate(0, 0, 0);
+  modelViewMatrix = translate(0, -5, 0);
 
   // base
   modelViewMatrix = mult(modelViewMatrix, translate(0.0, 0, 0.0));

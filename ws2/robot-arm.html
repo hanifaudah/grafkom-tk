@@ -6,74 +6,161 @@
     integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
     crossorigin="anonymous"
   />
+  <style>
+    .card {
+      width: 100%;
+    }
+  </style>
 </head>
 <html>
-  <body>
-    <label for="customRange1" class="form-label">Example range</label>
-    <input type="range" class="form-range" id="customRange1" />
-
-    <div>
-      lower arm angle -180
+  <body class="d-flex container p-5">
+    <div class="card p-5">
+      <label for="customRange1" class="form-label">Base</label>
       <input
-        id="slider2"
-        type="range"
         min="-180"
         max="180"
         step="10"
-        value="0"
-      />
-      180
-    </div>
-    <br />
-
-    <div>
-      upper arm angle -180
-      <input
-        id="slider3"
         type="range"
+        class="form-range"
+        value="30"
+        id="BASE"
+      />
+
+      <label for="customRange1" class="form-label">Arm 1</label>
+      <input
         min="-180"
         max="180"
         step="10"
-        value="0"
+        type="range"
+        class="form-range"
+        value="20"
+        id="ARM1"
       />
-      180
+
+      <label for="customRange1" class="form-label">Arm 2</label>
+      <input
+        min="-180"
+        max="180"
+        step="10"
+        type="range"
+        class="form-range"
+        value="-40"
+        id="ARM2"
+      />
+
+      <label for="customRange1" class="form-label">Arm 3</label>
+      <input
+        min="-180"
+        max="180"
+        step="10"
+        type="range"
+        class="form-range"
+        value="130"
+        id="ARM3"
+      />
+
+      <label for="customRange1" class="form-label">Arm 4</label>
+      <input
+        min="-180"
+        max="180"
+        step="10"
+        type="range"
+        class="form-range"
+        value="20"
+        id="ARM4"
+      />
+
+      <label for="customRange1" class="form-label">Arm 5</label>
+      <input
+        min="-180"
+        max="180"
+        step="10"
+        type="range"
+        class="form-range"
+        value="0"
+        id="ARM5"
+      />
+
+      <label for="customRange1" class="form-label">Claw 1</label>
+      <input
+        min="-180"
+        max="180"
+        step="10"
+        type="range"
+        class="form-range"
+        value="-10"
+        id="CLAW1"
+      />
+
+      <label for="customRange1" class="form-label">Claw 2</label>
+      <input
+        min="-180"
+        max="180"
+        step="10"
+        type="range"
+        class="form-range"
+        value="-10"
+        id="CLAW2"
+      />
+
+      <label for="customRange1" class="form-label">Claw 3</label>
+      <input
+        min="-180"
+        max="180"
+        step="10"
+        type="range"
+        class="form-range"
+        value="10"
+        id="CLAW3"
+      />
+      <label for="customRange1" class="form-label">Claw 4</label>
+      <input
+        min="-180"
+        max="180"
+        step="10"
+        type="range"
+        class="form-range"
+        value="10"
+        id="CLAW4"
+      />
     </div>
-    <br />
 
-    <canvas id="gl-canvas" width="512" height="512"> </canvas>
-    <script id="vertex-shader" type="x-shader/x-vertex">
-      #version 300 es
-
-      in vec4 aPosition;
-      in vec4 aColor;
-      out vec4 vColor;
-
-      uniform mat4 modelViewMatrix;
-      uniform mat4 projectionMatrix;
-
-      void main()
-      {
-          vColor = aColor;
-          gl_Position = projectionMatrix * modelViewMatrix * aPosition;
-      }
-    </script>
-
-    <script id="fragment-shader" type="x-shader/x-fragment">
-      #version 300 es
-
-      precision mediump float;
-
-      in vec4 vColor;
-      out vec4 fColor;
-
-      void main()
-      {
-          fColor = vColor;
-      }
-    </script>
-
-    <script src="./Common/initShaders.js"></script>
-    <script src="./Common/MVnew.js"></script>
-    <script type="module" src="robot-arm.js"></script>
+    <div>
+      <canvas id="gl-canvas" width="512" height="512"> </canvas>
+    </div>
   </body>
+  <script id="vertex-shader" type="x-shader/x-vertex">
+    #version 300 es
+
+    in vec4 aPosition;
+    in vec4 aColor;
+    out vec4 vColor;
+
+    uniform mat4 modelViewMatrix;
+    uniform mat4 projectionMatrix;
+
+    void main()
+    {
+        vColor = aColor;
+        gl_Position = projectionMatrix * modelViewMatrix * aPosition;
+    }
+  </script>
+
+  <script id="fragment-shader" type="x-shader/x-fragment">
+    #version 300 es
+
+    precision mediump float;
+
+    in vec4 vColor;
+    out vec4 fColor;
+
+    void main()
+    {
+        fColor = vColor;
+    }
+  </script>
+
+  <script src="./Common/initShaders.js"></script>
+  <script src="./Common/MVnew.js"></script>
+  <script type="module" src="robot-arm.js"></script>
 </html>
