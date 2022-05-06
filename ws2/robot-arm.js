@@ -41,7 +41,7 @@ var modelViewMatrix, projectionMatrix;
 
 // Array of rotation angles (in degrees) for each rotation axis
 
-var theta = {
+const defaultTheta = {
   BASE: 45,
   ARM1: 20,
   ARM2: -40,
@@ -53,6 +53,9 @@ var theta = {
   CLAW3: 30,
   CLAW4: 30,
 };
+
+// Copy of defaultTheta
+var theta = Object.assign({}, defaultTheta); 
 
 var angle = 0;
 
@@ -71,6 +74,7 @@ const Phase = {
 };
 
 const Actions = {
+  AutoAnimate: true,
   BaseRotateLeft: false,
   BaseRotateRight: false,
   CraneLower: false,
@@ -118,14 +122,14 @@ function colorCube() {
 
 //--------------------------------------------------
 
-function disableButtons(buttons) {
-  Array.from(buttons).forEach((el) => {
+function disableInputs(inputs) {
+  Array.from(inputs).forEach((el) => {
     el.disabled = true;
   });
 }
 
-function enableButtons(buttons) {
-  Array.from(buttons).forEach((el) => {
+function enableInputs(inputs) {
+  Array.from(inputs).forEach((el) => {
     el.disabled = false;
   });
 }
@@ -135,19 +139,36 @@ function setButtonListeners(buttons) {
     const id = el.getAttribute("id");
     el.addEventListener("click", () => {
       Actions[id] = true;
-      disableButtons(buttons);
+      disableInputs(buttons);
     });
   });
 }
 
 function renderToolBar() {
   const sliders = document.querySelectorAll(".form-range");
+  const buttons = document.querySelectorAll(".action-btn");
   sliders.forEach((el) => {
     const id = el.getAttribute("id");
     el.addEventListener("click", (e) => {
       theta[id] = e.target.value;
     });
   });
+
+  disableInputs(buttons)
+  disableInputs(sliders)
+
+  const toggleAutoAnimate = document.getElementById('AutoAnimate')
+  toggleAutoAnimate.addEventListener('change', (e) => {
+    theta = Object.assign({}, defaultTheta);
+    Actions.AutoAnimate = e.target.checked
+    if (e.target.checked) {
+      disableInputs(buttons)
+      disableInputs(sliders)
+    } else {
+      enableInputs(buttons)
+      enableInputs(sliders)
+    }
+  })
 
   setButtonListeners(baseButtons);
   setButtonListeners(craneButtons);
@@ -214,12 +235,16 @@ async function init() {
 
 // Animations
 
-function actionNext() {
+function nextAnimation() {
+  if (Actions.AutoAnimate) {
+    return autoAnimate()
+  }
+
   if (Actions.BaseRotateLeft) {
     theta.BASE += vel;
     if (theta.BASE % 45 == 0) {
       Actions.BaseRotateLeft = false;
-      enableButtons(baseButtons);
+      enableInputs(baseButtons);
     }
   }
 
@@ -227,7 +252,7 @@ function actionNext() {
     theta.BASE -= vel;
     if (theta.BASE % 45 == 0) {
       Actions.BaseRotateRight = false;
-      enableButtons(baseButtons);
+      enableInputs(baseButtons);
     }
   }
 
@@ -240,7 +265,7 @@ function actionNext() {
     }
     if (theta.ARM1 >= 40 && theta.ARM4 >= 50) {
       Actions.CraneLower = false;
-      enableButtons(craneButtons);
+      enableInputs(craneButtons);
     }
   }
   if (Actions.CraneRaise) {
@@ -252,14 +277,14 @@ function actionNext() {
     }
     if (theta.ARM1 <= 20 && theta.ARM4 <= 20) {
       Actions.CraneRaise = false;
-      enableButtons(craneButtons);
+      enableInputs(craneButtons);
     }
   }
 
   if (Actions.ClawGrab) {
     if (theta.CLAW1 >= 0 || theta.CLAW4 <= 0) {
       Actions.ClawGrab = false;
-      enableButtons(clawButtons);
+      enableInputs(clawButtons);
     }
     theta.CLAW1 += vel;
     theta.CLAW2 += vel;
@@ -270,7 +295,7 @@ function actionNext() {
   if (Actions.ClawRelease) {
     if (theta.CLAW1 <= -30 || theta.CLAW4 >= 30) {
       Actions.ClawRelease = false;
-      enableButtons(clawButtons);
+      enableInputs(clawButtons);
     }
     theta.CLAW1 -= vel;
     theta.CLAW2 -= vel;
@@ -279,7 +304,7 @@ function actionNext() {
   }
 }
 
-function animateNext() {
+function autoAnimate() {
   switch (currentPhase) {
     case Phase.BaseSpin:
       theta.BASE += vel;
@@ -451,7 +476,7 @@ function render() {
   // claw 4b
   arm({ width: 0.5, height: 1 });
 
-  actionNext();
+  nextAnimation();
 
   requestAnimationFrame(render);
 }
