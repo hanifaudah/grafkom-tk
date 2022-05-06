@@ -42,7 +42,7 @@ var modelViewMatrix, projectionMatrix;
 // Array of rotation angles (in degrees) for each rotation axis
 
 var theta = {
-  BASE: 0,
+  BASE: 45,
   ARM1: 20,
   ARM2: -40,
   ARM3: 130,
@@ -70,13 +70,25 @@ const Phase = {
   ClawRelease: 6,
 };
 
-const vel = 0.5
+const Actions = {
+  BaseRotateLeft: false,
+  BaseRotateRight: false,
+  CraneLower: false,
+  CraneRaise: false,
+  ClawGrab: false,
+  ClawRelease: false,
+};
+
+const vel = 0.5;
 let currentPhase = Phase.BaseSpin;
+
+const baseButtons = document.querySelector(".base-btns").children;
+const craneButtons = document.querySelector(".crane-btns").children;
+const clawButtons = document.querySelector(".claw-btns").children;
 
 (async () => {
   await init();
-})()
-
+})();
 
 //----------------------------------------------------------------------------
 
@@ -106,6 +118,28 @@ function colorCube() {
 
 //--------------------------------------------------
 
+function disableButtons(buttons) {
+  Array.from(buttons).forEach((el) => {
+    el.disabled = true;
+  });
+}
+
+function enableButtons(buttons) {
+  Array.from(buttons).forEach((el) => {
+    el.disabled = false;
+  });
+}
+
+function setButtonListeners(buttons) {
+  Array.from(buttons).forEach((el) => {
+    const id = el.getAttribute("id");
+    el.addEventListener("click", () => {
+      Actions[id] = true;
+      disableButtons(buttons);
+    });
+  });
+}
+
 function renderToolBar() {
   const sliders = document.querySelectorAll(".form-range");
   sliders.forEach((el) => {
@@ -114,6 +148,10 @@ function renderToolBar() {
       theta[id] = e.target.value;
     });
   });
+
+  setButtonListeners(baseButtons);
+  setButtonListeners(craneButtons);
+  setButtonListeners(clawButtons);
 }
 
 async function init() {
@@ -174,60 +212,125 @@ async function init() {
   render();
 }
 
-// Animations 
+// Animations
+
+function actionNext() {
+  if (Actions.BaseRotateLeft) {
+    theta.BASE += vel;
+    if (theta.BASE % 45 == 0) {
+      Actions.BaseRotateLeft = false;
+      enableButtons(baseButtons);
+    }
+  }
+
+  if (Actions.BaseRotateRight) {
+    theta.BASE -= vel;
+    if (theta.BASE % 45 == 0) {
+      Actions.BaseRotateRight = false;
+      enableButtons(baseButtons);
+    }
+  }
+
+  if (Actions.CraneLower) {
+    if (theta.ARM1 < 40) {
+      theta.ARM1 += vel*0.6;
+    }
+    if (theta.ARM4 < 50) {
+      theta.ARM4 += vel*0.6;
+    }
+    if (theta.ARM1 >= 40 && theta.ARM4 >= 50) {
+      Actions.CraneLower = false;
+      enableButtons(craneButtons);
+    }
+  }
+  if (Actions.CraneRaise) {
+    if (theta.ARM1 > 20) {
+      theta.ARM1 -= vel*0.6;
+    }
+    if (theta.ARM4 > 20) {
+      theta.ARM4 -= vel*0.6;
+    }
+    if (theta.ARM1 <= 20 && theta.ARM4 <= 20) {
+      Actions.CraneRaise = false;
+      enableButtons(craneButtons);
+    }
+  }
+
+  if (Actions.ClawGrab) {
+    if (theta.CLAW1 >= 0 || theta.CLAW4 <= 0) {
+      Actions.ClawGrab = false;
+      enableButtons(clawButtons);
+    }
+    theta.CLAW1 += vel;
+    theta.CLAW2 += vel;
+    theta.CLAW3 -= vel;
+    theta.CLAW4 -= vel;
+  }
+
+  if (Actions.ClawRelease) {
+    if (theta.CLAW1 <= -30 || theta.CLAW4 >= 30) {
+      Actions.ClawRelease = false;
+      enableButtons(clawButtons);
+    }
+    theta.CLAW1 -= vel;
+    theta.CLAW2 -= vel;
+    theta.CLAW3 += vel;
+    theta.CLAW4 += vel;
+  }
+}
 
 function animateNext() {
   switch (currentPhase) {
     case Phase.BaseSpin:
-      theta.BASE += vel
+      theta.BASE += vel;
       if (theta.BASE % 45 == 0) {
-        currentPhase = Phase.TopCraneLower
+        currentPhase = Phase.TopCraneLower;
       }
-      break
+      break;
     case Phase.TopCraneLower:
       if (theta.ARM1 >= 40) {
-        currentPhase = Phase.BottomCraneLower
+        currentPhase = Phase.BottomCraneLower;
       }
-      theta.ARM1 += vel
-      break
+      theta.ARM1 += vel;
+      break;
     case Phase.BottomCraneLower:
       if (theta.ARM4 >= 50) {
-        currentPhase = Phase.ClawGrab
+        currentPhase = Phase.ClawGrab;
       }
-      theta.ARM4 += vel
-      break
+      theta.ARM4 += vel;
+      break;
     case Phase.ClawGrab:
       if (theta.CLAW1 >= 0 || theta.CLAW4 <= 0) {
-        currentPhase = Phase.BottomCraneRaise
+        currentPhase = Phase.BottomCraneRaise;
       }
-      theta.CLAW1 += vel
-      theta.CLAW2 += vel
-      theta.CLAW3 -= vel
-      theta.CLAW4 -= vel
-      break
+      theta.CLAW1 += vel;
+      theta.CLAW2 += vel;
+      theta.CLAW3 -= vel;
+      theta.CLAW4 -= vel;
+      break;
     case Phase.BottomCraneRaise:
       if (theta.ARM4 <= 20) {
-        currentPhase = Phase.TopCraneRaise
+        currentPhase = Phase.TopCraneRaise;
       }
-      theta.ARM4 -= vel
-      break
+      theta.ARM4 -= vel;
+      break;
     case Phase.TopCraneRaise:
       if (theta.ARM1 <= 20) {
-        currentPhase = Phase.ClawRelease
+        currentPhase = Phase.ClawRelease;
       }
-      theta.ARM1 -= vel
-      break
+      theta.ARM1 -= vel;
+      break;
     case Phase.ClawRelease:
       if (theta.CLAW1 <= -30 || theta.CLAW4 >= 30) {
-        currentPhase = Phase.BaseSpin
+        currentPhase = Phase.BaseSpin;
       }
-      theta.CLAW1 -= vel
-      theta.CLAW2 -= vel
-      theta.CLAW3 += vel
-      theta.CLAW4 += vel
-      break
+      theta.CLAW1 -= vel;
+      theta.CLAW2 -= vel;
+      theta.CLAW3 += vel;
+      theta.CLAW4 += vel;
+      break;
     default:
-      break
+      break;
   }
 }
 
@@ -348,7 +451,7 @@ function render() {
   // claw 4b
   arm({ width: 0.5, height: 1 });
 
-  animateNext()
+  actionNext();
 
   requestAnimationFrame(render);
 }

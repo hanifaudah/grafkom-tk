@@ -14,7 +14,7 @@
 </head>
 <html>
   <body class="d-flex container p-5">
-    <div class="card p-5">
+    <!-- <div class="card p-5">
       <label for="customRange1" class="form-label">Base</label>
       <input
         min="-180"
@@ -123,6 +123,23 @@
         value="10"
         id="CLAW4"
       />
+    </div> -->
+    <div class="card p-4">
+      <label class="form-label">Base</label>
+      <div class="flex-row my-1 base-btns">
+        <button class="action-btn btn btn-primary m-1" id="BaseRotateLeft">Rotate Left</button>
+        <button class="action-btn btn btn-primary m-1" id="BaseRotateRight">Rotate Right</button>
+      </div>
+      <label class="form-label">Crane</label>
+      <div class="flex-row my-1 crane-btns">
+        <button class="action-btn btn btn-primary m-1" id="CraneRaise">Raise Crane</button>
+        <button class="action-btn btn btn-primary m-1" id="CraneLower">Lower Crane</button>
+      </div>
+      <label class="form-label">Claw</label>
+      <div class="flex-row my-1 claw-btns">
+        <button class="action-btn btn btn-primary m-1" id="ClawGrab">Grab</button>
+        <button class="action-btn btn btn-primary m-1" id="ClawRelease">Release</button>
+      </div>
     </div>
 
     <div>
