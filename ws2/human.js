@@ -42,15 +42,15 @@ var modelViewMatrix, projectionMatrix;
 // Array of rotation angles (in degrees) for each rotation axis
 
 const defaultTheta = {
-  TORSO: 20,
-  lARM1: 140,
+  TORSO: 90,
+  lARM1: 150,
   lARM2: 20,
-  rARM1: -140,
+  rARM1: 180,
   rARM2: 20,
   HEAD: 0,
-  lLEG1: 170,
+  lLEG1: -150,
   lLEG2: -30,
-  rLEG1: -170,
+  rLEG1: -180,
   rLEG2: -30,
 };
 
@@ -62,6 +62,22 @@ var angle = 0;
 var modelViewMatrixLoc;
 
 var vBuffer, cBuffer;
+
+const vel = 0.5;
+const Phase = {
+  LeftArmRightLegRaise: 0,
+  RightArmLeftLegRaise: 1,
+  LeftArmRightLegLower: 2,
+  RightArmLeftLegLower: 3,
+};
+let currentPhase = Phase.RightArmLeftLegRaise;
+
+const MotionRange = {
+  LeftArm: [150, 180],
+  RightArm: [150, 180],
+  LeftLeg: [-180, -150],
+  RightLeg: [-180, -150]
+};
 
 (async () => {
   await init();
@@ -102,6 +118,7 @@ function renderToolBar() {
     const id = el.getAttribute("id");
     el.addEventListener("click", (e) => {
       theta[id] = e.target.value;
+      console.log(id, e.target.value)
     });
   });
 }
@@ -162,6 +179,54 @@ async function init() {
 
   renderToolBar();
   render();
+}
+
+// Animation
+function nextAnimation() {
+  // theta.TORSO += vel
+  if (currentPhase === Phase.RightArmLeftLegRaise) {
+    if (theta.lLEG1 <= MotionRange.LeftLeg[1]) {
+      theta.lLEG1 += vel
+    } 
+    if (theta.rLEG1 >= MotionRange.RightLeg[0]) {
+      theta.rLEG1 -= vel
+    }
+
+    if (theta.rARM1 <= MotionRange.RightArm[1]) {
+      theta.rARM1 += vel
+    } 
+    if (theta.lARM1 >= MotionRange.LeftArm[0]) {
+      theta.lARM1 -= vel
+    }
+    if (
+      theta.lLEG1 > MotionRange.LeftLeg[1] && 
+      theta.rLEG1 < MotionRange.RightLeg[0] &&
+      theta.rARM1 > MotionRange.RightArm[1] &&
+      theta.lARM1 < MotionRange.LeftArm[0]
+      ) {
+      currentPhase = Phase.RightArmLeftLegLower
+    }
+  } 
+  if (currentPhase === Phase.RightArmLeftLegLower) {
+    if (theta.lLEG1 >= MotionRange.LeftLeg[0]) {
+      theta.lLEG1 -= vel
+    }
+    if (theta.rLEG1 <= MotionRange.RightLeg[1]) {
+      theta.rLEG1 += vel
+    }
+    if (theta.rARM1 >= MotionRange.RightArm[0]) {
+      theta.rARM1 -= vel
+    } 
+    if (theta.lARM1 <= MotionRange.LeftArm[1]) {
+      theta.lARM1 += vel
+    }
+    if (theta.lLEG1 < MotionRange.LeftLeg[0] && 
+      theta.rLEG1 > MotionRange.RightLeg[1] &&
+      theta.rARM1 < MotionRange.RightArm[0] &&
+      theta.lARM1 > MotionRange.LeftArm[1]) {
+      currentPhase = Phase.RightArmLeftLegRaise
+    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -261,6 +326,8 @@ function render() {
   modelViewMatrix = mult(modelViewMatrix, rotate(theta.HEAD, vec3(0, 1, 0)));
 
   limb({ width: 2, height: 2 });
+
+  nextAnimation()
 
   requestAnimationFrame(render);
 }
