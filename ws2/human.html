@@ -67,10 +67,32 @@
     uniform mat4 modelViewMatrix;
     uniform mat4 projectionMatrix;
 
+    // Lighting Related
+    in vec3 a_normal;
+
+    uniform vec3 u_lightWorldPosition;
+
+    uniform mat4 u_world;
+    uniform mat4 u_worldViewProjection;
+    uniform mat4 u_worldInverseTranspose;
+
+    out vec3 v_normal;
+    out vec3 v_surfaceToLight;
+
     void main()
     {
         vColor = aColor;
         gl_Position = projectionMatrix * modelViewMatrix * aPosition;
+
+        // orient the normals and pass to the fragment shader
+        v_normal = mat3(u_worldInverseTranspose) * a_normal;
+
+        // compute the world position of the surfoace
+        vec3 surfaceWorldPosition = (u_world * aPosition).xyz;
+
+        // compute the vector of the surface to the light
+        // and pass it to the fragment shader
+        v_surfaceToLight = u_lightWorldPosition - surfaceWorldPosition;
     }
   </script>
 
@@ -79,17 +101,29 @@
 
     precision mediump float;
 
+    // Passed in from the vertex shader.
+    in vec3 v_normal;
+    in vec3 v_surfaceToLight;
+
     in vec4 vColor;
     out vec4 fColor;
 
     void main()
     {
-        fColor = vColor;
+      vec3 normal = normalize(v_normal);
+
+      vec3 surfaceToLightDirection = normalize(v_surfaceToLight);
+    
+      float light = dot(normal, surfaceToLightDirection);
+      
+      fColor = vColor;
+      fColor.rgb *= light;
     }
   </script>
 
 <script src="./Common/initShaders.js"></script>
 <script src="./Common/MVnew.js"></script>
+<script type="text/javascript" src="m4.js"></script>
 <script src="human.js"></script>
 
 </html>
