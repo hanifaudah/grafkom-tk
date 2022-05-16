@@ -10,45 +10,51 @@
   </style>
 </head>
 <html>
-
-<body class="d-flex container p-5">
-  <div class="flex-column">
-    <div class="card p-5">
-      <h4>Individual Movement</h4>
-      <label for="customRange1" class="form-label">TORSO</label>
-      <input min="-180" max="180" step="10" type="range" class="form-range" value="30" id="TORSO" />
-
-      <label for="customRange1" class="form-label">Left Arm 1</label>
-      <input min="-180" max="180" step="10" type="range" class="form-range" value="20" id="lARM1" />
-
-      <label for="customRange1" class="form-label">Left Arm 2</label>
-      <input min="-180" max="180" step="10" type="range" class="form-range" value="-40" id="lARM2" />
-
-      <label for="customRange1" class="form-label">Right Arm 1</label>
-      <input min="-180" max="180" step="10" type="range" class="form-range" value="130" id="rARM1" />
-
-      <label for="customRange1" class="form-label">Right Arm 2</label>
-      <input min="-180" max="180" step="10" type="range" class="form-range" value="20" id="rARM2" />
-
-      <label for="customRange1" class="form-label">Head</label>
-      <input min="-180" max="180" step="10" type="range" class="form-range" value="0" id="HEAD" />
-
-      <label for="customRange1" class="form-label">Left Leg 1</label>
-      <input min="-180" max="180" step="10" type="range" class="form-range" value="-10" id="lLEG1" />
-
-      <label for="customRange1" class="form-label">Left Leg 2</label>
-      <input min="-180" max="180" step="10" type="range" class="form-range" value="-10" id="lLEG2" />
-
-      <label for="customRange1" class="form-label">Right Leg 1</label>
-      <input min="-180" max="180" step="10" type="range" class="form-range" value="10" id="rLEG1" />
-      <label for="customRange1" class="form-label">Right Leg 2</label>
-      <input min="-180" max="180" step="10" type="range" class="form-range" value="10" id="rLEG2" />
+<body>
+  <nav class="navbar navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/ws2/index.html">Home</a>
     </div>
-  </div>
-
-
-  <div>
-    <canvas id="gl-canvas" width="512" height="512"> </canvas>
+  </nav>
+  <div class="d-flex container p-5">
+    <div class="flex-column">
+      <div class="card p-5">
+        <h4>Individual Movement</h4>
+        <label for="customRange1" class="form-label">TORSO</label>
+        <input min="-180" max="180" step="10" type="range" class="form-range" value="30" id="TORSO" />
+  
+        <label for="customRange1" class="form-label">Left Arm 1</label>
+        <input min="-180" max="180" step="10" type="range" class="form-range" value="20" id="lARM1" />
+  
+        <label for="customRange1" class="form-label">Left Arm 2</label>
+        <input min="-180" max="180" step="10" type="range" class="form-range" value="-40" id="lARM2" />
+  
+        <label for="customRange1" class="form-label">Right Arm 1</label>
+        <input min="-180" max="180" step="10" type="range" class="form-range" value="130" id="rARM1" />
+  
+        <label for="customRange1" class="form-label">Right Arm 2</label>
+        <input min="-180" max="180" step="10" type="range" class="form-range" value="20" id="rARM2" />
+  
+        <label for="customRange1" class="form-label">Head</label>
+        <input min="-180" max="180" step="10" type="range" class="form-range" value="0" id="HEAD" />
+  
+        <label for="customRange1" class="form-label">Left Leg 1</label>
+        <input min="-180" max="180" step="10" type="range" class="form-range" value="-10" id="lLEG1" />
+  
+        <label for="customRange1" class="form-label">Left Leg 2</label>
+        <input min="-180" max="180" step="10" type="range" class="form-range" value="-10" id="lLEG2" />
+  
+        <label for="customRange1" class="form-label">Right Leg 1</label>
+        <input min="-180" max="180" step="10" type="range" class="form-range" value="10" id="rLEG1" />
+        <label for="customRange1" class="form-label">Right Leg 2</label>
+        <input min="-180" max="180" step="10" type="range" class="form-range" value="10" id="rLEG2" />
+      </div>
+    </div>
+  
+  
+    <div>
+      <canvas id="gl-canvas" width="512" height="512"> </canvas>
+    </div>
   </div>
 </body>
 <script id="vertex-shader" type="x-shader/x-vertex">
