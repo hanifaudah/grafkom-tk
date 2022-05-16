@@ -45,10 +45,10 @@ const defaultTheta = {
   TORSO: 90,
   lARM1: 150,
   lARM2: 20,
-  rARM1: 180,
+  rARM1: -150,
   rARM2: 20,
   HEAD: 0,
-  lLEG1: -150,
+  lLEG1: 150,
   lLEG2: -30,
   rLEG1: -180,
   rLEG2: -30,
@@ -74,8 +74,8 @@ let currentPhase = Phase.RightArmLeftLegRaise;
 
 const MotionRange = {
   LeftArm: [150, 180],
-  RightArm: [150, 180],
-  LeftLeg: [-180, -150],
+  RightArm: [-180, -150],
+  LeftLeg: [150, 180],
   RightLeg: [-180, -150]
 };
 
@@ -187,26 +187,26 @@ function nextAnimation() {
   if (currentPhase === Phase.RightArmLeftLegRaise) {
     if (theta.lLEG1 <= MotionRange.LeftLeg[1]) {
       theta.lLEG1 += vel
-    } 
+    }
     if (theta.rLEG1 >= MotionRange.RightLeg[0]) {
       theta.rLEG1 -= vel
     }
 
     if (theta.rARM1 <= MotionRange.RightArm[1]) {
       theta.rARM1 += vel
-    } 
+    }
     if (theta.lARM1 >= MotionRange.LeftArm[0]) {
       theta.lARM1 -= vel
     }
     if (
-      theta.lLEG1 > MotionRange.LeftLeg[1] && 
+      theta.lLEG1 > MotionRange.LeftLeg[1] &&
       theta.rLEG1 < MotionRange.RightLeg[0] &&
       theta.rARM1 > MotionRange.RightArm[1] &&
       theta.lARM1 < MotionRange.LeftArm[0]
-      ) {
+    ) {
       currentPhase = Phase.RightArmLeftLegLower
     }
-  } 
+  }
   if (currentPhase === Phase.RightArmLeftLegLower) {
     if (theta.lLEG1 >= MotionRange.LeftLeg[0]) {
       theta.lLEG1 -= vel
@@ -216,11 +216,11 @@ function nextAnimation() {
     }
     if (theta.rARM1 >= MotionRange.RightArm[0]) {
       theta.rARM1 -= vel
-    } 
+    }
     if (theta.lARM1 <= MotionRange.LeftArm[1]) {
       theta.lARM1 += vel
     }
-    if (theta.lLEG1 < MotionRange.LeftLeg[0] && 
+    if (theta.lLEG1 < MotionRange.LeftLeg[0] &&
       theta.rLEG1 > MotionRange.RightLeg[1] &&
       theta.rARM1 < MotionRange.RightArm[0] &&
       theta.lARM1 > MotionRange.LeftArm[1]) {
