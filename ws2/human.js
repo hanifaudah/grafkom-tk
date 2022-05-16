@@ -72,7 +72,7 @@ var fRotationRadians = 0
 // Array of rotation angles (in degrees) for each rotation axis
 
 const defaultTheta = {
-  TORSO: 90,
+  TORSO: 40,
   lARM1: 150,
   lARM2: 20,
   rARM1: -150,
@@ -101,6 +101,7 @@ const Phase = {
   RightArmLeftLegLower: 3,
 };
 let currentPhase = Phase.RightArmLeftLegRaise;
+let autoAnimation = true
 
 const MotionRange = {
   LeftArm: [150, 180],
@@ -161,9 +162,31 @@ function degToRad(d) {
 
 //--------------------------------------------------
 
+function disableInputs(inputs) {
+  Array.from(inputs).forEach((el) => {
+    el.disabled = true;
+  });
+}
+
+function enableInputs(inputs) {
+  Array.from(inputs).forEach((el) => {
+    el.disabled = false;
+  });
+}
+
+function setButtonListeners(buttons) {
+  Array.from(buttons).forEach((el) => {
+    const id = el.getAttribute("id");
+    el.addEventListener("click", () => {
+      Actions[id] = true;
+      disableInputs(buttons);
+    });
+  });
+}
+
+
 function renderToolBar() {
   const sliders = document.querySelectorAll(".form-range");
-  // const buttons = document.querySelectorAll(".action-btn");
   sliders.forEach((el) => {
     const id = el.getAttribute("id");
     el.addEventListener("click", (e) => {
@@ -171,6 +194,19 @@ function renderToolBar() {
       console.log(id, e.target.value)
     });
   });
+
+  disableInputs(sliders)
+
+  const toggleAutoAnimate = document.getElementById('AutoAnimate')
+  toggleAutoAnimate.addEventListener('change', (e) => {
+    theta = Object.assign({}, defaultTheta);
+    autoAnimation = e.target.checked
+    if (e.target.checked) {
+      disableInputs(sliders)
+    } else {
+      enableInputs(sliders)
+    }
+  })
 }
 
 async function init() {
@@ -425,7 +461,9 @@ function render() {
 
   limb({ width: 2, height: 2 });
 
-  nextAnimation()
+  if (autoAnimation) {
+    nextAnimation()
+  }
 
   requestAnimationFrame(render);
 }
