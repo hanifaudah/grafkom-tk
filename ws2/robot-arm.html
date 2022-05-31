@@ -170,14 +170,23 @@
     in vec4 aPosition;
     in vec4 aColor;
     out vec4 vColor;
+    in vec3 a_normal;
 
     uniform mat4 modelViewMatrix;
     uniform mat4 projectionMatrix;
+    
+    // Lighting related
+    uniform mat4 u_worldViewProjection;
+    uniform mat4 u_worldInverseTranspose;
+
+    out vec3 v_normal;
 
     void main()
     {
         vColor = aColor;
         gl_Position = projectionMatrix * modelViewMatrix * aPosition;
+
+        v_normal = mat3(u_worldInverseTranspose) * a_normal;
     }
   </script>
 
@@ -185,17 +194,38 @@
     #version 300 es
 
     precision mediump float;
-
+    
+    // Passed in from the vertex shader.
     in vec4 vColor;
+    in vec3 v_normal;
+    
+    
+    uniform vec3 u_reverseLightDirection;
+    uniform vec4 u_color;
+    
     out vec4 fColor;
+    // out vec4 FragColor;
 
     void main()
     {
-        fColor = vColor;
+      // because v_normal is a varying it's interpolated
+      // we it will not be a uint vector. Normalizing it
+      // will make it a unit vector again
+      vec3 normal = normalize(v_normal);
+      
+      float light = dot(normal, u_reverseLightDirection);
+      
+      fColor = vColor;
+      // FragColor = u_color;
+    
+      // Lets multiply just the color portion (not the alpha)
+      // by the light
+      fColor.rgb *= light;
     }
   </script>
 
   <script src="./Common/initShaders.js"></script>
   <script src="./Common/MVnew.js"></script>
+  <script type="text/javascript" src="m4.js"></script>
   <script src="robot-arm.js"></script>
 </html>

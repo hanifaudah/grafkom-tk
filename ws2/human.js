@@ -6,6 +6,7 @@ var NumVertices = 36; //(6 faces)(2 triangles/face)(3 vertices/triangle)
 
 var points = [];
 var colors = [];
+var normals = [];
 
 var vertices = [
   vec4(-0.5, -0.5, 0.5, 1.0),
@@ -30,19 +31,48 @@ var vertexColors = [
   vec4(0.0, 1.0, 1.0, 1.0), // cyan
 ];
 
+const Normals = {
+  Up: vec3(0.0, 1.0, 0.0), // Up
+  Down: vec3(0.0, -1.0, 0.0), // Down
+  Left: vec3(-1.0, 0.0, 0.0), // Left
+  Right: vec3(0.0, 0.0, 1.0), // Right
+  Back: vec3(0.0, 0.0, -1.0), // Back
+  Front: vec3(0.0, 0.6, 1.0), // Front
+};
+
 // Parameters controlling the size of the Robot's Body
 
 var TORSO_HEIGHT = 8.0;
 var TORSO_WIDTH = 4.0;
 
-// Shader transformation matrices
+// Lighting related 
+var cameraPosition = [100, 0, 200]; //eye/camera coordinates
+var UpVector = [0, 1, 0]; //up vector
+var fPosition = [0, 35, 0]; //at 
 
+var cameraMatrix;
+var viewMatrix;
+var viewProjectionMatrix;
+
+// Shader transformation matrices
 var modelViewMatrix, projectionMatrix;
+
+var worldViewProjectionMatrix;
+var worldInverseTransposeMatrix;
+var worldInverseMatrix;
+
+var worldViewProjectionLocation 
+var worldInverseTransposeLocation 
+var lightWorldPositionLocation 
+var worldLocation
+var worldMatrix;
+
+var fRotationRadians = 0
 
 // Array of rotation angles (in degrees) for each rotation axis
 
 const defaultTheta = {
-  TORSO: 90,
+  TORSO: 40,
   lARM1: 150,
   lARM2: 20,
   rARM1: -150,
@@ -71,6 +101,7 @@ const Phase = {
   RightArmLeftLegLower: 3,
 };
 let currentPhase = Phase.RightArmLeftLegRaise;
+let autoAnimation = true
 
 const MotionRange = {
   LeftArm: [150, 180],
@@ -86,34 +117,76 @@ const MotionRange = {
 //----------------------------------------------------------------------------
 
 function quad(a, b, c, d) {
-  colors.push(vertexColors[a]);
   points.push(vertices[a]);
-  colors.push(vertexColors[a]);
   points.push(vertices[b]);
-  colors.push(vertexColors[a]);
   points.push(vertices[c]);
-  colors.push(vertexColors[a]);
   points.push(vertices[a]);
-  colors.push(vertexColors[a]);
   points.push(vertices[c]);
-  colors.push(vertexColors[a]);
   points.push(vertices[d]);
+  colors.push(vertexColors[2]);
+  colors.push(vertexColors[2]);
+  colors.push(vertexColors[2]);
+  colors.push(vertexColors[2]);
+  colors.push(vertexColors[2]);
+  colors.push(vertexColors[2]);
+}
+
+function setNormal(normal) {
+  for (let i = 0; i < 6; i++) {
+    normals.push(normal)
+  }
 }
 
 function colorCube() {
   quad(1, 0, 3, 2);
+  setNormal(Normals.Front)
   quad(2, 3, 7, 6);
+  setNormal(Normals.Right)
   quad(3, 0, 4, 7);
+  setNormal(Normals.Down)
   quad(6, 5, 1, 2);
+  setNormal(Normals.Up)
   quad(4, 5, 6, 7);
+  setNormal(Normals.Back)
   quad(5, 4, 0, 1);
+  setNormal(Normals.Left)
+}
+
+function radToDeg(r) {
+  return r * 180 / Math.PI;
+}
+
+function degToRad(d) {
+  return d * Math.PI / 180;
 }
 
 //--------------------------------------------------
 
+function disableInputs(inputs) {
+  Array.from(inputs).forEach((el) => {
+    el.disabled = true;
+  });
+}
+
+function enableInputs(inputs) {
+  Array.from(inputs).forEach((el) => {
+    el.disabled = false;
+  });
+}
+
+function setButtonListeners(buttons) {
+  Array.from(buttons).forEach((el) => {
+    const id = el.getAttribute("id");
+    el.addEventListener("click", () => {
+      Actions[id] = true;
+      disableInputs(buttons);
+    });
+  });
+}
+
+
 function renderToolBar() {
   const sliders = document.querySelectorAll(".form-range");
-  // const buttons = document.querySelectorAll(".action-btn");
   sliders.forEach((el) => {
     const id = el.getAttribute("id");
     el.addEventListener("click", (e) => {
@@ -121,6 +194,19 @@ function renderToolBar() {
       console.log(id, e.target.value)
     });
   });
+
+  disableInputs(sliders)
+
+  const toggleAutoAnimate = document.getElementById('AutoAnimate')
+  toggleAutoAnimate.addEventListener('change', (e) => {
+    theta = Object.assign({}, defaultTheta);
+    autoAnimation = e.target.checked
+    if (e.target.checked) {
+      disableInputs(sliders)
+    } else {
+      enableInputs(sliders)
+    }
+  })
 }
 
 async function init() {
@@ -132,9 +218,20 @@ async function init() {
   }
 
   gl.viewport(0, 0, canvas.width, canvas.height);
-
   gl.clearColor(1.0, 1.0, 1.0, 1.0);
+
+	gl.enable(gl.CULL_FACE); //enable depth buffer
   gl.enable(gl.DEPTH_TEST);
+
+  	//initial default
+
+	fRotationRadians = degToRad(0);
+  var FOV_Radians = degToRad(60);
+  var aspect = canvas.width / canvas.height;
+  var zNear = 1;
+  var zFar = 2000;
+
+  projectionMatrix = m4.perspective(FOV_Radians, aspect, zNear, zFar); //setup perspective viewing volume
 
   //
   //  Load shaders and initialize attribute buffers
@@ -168,7 +265,20 @@ async function init() {
   gl.vertexAttribPointer(colorLoc, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(colorLoc);
 
+  var nBuffer = gl.createBuffer();
+  gl.bindBuffer( gl.ARRAY_BUFFER, nBuffer );
+  gl.bufferData(gl.ARRAY_BUFFER, flatten(normals), gl.STATIC_DRAW);
+
+  var normalLocation = gl.getAttribLocation(program, "a_normal");
+  gl.vertexAttribPointer(normalLocation, 3, gl.FLOAT, false, 0, 0); 
+  gl.enableVertexAttribArray( normalLocation );
+
   modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix");
+
+  worldViewProjectionLocation = gl.getUniformLocation(program, "u_worldViewProjection");
+  worldInverseTransposeLocation = gl.getUniformLocation(program, "u_worldInverseTranspose");
+  lightWorldPositionLocation =  gl.getUniformLocation(program, "u_lightWorldPosition");
+	worldLocation =  gl.getUniformLocation(program, "u_world");
 
   projectionMatrix = ortho(-10, 10, -10, 10, -10, 10);
   gl.uniformMatrix4fv(
@@ -183,7 +293,7 @@ async function init() {
 
 // Animation
 function nextAnimation() {
-  // theta.TORSO += vel
+  theta.TORSO += vel
   if (currentPhase === Phase.RightArmLeftLegRaise) {
     if (theta.lLEG1 <= MotionRange.LeftLeg[1]) {
       theta.lLEG1 += vel
@@ -254,6 +364,30 @@ function limb({ width, height } = {}) {
 //----------------------------------------------------------------------------
 
 function render() {
+  // Compute the camera's matrix using look at.
+  cameraMatrix = m4.lookAt(cameraPosition, fPosition, UpVector);
+
+  // Make a view matrix from the camera matrix
+  viewMatrix = m4.inverse(cameraMatrix);
+	
+	// Compute a view projection matrix
+	viewProjectionMatrix = m4.multiply(projectionMatrix, viewMatrix);
+
+  worldMatrix = m4.yRotation(fRotationRadians);
+
+  // Multiply the matrices.
+  worldViewProjectionMatrix = m4.multiply(viewProjectionMatrix, worldMatrix);
+  worldInverseMatrix = m4.inverse(worldMatrix);
+  worldInverseTransposeMatrix = m4.transpose(worldInverseMatrix);
+
+  // Set the matrices
+  gl.uniformMatrix4fv(worldViewProjectionLocation, false, worldViewProjectionMatrix);
+  gl.uniformMatrix4fv(worldInverseTransposeLocation, false, worldInverseTransposeMatrix);
+  gl.uniformMatrix4fv(worldLocation, false, worldMatrix);
+
+  // set the light direction.
+  gl.uniform3fv(lightWorldPositionLocation, [-50, 50, 60]);
+
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   modelViewMatrix = translate(0, 2, 0);
@@ -327,7 +461,9 @@ function render() {
 
   limb({ width: 2, height: 2 });
 
-  nextAnimation()
+  if (autoAnimation) {
+    nextAnimation()
+  }
 
   requestAnimationFrame(render);
 }
