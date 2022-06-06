@@ -299,33 +299,33 @@ function initBuffers() {
       0.0, 1.0,
 
       // Back face
-      1.0, 0.0,
-      1.0, 1.0,
-      0.0, 1.0,
-      0.0, 0.0,
+      0.6, 0.5,
+      0.6, 1.0,
+      0.3, 1.0,
+      0.3, 0.5,
 
       // Top face
-      0.0, 1.0,
       0.0, 0.0,
-      1.0, 0.0,
-      1.0, 1.0,
-
+      1/3, 0.0,
+      1/3, 0.5,
+      0.0, 0.5,
+    
       // Bottom face
-      1.0, 1.0,
-      0.0, 1.0,
-      0.0, 0.0,
-      1.0, 0.0,
+      1/3, 0.0,
+      2/3, 0.0,
+      2/3, 0.5,
+      1/3, 0.5,
 
       // Right face
-      1.0, 0.0,
+      1.0, 1/2,
       1.0, 1.0,
-      0.0, 1.0,
-      0.0, 0.0,
+      2/3, 1.0,
+      2/3, 1/2,
 
       // Left face
-      0.0, 0.0,
-      1.0, 0.0,
-      1.0, 1.0,
+      0.0, 1/2,
+      1/3, 1/2,
+      1/3, 1.0,
       0.0, 1.0,
     ];
     cubeTextureBuffer = gl.createBuffer();
@@ -1536,7 +1536,7 @@ function initTexture() {
     image1.onload = function() {
        configureTexture(image1, gl.TEXTURE1);
     }
-    image1.src = "img/wall2.jpg"
+    image1.src = "img/bg.png"
     
     var image2 = new Image();
     image2.onload = function() {
