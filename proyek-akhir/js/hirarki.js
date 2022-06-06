@@ -1248,6 +1248,7 @@ function drawScene() {
 		  0.0, 0.0, 0.0,
 		  0.0, 0.0, -10.0,
 		  0.0, 1.0, 0.0);
+    mat4.translate(lookAtMatrix, [document.getElementById("cameraPositionX").value / -10.0, document.getElementById("cameraPositionY").value / 10.0, document.getElementById("cameraPositionZ").value / 10.0])
     mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
     mat4.multiply(pMatrix, lookAtMatrix);
     
