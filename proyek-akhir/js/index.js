@@ -19,7 +19,7 @@ function initGL(canvas) {
 
 
 //adapted from http://learnwebstate.gl.brown37.net/11_advanced_rendering/shadows.html
-function createFrameBufferObject(gl, width, height) {
+function createFrameBufferObject(width, height) {
     var frameBuffer, depthBuffer;
 	
     frameBuffer = state.gl.createFramebuffer();
@@ -401,7 +401,7 @@ function initBuffers() {
     sphereTextureBuffer.itemSize = 2;
     sphereTextureBuffer.numItems = normalData.length / 3;
     
-	shadowFrameBuffer = createFrameBufferObject(state.gl, 512, 512);
+	shadowFrameBuffer = createFrameBufferObject(512, 512);
 }
 
 function initializeAtrributes() {
