@@ -112,51 +112,53 @@ export function initInputs() {
   }
 }
 
-export function initTexture(gl) {
+export function initTexture(state) {
+    const { gl } = state
     var image0 = new Image();
     image0.onload = function() {
-       configureTexture(image0, gl.TEXTURE0, gl);
+       configureTexture(image0, gl.TEXTURE0, state);
     }
     image0.src = "img/arm_texture2.jpg"
     
     var image1 = new Image();
     image1.onload = function() {
-       configureTexture(image1, gl.TEXTURE1, gl);
+       configureTexture(image1, gl.TEXTURE1, state);
     }
     image1.src = "img/bg.png"
     
     var image2 = new Image();
     image2.onload = function() {
-       configureTexture(image2, gl.TEXTURE2, gl);
+       configureTexture(image2, gl.TEXTURE2, state);
     }
     image2.src = "img/blue.jpg"
     
     var image3 = new Image();
     image3.onload = function() {
-       configureTexture(image3, gl.TEXTURE3, gl);
+       configureTexture(image3, gl.TEXTURE3, state);
     }
     image3.src = "img/deep_blue.jpg"
     
     var image6 = new Image();
     image6.onload = function() {
-       configureTexture(image6, gl.TEXTURE6, gl);
+       configureTexture(image6, gl.TEXTURE6, state);
     }
     image6.src = "img/black.jpg"
     
     var image7 = new Image();
     image7.onload = function() {
-       configureTexture(image7, gl.TEXTURE7, gl);
+       configureTexture(image7, gl.TEXTURE7, state);
     }
     image7.src = "img/red.jpg"
     
     var image8 = new Image();
     image8.onload = function() {
-       configureTexture(image8, gl.TEXTURE8, gl);
+       configureTexture(image8, gl.TEXTURE8, state);
     }
     image8.src = "img/glass.jpg"
 }
 
-function configureTexture(image, textureno, gl) {
+function configureTexture(image, textureno, state) {
+    const { gl } = state
     var texture = gl.createTexture();
     gl.activeTexture(textureno);
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -170,7 +172,8 @@ function configureTexture(image, textureno, gl) {
     
 }
 
-export function initShaders(gl) {
+export function initShaders(state) {
+    const { gl } = state
     var shaderProgram;
     var shadowMapShaderProgram;
 

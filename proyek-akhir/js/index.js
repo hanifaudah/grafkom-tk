@@ -1,34 +1,36 @@
 import { initInputs, initTexture, initShaders } from "./init.js"
 import { Vector3 } from "./util.js"
 
-var gl;
+const state = {
+    gl: undefined
+}
 
 function initGL(canvas) {
     try {
-        gl = canvas.getContext("webgl2");
-        gl.viewportWidth = canvas.width;
-        gl.viewportHeight = canvas.height;
+        state.gl = canvas.getContext("webgl2");
+        state.gl.viewportWidth = canvas.width;
+        state.gl.viewportHeight = canvas.height;
     } catch (e) {
     }
-    if (!gl) {
+    if (!state.gl) {
         alert("Could not initialise WebGL, sorry :-(");
     }
 }
 
 
-//adapted from http://learnwebgl.brown37.net/11_advanced_rendering/shadows.html
+//adapted from http://learnwebstate.gl.brown37.net/11_advanced_rendering/shadows.html
 function createFrameBufferObject(gl, width, height) {
     var frameBuffer, depthBuffer;
 	
-    frameBuffer = gl.createFramebuffer();
+    frameBuffer = state.gl.createFramebuffer();
     
-    depthBuffer = gl.createTexture();
-	gl.bindTexture(gl.TEXTURE_CUBE_MAP, depthBuffer);
-	for(var i = 0; i < 6; i++) gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X+i, 0, gl.RGBA, width, height, 0,gl.RGBA, gl.UNSIGNED_BYTE, null);
-	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    depthBuffer = state.gl.createTexture();
+	state.gl.bindTexture(state.gl.TEXTURE_CUBE_MAP, depthBuffer);
+	for(var i = 0; i < 6; i++) state.gl.texImage2D(state.gl.TEXTURE_CUBE_MAP_POSITIVE_X+i, 0, state.gl.RGBA, width, height, 0,state.gl.RGBA, state.gl.UNSIGNED_BYTE, null);
+	state.gl.texParameteri(state.gl.TEXTURE_CUBE_MAP, state.gl.TEXTURE_MAG_FILTER, state.gl.NEAREST);
+    state.gl.texParameteri(state.gl.TEXTURE_CUBE_MAP, state.gl.TEXTURE_MIN_FILTER, state.gl.NEAREST);
+	state.gl.texParameteri(state.gl.TEXTURE_CUBE_MAP, state.gl.TEXTURE_WRAP_S, state.gl.CLAMP_TO_EDGE);
+	state.gl.texParameteri(state.gl.TEXTURE_CUBE_MAP, state.gl.TEXTURE_WRAP_T, state.gl.CLAMP_TO_EDGE);
 	
     frameBuffer.depthBuffer = depthBuffer;
     frameBuffer.width = width;
@@ -56,29 +58,29 @@ function mvPopMatrix(shadow) {
     }
     mvMatrix = mvMatrixStack.pop();    
     if(shadow) {
-		gl.uniformMatrix4fv(shadowMapShaderProgram.pMatrixUniform, false, pMatrix);
-		gl.uniformMatrix4fv(shadowMapShaderProgram.mvMatrixUniform, false, mvMatrix);
+		state.gl.uniformMatrix4fv(shadowMapShaderProgram.pMatrixUniform, false, pMatrix);
+		state.gl.uniformMatrix4fv(shadowMapShaderProgram.mvMatrixUniform, false, mvMatrix);
 	} else {
-		gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
-		gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+		state.gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+		state.gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
 		var normalMatrix = mat3.create();
 		mat4.toInverseMat3(mvMatrix, normalMatrix);
 		mat3.transpose(normalMatrix);
-		gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
+		state.gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
 	}
 }
 
 function setMatrixUniforms(shadow) {
     if(shadow) {
-		gl.uniformMatrix4fv(shadowMapShaderProgram.pMatrixUniform, false, pMatrix);
-		gl.uniformMatrix4fv(shadowMapShaderProgram.mvMatrixUniform, false, mvMatrix);
+		state.gl.uniformMatrix4fv(shadowMapShaderProgram.pMatrixUniform, false, pMatrix);
+		state.gl.uniformMatrix4fv(shadowMapShaderProgram.mvMatrixUniform, false, mvMatrix);
 	} else {
-		gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
-		gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+		state.gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+		state.gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
 		var normalMatrix = mat3.create();
 		mat4.toInverseMat3(mvMatrix, normalMatrix);
 		mat3.transpose(normalMatrix);
-		gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
+		state.gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
 	}
 }
 
@@ -110,8 +112,8 @@ var roomMaterial;
 
 function initBuffers() {
     //DEFINING CUBE
-    cubeVertexPositionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
+    cubeVertexPositionBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
     const vertices = [
         // Front face
         -1.0, -1.0,  1.0,
@@ -144,11 +146,11 @@ function initBuffers() {
         -1.0,  1.0,  1.0,
         -1.0,  1.0, -1.0
     ];
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(vertices), state.gl.STATIC_DRAW);
     cubeVertexPositionBuffer.itemSize = 3;
     cubeVertexPositionBuffer.numItems = 24;
-    cubeVertexNormalBuffer = gl.createBuffer();
-    cubeInsidesVertexNormalBuffer = gl.createBuffer();
+    cubeVertexNormalBuffer = state.gl.createBuffer();
+    cubeInsidesVertexNormalBuffer = state.gl.createBuffer();
     var vertexNormals = [
         // Front face
          0.0,  0.0,  1.0,
@@ -185,18 +187,18 @@ function initBuffers() {
     for(var i = 0; i < vertexNormals.length; i++) {
         vertexInsidesNormals.push(vertexNormals[i] * -1);
     }
-    gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexNormalBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexNormalBuffer);
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(vertexNormals), state.gl.STATIC_DRAW);
     cubeVertexNormalBuffer.itemSize = 3;
     cubeVertexNormalBuffer.numItems = 24;
     
-    gl.bindBuffer(gl.ARRAY_BUFFER, cubeInsidesVertexNormalBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexInsidesNormals), gl.STATIC_DRAW);
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeInsidesVertexNormalBuffer);
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(vertexInsidesNormals), state.gl.STATIC_DRAW);
     cubeInsidesVertexNormalBuffer.itemSize = 3;
     cubeInsidesVertexNormalBuffer.numItems = 24;
     
-    cubeVertexIndexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+    cubeVertexIndexBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
     var cubeVertexIndices = [
         0, 1, 2,      0, 2, 3,    // Front face
         4, 5, 6,      4, 6, 7,    // Back face
@@ -205,7 +207,7 @@ function initBuffers() {
         16, 17, 18,   16, 18, 19, // Right face
         20, 21, 22,   20, 22, 23  // Left face
     ];
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), gl.STATIC_DRAW);
+    state.gl.bufferData(state.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), state.gl.STATIC_DRAW);
     cubeVertexIndexBuffer.itemSize = 1;
     cubeVertexIndexBuffer.numItems = 36;
     
@@ -246,9 +248,9 @@ function initBuffers() {
       1/3, 1.0,
       0.0, 1.0,
     ];
-    cubeTextureBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, cubeTextureBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCubeCoords), gl.STATIC_DRAW);
+    cubeTextureBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeTextureBuffer);
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(textureCubeCoords), state.gl.STATIC_DRAW);
     cubeTextureBuffer.itemSize = 2;
     cubeTextureBuffer.numItems = 24;
         
@@ -283,24 +285,24 @@ function initBuffers() {
         cylinderTopVertices.push(x, 1, z);
         cylinderTopNormals.push(0.0, 1.0, 0.0);
     }
-    cylinderVertexPositionBuffer = gl.createBuffer();
-    cylinderVertexNormalBuffer = gl.createBuffer();
-    cylinderTextureBuffer = gl.createBuffer();
+    cylinderVertexPositionBuffer = state.gl.createBuffer();
+    cylinderVertexNormalBuffer = state.gl.createBuffer();
+    cylinderTextureBuffer = state.gl.createBuffer();
     var cylinderVertices = cylinderBotVertices.concat(cylinderSideVertices).concat(cylinderTopVertices);
     var cylinderNormals = cylinderBotNormals.concat(cylinderSideNormals).concat(cylinderTopNormals);
     var cylinderTextureCoordinates = cylinderBotTopTextureCoordinates.concat(cylinderSideTextureCoordinates).concat(cylinderBotTopTextureCoordinates);
-    gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexPositionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinderVertices), gl.STATIC_DRAW);
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cylinderVertexPositionBuffer);
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(cylinderVertices), state.gl.STATIC_DRAW);
     cylinderVertexPositionBuffer.itemSize = 3;
     cylinderVertexPositionBuffer.numItems = cylinderVertices.length / 3;
     
-    gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexNormalBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinderNormals), gl.STATIC_DRAW);
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cylinderVertexNormalBuffer);
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(cylinderNormals), state.gl.STATIC_DRAW);
     cylinderVertexNormalBuffer.itemSize = 3;
     cylinderVertexNormalBuffer.numItems = cylinderNormals.length / 3;
     
-    gl.bindBuffer(gl.ARRAY_BUFFER, cylinderTextureBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinderTextureCoordinates), gl.STATIC_DRAW);
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cylinderTextureBuffer);
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(cylinderTextureCoordinates), state.gl.STATIC_DRAW);
     cylinderTextureBuffer.itemSize = 2;
     cylinderTextureBuffer.numItems = cylinderTextureCoordinates.length / 2;
     
@@ -325,9 +327,9 @@ function initBuffers() {
     //console.log(cylinderVertices.length);
     //console.log(cylinderIndices);
     
-    cylinderVertexIndexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cylinderVertexIndexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cylinderIndices), gl.STATIC_DRAW);
+    cylinderVertexIndexBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cylinderVertexIndexBuffer);
+    state.gl.bufferData(state.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cylinderIndices), state.gl.STATIC_DRAW);
     cylinderVertexIndexBuffer.itemSize = 1;
     cylinderVertexIndexBuffer.numItems = cylinderIndices.length;
     
@@ -371,137 +373,137 @@ function initBuffers() {
             indexData.push(first + 1);
         }
     }
-    sphereVertexNormalBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, sphereVertexNormalBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normalData), gl.STATIC_DRAW);
+    sphereVertexNormalBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, sphereVertexNormalBuffer);
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(normalData), state.gl.STATIC_DRAW);
     sphereVertexNormalBuffer.itemSize = 3;
     sphereVertexNormalBuffer.numItems = normalData.length / 3;
-    sphereVertexPositionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, sphereVertexPositionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexPositionData), gl.STATIC_DRAW);
+    sphereVertexPositionBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, sphereVertexPositionBuffer);
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(vertexPositionData), state.gl.STATIC_DRAW);
     sphereVertexPositionBuffer.itemSize = 3;
     sphereVertexPositionBuffer.numItems = vertexPositionData.length / 3;
-    sphereVertexIndexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sphereVertexIndexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexData), gl.STREAM_DRAW);
+    sphereVertexIndexBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, sphereVertexIndexBuffer);
+    state.gl.bufferData(state.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexData), state.gl.STREAM_DRAW);
     sphereVertexIndexBuffer.itemSize = 1;
     sphereVertexIndexBuffer.numItems = indexData.length;
     
     //don't use textures for spheres. Thus, mark all as 0
-    sphereTextureBuffer = gl.createBuffer();
+    sphereTextureBuffer = state.gl.createBuffer();
     var sphereTextures = [];
     for(var i = 0; i < normalData.length / 3; i++) {
 		sphereTextures.push(0.0, 0.0);
 	}
 	
-	gl.bindBuffer(gl.ARRAY_BUFFER, sphereTextureBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereTextures), gl.STATIC_DRAW);
+	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, sphereTextureBuffer);
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(sphereTextures), state.gl.STATIC_DRAW);
     sphereTextureBuffer.itemSize = 2;
     sphereTextureBuffer.numItems = normalData.length / 3;
     
-	shadowFrameBuffer = createFrameBufferObject(gl, 512, 512);
+	shadowFrameBuffer = createFrameBufferObject(state.gl, 512, 512);
 }
 
 function initializeAtrributes() {
-	gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
-	gl.vertexAttribPointer(shadowMapShaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-	gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
-	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-	gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexNormalBuffer);
-	gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cubeVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
-	gl.bindBuffer(gl.ARRAY_BUFFER, cubeTextureBuffer);
-	gl.vertexAttribPointer(shaderProgram.vertexTextureAttribute, cubeTextureBuffer.itemSize, gl.FLOAT, false, 0, 0);
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
+	state.gl.vertexAttribPointer(shadowMapShaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
+	state.gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexNormalBuffer);
+	state.gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cubeVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeTextureBuffer);
+	state.gl.vertexAttribPointer(shaderProgram.vertexTextureAttribute, cubeTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+	state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
 }
 
 function setupToDrawCube(shadow) {
 	if(shadow) {
-		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
-		gl.vertexAttribPointer(shadowMapShaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
+		state.gl.vertexAttribPointer(shadowMapShaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
 	} else {
-		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
-		gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexNormalBuffer);
-		gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cubeVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ARRAY_BUFFER, cubeTextureBuffer);
-		gl.vertexAttribPointer(shaderProgram.vertexTextureAttribute, cubeTextureBuffer.itemSize, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
+		state.gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexNormalBuffer);
+		state.gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cubeVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeTextureBuffer);
+		state.gl.vertexAttribPointer(shaderProgram.vertexTextureAttribute, cubeTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
 	}
 }
 
 function setupToDrawCubeInsides(shadow) {
 	if(shadow) {
-		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
-		gl.vertexAttribPointer(shadowMapShaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
+		state.gl.vertexAttribPointer(shadowMapShaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
 	} else {
-		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
-		gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ARRAY_BUFFER, cubeInsidesVertexNormalBuffer);
-		gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cubeInsidesVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ARRAY_BUFFER, cubeTextureBuffer);
-		gl.vertexAttribPointer(shaderProgram.vertexTextureAttribute, cubeTextureBuffer.itemSize, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
+		state.gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeInsidesVertexNormalBuffer);
+		state.gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cubeInsidesVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeTextureBuffer);
+		state.gl.vertexAttribPointer(shaderProgram.vertexTextureAttribute, cubeTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
 	}
 }
 
 function setupToDrawCylinder(shadow) {
 	if(shadow) {
-		gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexPositionBuffer);
-		gl.vertexAttribPointer(shadowMapShaderProgram.vertexPositionAttribute, cylinderVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cylinderVertexIndexBuffer);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cylinderVertexPositionBuffer);
+		state.gl.vertexAttribPointer(shadowMapShaderProgram.vertexPositionAttribute, cylinderVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cylinderVertexIndexBuffer);
 	} else {
-		gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexPositionBuffer);
-		gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cylinderVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexNormalBuffer);
-		gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cylinderVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ARRAY_BUFFER, cylinderTextureBuffer);
-		gl.vertexAttribPointer(shaderProgram.vertexTextureAttribute, cylinderTextureBuffer.itemSize, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cylinderVertexIndexBuffer);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cylinderVertexPositionBuffer);
+		state.gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cylinderVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cylinderVertexNormalBuffer);
+		state.gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cylinderVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cylinderTextureBuffer);
+		state.gl.vertexAttribPointer(shaderProgram.vertexTextureAttribute, cylinderTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cylinderVertexIndexBuffer);
 	}
 }
 
 function setupToDrawSphere(shadow) {
 	if(shadow) {
-		gl.bindBuffer(gl.ARRAY_BUFFER, sphereVertexPositionBuffer);
-		gl.vertexAttribPointer(shadowMapShaderProgram.vertexPositionAttribute, sphereVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sphereVertexIndexBuffer);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, sphereVertexPositionBuffer);
+		state.gl.vertexAttribPointer(shadowMapShaderProgram.vertexPositionAttribute, sphereVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, sphereVertexIndexBuffer);
 	} else {
-		gl.bindBuffer(gl.ARRAY_BUFFER, sphereVertexPositionBuffer);
-		gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, sphereVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ARRAY_BUFFER, sphereVertexNormalBuffer);
-		gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, sphereVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ARRAY_BUFFER, sphereTextureBuffer);
-		gl.vertexAttribPointer(shaderProgram.vertexTextureAttribute, sphereTextureBuffer.itemSize, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sphereVertexIndexBuffer);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, sphereVertexPositionBuffer);
+		state.gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, sphereVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, sphereVertexNormalBuffer);
+		state.gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, sphereVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, sphereTextureBuffer);
+		state.gl.vertexAttribPointer(shaderProgram.vertexTextureAttribute, sphereTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, sphereVertexIndexBuffer);
 	}
 }
 
 function setupMaterialBrass() {
-    gl.uniform3f(shaderProgram.uMaterialAmbientColorUniform, 0.329412, 0.223529, 0.027451);
-    gl.uniform3f(shaderProgram.uMaterialDiffuseColorUniform, 0.780392, 0.568627, 0.113725);
-    gl.uniform3f(shaderProgram.uMaterialSpecularColorUniform, 0.992157, 0.941176, 0.807843);
-    gl.uniform1f(shaderProgram.uMaterialShininessUniform, 27.8974);
+    state.gl.uniform3f(shaderProgram.uMaterialAmbientColorUniform, 0.329412, 0.223529, 0.027451);
+    state.gl.uniform3f(shaderProgram.uMaterialDiffuseColorUniform, 0.780392, 0.568627, 0.113725);
+    state.gl.uniform3f(shaderProgram.uMaterialSpecularColorUniform, 0.992157, 0.941176, 0.807843);
+    state.gl.uniform1f(shaderProgram.uMaterialShininessUniform, 27.8974);
 }
 
 function setupMaterialBronze() {
-    gl.uniform3f(shaderProgram.uMaterialAmbientColorUniform, 0.2125, 0.1275, 0.054);
-    gl.uniform3f(shaderProgram.uMaterialDiffuseColorUniform, 0.714, 0.4284, 0.18144);
-    gl.uniform3f(shaderProgram.uMaterialSpecularColorUniform, 0.393548, 0.271906, 0.166721);
-    gl.uniform1f(shaderProgram.uMaterialShininessUniform, 25.6);
+    state.gl.uniform3f(shaderProgram.uMaterialAmbientColorUniform, 0.2125, 0.1275, 0.054);
+    state.gl.uniform3f(shaderProgram.uMaterialDiffuseColorUniform, 0.714, 0.4284, 0.18144);
+    state.gl.uniform3f(shaderProgram.uMaterialSpecularColorUniform, 0.393548, 0.271906, 0.166721);
+    state.gl.uniform1f(shaderProgram.uMaterialShininessUniform, 25.6);
 }
 
 function setupMaterialChrome() {
-    gl.uniform3f(shaderProgram.uMaterialAmbientColorUniform, 0.25, 0.25, 0.25);
-    gl.uniform3f(shaderProgram.uMaterialDiffuseColorUniform, 0.4, 0.4, 0.4774597);
-    gl.uniform3f(shaderProgram.uMaterialSpecularColorUniform, 0.774597, 0.271906, 0.774597);
-    gl.uniform1f(shaderProgram.uMaterialShininessUniform, 76.8);
+    state.gl.uniform3f(shaderProgram.uMaterialAmbientColorUniform, 0.25, 0.25, 0.25);
+    state.gl.uniform3f(shaderProgram.uMaterialDiffuseColorUniform, 0.4, 0.4, 0.4774597);
+    state.gl.uniform3f(shaderProgram.uMaterialSpecularColorUniform, 0.774597, 0.271906, 0.774597);
+    state.gl.uniform1f(shaderProgram.uMaterialShininessUniform, 76.8);
 }
 
 function setupMaterial(material, shadow) {
 	if(!shadow) {
-		gl.uniform1i(shaderProgram.useMaterialUniform, true);
+		state.gl.uniform1i(shaderProgram.useMaterialUniform, true);
 		if(material == "brass") {
 			setupMaterialBrass();
 		} else if(material == "bronze") {
@@ -510,13 +512,13 @@ function setupMaterial(material, shadow) {
 			setupMaterialChrome();
 		} else if(material == "none") {
 			setupMaterialChrome();
-			gl.uniform1i(shaderProgram.useMaterialUniform, false);
+			state.gl.uniform1i(shaderProgram.useMaterialUniform, false);
 		}
 	}
 }
 
 function chooseTexture(i, shadow) {
-	if(!shadow) gl.uniform1i(gl.getUniformLocation(shaderProgram, "thetexture"), i);
+	if(!shadow) state.gl.uniform1i(state.gl.getUniformLocation(shaderProgram, "thetexture"), i);
 }
 	
 
@@ -555,7 +557,7 @@ function drawLightSource(shadow) {
     setMatrixUniforms(shadow);
     chooseTexture(1, shadow);
     setupMaterial("bronze", shadow);
-    gl.drawElements(gl.TRIANGLES, sphereVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, sphereVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -568,7 +570,7 @@ function drawRoom(shadow) {
     setMatrixUniforms(shadow);
     chooseTexture(1, shadow);
     setupMaterial(roomMaterial, shadow);
-    gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -581,7 +583,7 @@ function drawArmBase(shadow) {
     setMatrixUniforms(shadow);
     chooseTexture(3, shadow);
     setupMaterial(armMaterial, shadow);
-    gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -593,7 +595,7 @@ function drawFirstArm(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(2, shadow);
-    gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -605,7 +607,7 @@ function drawSecondArm(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(2, shadow);
-    gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -617,7 +619,7 @@ function drawPalm(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(0, shadow);
-    gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -629,7 +631,7 @@ function drawFingerBase(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(0, shadow);
-    gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -641,7 +643,7 @@ function drawFingerTop(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(0, shadow);
-    gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -655,7 +657,7 @@ function drawCameraBase(shadow) {
     setMatrixUniforms(shadow);
     chooseTexture(6, shadow);
     setupMaterial(cameraMaterial, shadow);
-    gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -667,7 +669,7 @@ function drawCameraLeg(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(6, shadow);
-    gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -679,7 +681,7 @@ function drawCameraFirstBody(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(7, shadow);
-    gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -691,7 +693,7 @@ function drawCameraSecondBody(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(7, shadow);
-    gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -703,7 +705,7 @@ function drawCameraThirdBody(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(7, shadow);
-    gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -715,7 +717,7 @@ function drawCameraFourthBody(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(7, shadow);
-    gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -728,7 +730,7 @@ function drawLensCamera(shadow) {
     setupToDrawCylinder(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(8, shadow);
-    gl.drawElements(gl.TRIANGLES, cylinderVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, cylinderVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -740,7 +742,7 @@ function drawShutterCamera(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(6, shadow);
-    gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -886,7 +888,7 @@ var v = V.create();
 var n = V.create();
 
 // a method to generate lookat matrix
-// taken from http://learnwebgl.brown37.net/lib/learn_webgl_matrix.js because mat4.lookat seems buggy
+// taken from http://learnwebstate.gl.brown37.net/lib/learn_webgl_matrix.js because mat4.lookat seems buggy
 const lookAt = function (M, eye_x, eye_y, eye_z, center_x, center_y, center_z, up_dx, up_dy, up_dz) {
 
     // Local coordinate system for the camera:
@@ -938,12 +940,12 @@ function drawShadowMap(side) {
 		0.0, -1.0, 0.0, //positive z
 		0.0, -1.0, 0.0, //negative z
 	];
-	gl.useProgram(shadowMapShaderProgram);
-	gl.bindFramebuffer(gl.FRAMEBUFFER, shadowFrameBuffer);
-	gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_CUBE_MAP_POSITIVE_X+side, shadowFrameBuffer.depthBuffer, 0);
+	state.gl.useProgram(shadowMapShaderProgram);
+	state.gl.bindFramebuffer(state.gl.FRAMEBUFFER, shadowFrameBuffer);
+	state.gl.framebufferTexture2D(state.gl.FRAMEBUFFER, state.gl.COLOR_ATTACHMENT0, state.gl.TEXTURE_CUBE_MAP_POSITIVE_X+side, shadowFrameBuffer.depthBuffer, 0);
 	
-	gl.viewport(0, 0, shadowFrameBuffer.width, shadowFrameBuffer.height);
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	state.gl.viewport(0, 0, shadowFrameBuffer.width, shadowFrameBuffer.height);
+	state.gl.clear(state.gl.COLOR_BUFFER_BIT | state.gl.DEPTH_BUFFER_BIT);
 	shadowMapLookAtMatrix = mat4.create();
 	lookAt(shadowMapLookAtMatrix,
                   parseFloat(document.getElementById("lightPositionX").value / 10.0),
@@ -959,70 +961,70 @@ function drawShadowMap(side) {
     mat4.multiply(shadowMapTransform, shadowMapLookAtMatrix);
     mat4.set(shadowMapTransform, pMatrix);
     
-    gl.uniform3f(
+    state.gl.uniform3f(
         shadowMapShaderProgram.pointLightingLocationUniform,
         parseFloat(document.getElementById("lightPositionX").value / 10.0),
         parseFloat(document.getElementById("lightPositionY").value / 10.0),
         parseFloat(document.getElementById("lightPositionZ").value / 10.0)
     );
-    gl.uniform1f(shadowMapShaderProgram.uFarPlaneUniform, 100.0);
+    state.gl.uniform1f(shadowMapShaderProgram.uFarPlaneUniform, 100.0);
     
     mat4.identity(mvMatrix);
     traverse(roomNode, true);
     mat4.translate(mvMatrix, [0, 0, -20]);
     traverse(baseArmNode, true);
     
-    gl.bindFramebuffer(gl.FRAMEBUFFER,  null);
+    state.gl.bindFramebuffer(state.gl.FRAMEBUFFER,  null);
 }
 
 var lookAtMatrix;
 function drawScene() {
 	lookAtMatrix = mat4.create();
-	gl.useProgram(shaderProgram);
-    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	state.gl.useProgram(shaderProgram);
+    state.gl.viewport(0, 0, state.gl.viewportWidth, state.gl.viewportHeight);
+    state.gl.clear(state.gl.COLOR_BUFFER_BIT | state.gl.DEPTH_BUFFER_BIT);
     pMatrix = mat4.create();
     lookAt(lookAtMatrix,
 		  0.0, 0.0, 0.0,
 		  0.0, 0.0, -10.0,
 		  0.0, 1.0, 0.0);
     mat4.translate(lookAtMatrix, [document.getElementById("cameraPositionX").value / -10.0, document.getElementById("cameraPositionY").value / 10.0, document.getElementById("cameraPositionZ").value / 10.0])
-    mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+    mat4.perspective(45, state.gl.viewportWidth / state.gl.viewportHeight, 0.1, 100.0, pMatrix);
     mat4.multiply(pMatrix, lookAtMatrix);
     
-    gl.uniform1i(shaderProgram.useLightingUniform, document.getElementById("lighting").checked);
-	gl.uniform1i(shaderProgram.useTextureUniform, document.getElementById("texture").checked);
+    state.gl.uniform1i(shaderProgram.useLightingUniform, document.getElementById("lighting").checked);
+	state.gl.uniform1i(shaderProgram.useTextureUniform, document.getElementById("texture").checked);
 	
-    gl.uniform3f(
+    state.gl.uniform3f(
         shaderProgram.ambientColorUniform,
         parseFloat(document.getElementById("ambientR").value),
         parseFloat(document.getElementById("ambientG").value),
         parseFloat(document.getElementById("ambientB").value)
     );
-    gl.uniform3f(
+    state.gl.uniform3f(
         shaderProgram.pointLightingLocationUniform,
         parseFloat(document.getElementById("lightPositionX").value / 10.0),
         parseFloat(document.getElementById("lightPositionY").value / 10.0),
         parseFloat(document.getElementById("lightPositionZ").value / 10.0)
     );
-    gl.uniform3f(
+    state.gl.uniform3f(
         shaderProgram.pointLightingDiffuseColorUniform,
         parseFloat(document.getElementById("pointR").value),
         parseFloat(document.getElementById("pointG").value),
         parseFloat(document.getElementById("pointB").value)
     );
-    gl.uniform3f(
+    state.gl.uniform3f(
         shaderProgram.pointLightingSpecularColorUniform,
         parseFloat(document.getElementById("pointR").value),
         parseFloat(document.getElementById("pointG").value),
         parseFloat(document.getElementById("pointB").value)
     );
     
-    gl.activeTexture(gl.TEXTURE31);
-    gl.bindTexture(gl.TEXTURE_CUBE_MAP, shadowFrameBuffer.depthBuffer);
-    gl.uniform1i(shaderProgram.shadowMapUniform, 31);
+    state.gl.activeTexture(state.gl.TEXTURE31);
+    state.gl.bindTexture(state.gl.TEXTURE_CUBE_MAP, shadowFrameBuffer.depthBuffer);
+    state.gl.uniform1i(shaderProgram.shadowMapUniform, 31);
     
-    gl.uniform1f(shaderProgram.uFarPlaneUniform, 100.0);
+    state.gl.uniform1f(shaderProgram.uFarPlaneUniform, 100.0);
     
     mat4.identity(mvMatrix);
     traverse(lightSourceNode, false);
@@ -1143,13 +1145,13 @@ function webGLStart() {
     cameraMaterial = document.getElementById("camera-material").value;
     roomMaterial = document.getElementById("room-material").value;
     initGL(canvas);
-    ({ shaderProgram, shadowMapShaderProgram } = initShaders(gl));
+    ({ shaderProgram, shadowMapShaderProgram } = initShaders(state));
     initBuffers();
     initObjectTree();
     initInputs();
-    initTexture(gl);
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    gl.enable(gl.DEPTH_TEST);
+    initTexture(state);
+    state.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    state.gl.enable(state.gl.DEPTH_TEST);
     initializeAtrributes()
     tick();
 }
