@@ -106,8 +106,6 @@ export function assemble(state) {
 
 export function handleAnimation(state) {
   var update = (0.05 * Math.PI * 10/ 180);
-      
-  //ARM
   state.baseSteveAngle = degToRad(state.steveAngle) - degToRad(90)
 
   state.frontRightLegSteveAngle += state.frontRightLegSteveDirection * 0.1;
