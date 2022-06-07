@@ -60,6 +60,26 @@ let state = {
     fourthCameraBodyDirection: 1,
     lensCameraDirection: 1,
     shutterCameraDirection: 1,
+
+    // node angles
+    secondArmAngle: 0,
+    baseArmAngle: 0,
+    palmAngle: 0,
+    firstFingerBaseAngle: 0,
+    firstFingerTopAngle: 0, 
+    secondFingerBaseAngle: 0,
+    secondFingerTopAngle: 0,
+    thirdFingerBaseAngle: 0, 
+    thirdFingerTopAngle: 0, 
+    baseCameraAngle: 0,
+    firstCameraLegAngle: 0,
+    secondCameraLegAngle: 0,
+    thirdCameraLegAngle: 0,
+    secondCameraBodyTranslation: 0,
+    thirdCameraBodyTranslation: 0,
+    fourthCameraBodyTranslation: 0,
+    lensCameraTranslation: 0,
+    shutterCameraTranslation: 0.45,
 }
 
 state.center = state.V.create();
@@ -215,25 +235,6 @@ function setupMaterial(material, shadow) {
 function chooseTexture(i, shadow) {
 	if(!shadow) state.gl.uniform1i(state.gl.getUniformLocation(state.shaderProgram, "thetexture"), i);
 }
-var secondArmAngle = 0;
-var baseArmAngle = 0;
-var palmAngle = 0;
-var firstFingerBaseAngle = 0;
-var firstFingerTopAngle = 0; 
-var secondFingerBaseAngle = 0;
-var secondFingerTopAngle = 0;
-var thirdFingerBaseAngle = 0; 
-var thirdFingerTopAngle = 0; 
-var baseCameraAngle = 0;
-var firstCameraLegAngle = 0;
-var secondCameraLegAngle = 0;
-var thirdCameraLegAngle = 0;
-var secondCameraBodyTranslation = 0;
-var thirdCameraBodyTranslation = 0;
-var fourthCameraBodyTranslation = 0;
-var lensCameraTranslation = 0;
-var shutterCameraTranslation = 0.45;
-
 
 var animating = 1;
 
@@ -456,7 +457,7 @@ function initObjectTree(state) {
     var fourthCameraBodyNode; 
     var lensCameraNode; 
     var shutterCameraNode; 
-    
+
     state.lightSourceNode = {"draw" : drawLightSource, "matrix" : mat4.identity(mat4.create())};
     mat4.translate(state.lightSourceNode.matrix, [document.getElementById("lightPositionX").value / 10.0, document.getElementById("lightPositionY").value / 10.0, document.getElementById("lightPositionZ").value / 10.0]);
     
