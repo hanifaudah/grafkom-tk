@@ -4,6 +4,7 @@ import { assembleCamera,handleCameraAnimation } from "./camera.js";
 import { assembleLightSource } from "./lightSource.js"
 import { assembleRoom } from "./room.js"
 import { traverse } from "./utils.js"
+import { assemble as assemblePig, handleAnimation as handlePigAnimation } from "./pig.js"
 
 //draws shadowmap for the side of the texture
 //0: positive x, ..., 5: negative z
@@ -74,6 +75,9 @@ export function initObjectTree(state) {
 
   //CAMERA
   assembleCamera(state)
+
+  // //PIG
+  // assemblePig(state)
 }
 
 export function animate(state) {

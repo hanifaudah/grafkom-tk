@@ -1,27 +1,6 @@
 import { mvPushMatrix, mvPopMatrix } from "../util.js"
 import { setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture } from "./utils.js"
 
-export const state = {
-  secondArmDirection: 1,
-  firstFingerBaseDirection: 1,
-  firstFingerTopDirection: 1,
-  secondFingerBaseDirection: 1,
-  secondFingerTopDirection: 1,
-  thirdFingerBaseDirection: 1,
-  thirdFingerTopDirection: 1,
-
-  // arm node angles
-  secondArmAngle: 0,
-  baseArmAngle: 0,
-  palmAngle: 0,
-  firstFingerBaseAngle: 0,
-  firstFingerTopAngle: 0, 
-  secondFingerBaseAngle: 0,
-  secondFingerTopAngle: 0,
-  thirdFingerBaseAngle: 0, 
-  thirdFingerTopAngle: 0, 
-}
-
 function drawArmBase(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
@@ -95,7 +74,7 @@ function drawFingerTop(state, shadow) {
   mvPopMatrix(state, shadow);
 }
 
-export function assembleArm(state) {
+export function assemble(state) {
   var firstArmNode;
   var secondArmNode; 
   var palmNode; 
@@ -166,7 +145,7 @@ export function assembleArm(state) {
   thirdFingerBaseNode.child = thirdFingerTopNode;
 }
 
-export function handleArmAnimation(state) {
+export function handleAnimation(state) {
   var update = (0.05 * Math.PI * 10/ 180);
       
   //ARM
