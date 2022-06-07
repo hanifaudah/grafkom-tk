@@ -239,7 +239,7 @@ var fourthCameraBodyNode; var fourthCameraBodyTranslation = 0;
 var lensCameraNode; var lensCameraTranslation = 0;
 var shutterCameraNode; var shutterCameraTranslation = 0.45;
 
-function drawLightSource(shadow) {
+function drawLightSource(state, shadow) {
     mvPushMatrix(state);
     //item specific modifications
     //draw
@@ -251,7 +251,7 @@ function drawLightSource(shadow) {
     mvPopMatrix(state, shadow);
 }
 
-function drawRoom(shadow) {
+function drawRoom(state, shadow) {
     mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [10.0, 5.0, 30.0]);
@@ -264,7 +264,7 @@ function drawRoom(shadow) {
     mvPopMatrix(state, shadow);
 }
 
-function drawArmBase(shadow) {
+function drawArmBase(state, shadow) {
     mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [1.0, 0.25, 1.0]);
@@ -277,7 +277,7 @@ function drawArmBase(shadow) {
     mvPopMatrix(state, shadow);
 }
 
-function drawFirstArm(shadow) {
+function drawFirstArm(state, shadow) {
     mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.5, 2.0, 0.5]);
@@ -289,7 +289,7 @@ function drawFirstArm(shadow) {
     mvPopMatrix(state, shadow);
 }
 
-function drawSecondArm(shadow) {
+function drawSecondArm(state, shadow) {
     mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.5, 2.0, 0.5]);
@@ -301,7 +301,7 @@ function drawSecondArm(shadow) {
     mvPopMatrix(state, shadow);
 }
 
-function drawPalm(shadow) {
+function drawPalm(state, shadow) {
     mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.75, 0.25, 0.75]);
@@ -313,7 +313,7 @@ function drawPalm(shadow) {
     mvPopMatrix(state, shadow);
 }
 
-function drawFingerBase(shadow) {
+function drawFingerBase(state, shadow) {
     mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.15, 0.3, 0.15]);
@@ -325,7 +325,7 @@ function drawFingerBase(shadow) {
     mvPopMatrix(state, shadow);
 }
 
-function drawFingerTop(shadow) {
+function drawFingerTop(state, shadow) {
     mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.15, 0.3, 0.15]);
@@ -338,7 +338,7 @@ function drawFingerTop(shadow) {
 }
 
 
-function drawCameraBase(shadow) {
+function drawCameraBase(state, shadow) {
     mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.75, 0.25, 0.75]);
@@ -351,7 +351,7 @@ function drawCameraBase(shadow) {
     mvPopMatrix(state, shadow);
 }
 
-function drawCameraLeg(shadow) {
+function drawCameraLeg(state, shadow) {
     mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.15, 2.0, 0.15]);
@@ -363,7 +363,7 @@ function drawCameraLeg(shadow) {
     mvPopMatrix(state, shadow);
 }
 
-function drawCameraFirstBody(shadow) {
+function drawCameraFirstBody(state, shadow) {
     mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.2, 0.5, 0.55]);
@@ -375,7 +375,7 @@ function drawCameraFirstBody(shadow) {
     mvPopMatrix(state, shadow);
 }
 
-function drawCameraSecondBody(shadow) {
+function drawCameraSecondBody(state, shadow) {
     mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.1, 0.45, 0.5]);
@@ -387,7 +387,7 @@ function drawCameraSecondBody(shadow) {
     mvPopMatrix(state, shadow);
 }
 
-function drawCameraThirdBody(shadow) {
+function drawCameraThirdBody(state, shadow) {
     mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.1, 0.4, 0.45]);
@@ -399,7 +399,7 @@ function drawCameraThirdBody(shadow) {
     mvPopMatrix(state, shadow);
 }
 
-function drawCameraFourthBody(shadow) {
+function drawCameraFourthBody(state, shadow) {
     mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.1, 0.35, 0.4]);
@@ -411,7 +411,7 @@ function drawCameraFourthBody(shadow) {
     mvPopMatrix(state, shadow);
 }
 
-function drawLensCamera(shadow) {
+function drawLensCamera(state, shadow) {
     mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.3, 0.2, 0.3]);
@@ -424,7 +424,7 @@ function drawLensCamera(shadow) {
     mvPopMatrix(state, shadow);
 }
 
-function drawShutterCamera(shadow) {
+function drawShutterCamera(state, shadow) {
     mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.15, 0.1, 0.1]);
@@ -437,7 +437,7 @@ function drawShutterCamera(shadow) {
 }
 
 
-function initObjectTree() {
+function initObjectTree(state) {
     state.lightSourceNode = {"draw" : drawLightSource, "matrix" : mat4.identity(mat4.create())};
     mat4.translate(state.lightSourceNode.matrix, [document.getElementById("lightPositionX").value / 10.0, document.getElementById("lightPositionY").value / 10.0, document.getElementById("lightPositionZ").value / 10.0]);
     
@@ -701,7 +701,7 @@ function animate(state) {
         if(shutterCameraTranslation > 0.55 &&  state.shutterCameraDirection == 1) state.shutterCameraDirection *= -1;
         document.getElementById("shutterCameraTranslationSlider").value = shutterCameraTranslation * 100;
     }
-    initObjectTree();
+    initObjectTree(state);
 }
 
 function tick() {
@@ -722,8 +722,8 @@ function webGLStart() {
     state.roomMaterial = document.getElementById("room-material").value;
     initGL(canvas);
     state = { ...state, ...initShaders(state)}
-    initBuffers(state, );
-    initObjectTree();
+    initBuffers(state);
+    initObjectTree(state);
     initInputs();
     initTexture(state);
     state.gl.clearColor(0.0, 0.0, 0.0, 1.0);

@@ -62,7 +62,7 @@ export function traverse(state, node, shadow) {
   //modifications
   mat4.multiply(state.mvMatrix, node.matrix);
   //draw
-  node.draw(shadow);
+  node.draw(state, shadow);
   if("child" in node) traverse(state, node.child, shadow);
   mvPopMatrix(state, shadow);
   if("sibling" in node) traverse(state, node.sibling, shadow);
