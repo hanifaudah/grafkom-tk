@@ -62,7 +62,7 @@ export function assemble(state) {
   var noseNode
   
   state.baseCreeperNode = {"draw" : drawCreeperBase, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(state.baseCreeperNode.matrix, [5.0, -1.6, 5]);
+  mat4.translate(state.baseCreeperNode.matrix, [-5, -1.6, 5]);
   mat4.rotate(state.baseCreeperNode.matrix, state.baseCreeperAngle, [0.0, 1.0, 0.0]);
 
   headNode = {"draw" : drawHead, "matrix" : mat4.identity(mat4.create())};
@@ -89,7 +89,6 @@ export function assemble(state) {
   mat4.rotate(backRightLegNode.matrix, state.backRightLegAngle, [-1.0, 0.0, 1.0]);
   mat4.translate(backRightLegNode.matrix, [0.0, -2.0, 0.0]);
 
-  state.basePigNode.sibling = state.baseCreeperNode
   state.baseCreeperNode.child = frontLeftLegNode
   frontLeftLegNode.sibling = frontRightLegNode
   frontRightLegNode.sibling = backRightLegNode

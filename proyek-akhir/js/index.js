@@ -10,6 +10,7 @@ import { state as cameraState } from "./hirarki/camera.js"
 // ADD OBJECT HERE: import state
 import { state as pigState } from "./hirarki/pig.js"
 import { state as creeperState } from "./hirarki/creeper.js"
+import { state as steveState } from "./hirarki/steve.js"
 
 
 let state = {
@@ -58,6 +59,7 @@ let state = {
     // ADD OBJECT HERE: spread state here
     ...pigState,
     ...creeperState,
+    ...steveState
 }
 
 state.center = state.V.create();
@@ -96,7 +98,6 @@ function drawScene() {
 
     // Camera Movement
     let cameraTranslation = [document.getElementById("cameraPositionX").value / -10.0, document.getElementById("cameraPositionY").value / -10.0, document.getElementById("cameraPositionZ").value / 10.0]
-    console.log(state.pigHeadNode)
     mat4.translate(state.lookAtMatrix, cameraTranslation)
     mat4.perspective(45, state.gl.viewportWidth / state.gl.viewportHeight, 0.1, 100.0, state.pMatrix);
     mat4.multiply(state.pMatrix, state.lookAtMatrix);
@@ -140,11 +141,12 @@ function drawScene() {
     traverse(state, state.roomNode, false);
     
     mat4.translate(state.mvMatrix, [0, 0, -20]);
-    traverse(state, state.baseArmNode, false);
+    // traverse(state, state.baseArmNode, false);
+    traverse(state, state.basePigNode, false);
+    traverse(state, state.baseCreeperNode, false);
+    traverse(state, state.baseSteveNode, false);
     
     // ADD OBJECT HERE: add traverse
-    // mat4.translate(state.mvMatrix, [0, 0, -20]);
-    // traverse(state, state.basePigNode, false);
 }
 
 function tick() {

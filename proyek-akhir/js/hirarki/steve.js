@@ -2,33 +2,26 @@ import { mvPushMatrix, mvPopMatrix } from "../util.js"
 import { setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture } from "./utils.js"
 
 export const state = {
-  basePigNode: undefined,
-  headPigNode: undefined,
+  baseSteveNode: undefined,
+  headSteveNode: undefined,
   armMaterial: undefined,
 
-  // direction
-  // pigsecondArmDirection: 1,
-  // pigfirstFingerBaseDirection: 1,
-  // pigfirstFingerTopDirection: 1,
-  // pigsecondFingerBaseDirection: 1,
-  // pigsecondFingerTopDirection: 1,
-  // pigthirdFingerBaseDirection: 1,
-  // pigthirdFingerTopDirection: 1,
-
   // angles
-  basePigAngle: 10,
-  frontLeftLegPigAngle: 0,
-  frontRightLegPigAngle: 0,
-  backLeftLegPigAngle: 0,
-  backRightLegPigAngle: 0,
-  headPigAngle: 0,
-  nosePigAngle: 0
+  baseSteveAngle: 10,
+  frontLeftLegSteveAngle: 0,
+  frontRightLegSteveAngle: 0,
+  backLeftLegSteveAngle: 0,
+  backRightLegSteveAngle: 0,
+  headSteveAngle: 0,
+  noseSteveAngle: 0,
+  leftArmSteveAngle: 0,
+  rightArmSteveAngle: 0
 }
 
-function drawPigBase(state, shadow) {
+function drawSteveBase(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
-  mat4.scale(state.mvMatrix, [1.8, 0.9, 0.9]);
+  mat4.scale(state.mvMatrix, [0.5, 2, 1.1]);
   //draw
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
@@ -41,7 +34,7 @@ function drawPigBase(state, shadow) {
 function drawLeg(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
-  mat4.scale(state.mvMatrix, [0.4, 0.6, 0.4]);
+  mat4.scale(state.mvMatrix, [0.5, 2, 0.55]);
   //draw
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
@@ -53,20 +46,7 @@ function drawLeg(state, shadow) {
 function drawHead(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
-  mat4.scale(state.mvMatrix, [0.8, 0.8, 0.8]);
-  //draw
-  setupToDrawCube(state, shadow);
-  setMatrixUniforms(state, shadow);
-  chooseTexture(state, 2, shadow);
-  setupMaterial(state, state.armMaterial, shadow);
-  state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
-  mvPopMatrix(state, shadow);
-}
-
-function drawNose(state, shadow) {
-  mvPushMatrix(state);
-  //item specific modifications
-  mat4.scale(state.mvMatrix, [0.2, 0.2, 0.3]);
+  mat4.scale(state.mvMatrix, [1, 1, 1]);
   //draw
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
@@ -79,56 +59,50 @@ function drawNose(state, shadow) {
 export function assemble(state) {
   var frontLeftLegNode;
   var frontRightLegNode;
-  var backLeftLegNode;
-  var backRightLegNode;
-  var noseNode
+  var leftArm
+  var rightArm
   
-  state.basePigNode = {"draw" : drawPigBase, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(state.basePigNode.matrix, [5.0, -2.5, 0.0]);
-  mat4.rotate(state.basePigNode.matrix, state.basePigAngle, [0.0, 1.0, 0.0]);
+  state.baseSteveNode = {"draw" : drawSteveBase, "matrix" : mat4.identity(mat4.create())};
+  mat4.translate(state.baseSteveNode.matrix, [8.0, 0, 10]);
+  mat4.rotate(state.baseSteveNode.matrix, state.baseSteveAngle, [0.0, 1.0, 0.0]);
 
-  state.headPigNode = {"draw" : drawHead, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(state.headPigNode.matrix, [2.5, 0.5, 0.0]);
-  mat4.rotate(state.headPigNode.matrix, state.headPigAngle, [0.0, 1.0, 0.0]);
-
-  noseNode = {"draw" : drawNose, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(noseNode.matrix, [0.8, -0.2, 0]);
-  mat4.rotate(noseNode.matrix, state.nosePigAngle, [0.0, 1.0, 0.0]);
+  state.headSteveNode = {"draw" : drawHead, "matrix" : mat4.identity(mat4.create())};
+  mat4.translate(state.headSteveNode.matrix, [0, 3, 0]);
+  mat4.rotate(state.headSteveNode.matrix, state.headSteveAngle, [0.0, 1.0, 0.0]);
   
   frontLeftLegNode = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(frontLeftLegNode.matrix, [1.4, 0.5, -0.5]);
+  mat4.translate(frontLeftLegNode.matrix, [0, -1, -0.55]);
   mat4.rotate(frontLeftLegNode.matrix, state.frontLeftLegAngle, [-1.0, 0.0, 1.0]);
   mat4.translate(frontLeftLegNode.matrix, [0.0, -2.0, 0.0]);
 
   frontRightLegNode = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(frontRightLegNode.matrix, [1.4, 0.5, 0.5]);
+  mat4.translate(frontRightLegNode.matrix, [0, -1, 0.55]);
   mat4.rotate(frontRightLegNode.matrix, state.frontRightLegAngle, [-1.0, 0.0, 1.0]);
   mat4.translate(frontRightLegNode.matrix, [0.0, -2.0, 0.0]);
 
-  backLeftLegNode = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(backLeftLegNode.matrix, [-1.5, 0.5, -0.5]);
-  mat4.rotate(backLeftLegNode.matrix, state.backLeftLegAngle, [-1.0, 0.0, 1.0]);
-  mat4.translate(backLeftLegNode.matrix, [0.0, -2.0, 0.0]);
+  leftArm = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
+  mat4.translate(leftArm.matrix, [0, 2, -1.55]);
+  mat4.rotate(leftArm.matrix, state.leftArmSteveAngle, [-1.0, 0.0, 1.0]);
+  mat4.translate(leftArm.matrix, [0.0, -2.0, 0.0]);
 
-  backRightLegNode = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(backRightLegNode.matrix, [-1.5, 0.5, 0.5]);
-  mat4.rotate(backRightLegNode.matrix, state.backRightLegAngle, [-1.0, 0.0, 1.0]);
-  mat4.translate(backRightLegNode.matrix, [0.0, -2.0, 0.0]);
+  rightArm = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
+  mat4.translate(rightArm.matrix, [0, 2, 1.55]);
+  mat4.rotate(rightArm.matrix, state.rightArmSteveAngle, [-1.0, 0.0, 1.0]);
+  mat4.translate(rightArm.matrix, [0.0, -2.0, 0.0]);
 
-  state.basePigNode.child = frontLeftLegNode
+  state.baseSteveNode.child = frontLeftLegNode
   frontLeftLegNode.sibling = frontRightLegNode
-  frontRightLegNode.sibling = backRightLegNode
-  backRightLegNode.sibling = backLeftLegNode
-  backLeftLegNode.sibling = state.headPigNode
-  state.headPigNode.child = noseNode
+  frontRightLegNode.sibling = state.headSteveNode
+  state.headSteveNode.sibling = leftArm
+  leftArm.sibling = rightArm
 }
 
 export function handleAnimation(state) {
   var update = (0.05 * Math.PI * 10/ 180);
       
   //ARM
-  state.basePigAngle = (state.basePigAngle + update)%(2*Math.PI);
-  document.getElementById("baseArmRotationSlider").value = state.basePigAngle * 180 / (Math.PI);
+  state.baseSteveAngle = (state.baseSteveAngle + update)%(2*Math.PI);
+  document.getElementById("baseArmRotationSlider").value = state.baseSteveAngle * 180 / (Math.PI);
   
   // state.pigsecondArmAngle += update*state.pigsecondArmDirection;
   // if(state.pigsecondArmAngle < 0 && state.pigsecondArmDirection == -1) state.pigsecondArmDirection *= -1;

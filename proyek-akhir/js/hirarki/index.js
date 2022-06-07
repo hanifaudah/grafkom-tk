@@ -9,6 +9,7 @@ import { traverse } from "./utils.js"
 
 import { assemble as assemblePig, handleAnimation as handlePigAnimation } from "./pig.js"
 import { assemble as assembleCreeper, handleAnimation as handleCreeperAnimation } from "./creeper.js"
+import { assemble as assembleSteve, handleAnimation as handleSteveAnimation } from "./steve.js"
 
 //draws shadowmap for the side of the texture
 //0: positive x, ..., 5: negative z
@@ -62,11 +63,12 @@ export function drawShadowMap(state, side) {
     mat4.identity(state.mvMatrix);
     traverse(state, state.roomNode, true);
     mat4.translate(state.mvMatrix, [0, 0, -20]);
-    traverse(state, state.baseArmNode, true);
+    // traverse(state, state.baseArmNode, true);
+    traverse(state, state.basePigNode, true);
+    traverse(state, state.baseCreeperNode, true);
+    traverse(state, state.baseSteveNode, true);
     
     // ADD OBJECT HERE: traverse baseNode
-    // mat4.translate(state.mvMatrix, [0, 0, -20]);
-    // traverse(state, state.basePigNode, true);
 
     state.gl.bindFramebuffer(state.gl.FRAMEBUFFER,  null);
 }
@@ -87,6 +89,7 @@ export function initObjectTree(state) {
   // ADD OBJECT HERE: assemble object
   assemblePig(state)
   assembleCreeper(state)
+  assembleSteve(state)
 }
 
 export function animate(state) {
@@ -102,6 +105,7 @@ export function animate(state) {
       // ADD OBJECT HERE: handle animation func
       handlePigAnimation(state)
       handleCreeperAnimation(state)
+      handleSteveAnimation(state)
   }
   initObjectTree(state);
 }
