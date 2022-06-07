@@ -184,8 +184,8 @@
           <input type="checkbox" id="texture" checked /> Use texture<br/>
           <div class="input-light">
                 <!-- Camera controls -->
-                <h2>Camera Position</h2>
-                <div id="cam-btns">
+                <!-- <h2>Camera Position</h2> -->
+                <!-- <div id="cam-btns">
                     <button id="0">Overview</button>
                     <button id="1">Pig POV</button>
                 </div>
@@ -202,10 +202,10 @@
                         Z<br />
                         <input type="range" min="-200" max="100" value="-100" class="slider" id="cameraPositionZ">
                     </div>
-                </div>
+                </div> -->
                 <!-- Light controls -->
-                <h2>Point light</h2>
-                <div>
+                <!-- <h2>Point light</h2> -->
+                <!-- <div>
                     X<br />
                     <input type="range" min="-100" max="100" value="0" class="slider" id="lightPositionX">
                 </div>
@@ -225,11 +225,11 @@
                 </div>
                 <div>
                     B:  <br/> <input type="text" id="pointB" value="0.5" />
-                </div>
+                </div> -->
             </div>
             <div class="input-light">
-                <h2>Ambient light</h2>
-                <div>
+                <!-- <h2>Ambient light</h2> -->
+                <!-- <div>
                     R: <br/>  <input type="text" id="ambientR" value="0.8" />
                 </div>
                 <div>
@@ -237,10 +237,10 @@
                 </div>
                 <div>
                     B:  <br/> <input type="text" id="ambientB" value="0.8" />
-                </div>
+                </div> -->
             </div>
             <div>
-               <h2>Arm Material</h2>
+               <!-- <h2>Arm Material</h2>
                <div>
                     <select class="form-control form-control-sm" id="arm-material">
                       <option value="none">None</option>
@@ -266,11 +266,131 @@
                       <option value="chrome">Chrome</option>
                       <option value="bronze">Bronze</option>
                     </select>
-                </div>
+                </div> -->
             </div>
 
+            <div class="accordion" id="objectSliders" style="color: black;">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                        Camera Position
+                    </button>
+                  </h2>
+                  <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
+                    <div class="accordion-body">
+                        <div id="cam-btns">
+                            <button id="0">Overview</button>
+                            <button id="1">Pig POV</button>
+                        </div>
+                        <div id="cam-controls">
+                            <div>
+                                X<br />
+                                <input type="range" min="-100" max="100" value="0" class="slider" id="cameraPositionX">
+                            </div>
+                            <div>
+                                Y<br />
+                                <input type="range" min="-50" max="400" value="20" class="slider" id="cameraPositionY">
+                            </div>
+                            <div>
+                                Z<br />
+                                <input type="range" min="-200" max="100" value="-100" class="slider" id="cameraPositionZ">
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                        Point light
+                    </button>
+                  </h2>
+                  <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
+                    <div class="accordion-body">
+                        <div>
+                            X<br />
+                            <input type="range" min="-100" max="100" value="0" class="slider" id="lightPositionX">
+                        </div>
+                        <div>
+                            Y<br />
+                            <input type="range" min="-50" max="50" value="0" class="slider" id="lightPositionY">
+                        </div>
+                        <div>
+                            Z<br />
+                            <input type="range" min="-300" max="100" value="-200" class="slider" id="lightPositionZ">
+                        </div>
+                        <div>
+                            R: <br/>  <input type="text" id="pointR" value="0.5" />
+                        </div>
+                        <div>
+                            G: <br/>  <input type="text" id="pointG" value="0.5" />
+                        </div>
+                        <div>
+                            B:  <br/> <input type="text" id="pointB" value="0.5" />
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+                        Ambient light
+                    </button>
+                  </h2>
+                  <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree">
+                    <div class="accordion-body">
+                        <div>
+                            R: <br/>  <input type="text" id="ambientR" value="0.8" />
+                        </div>
+                        <div>
+                            G:  <br/> <input type="text" id="ambientG" value="0.8" />
+                        </div>
+                        <div>
+                            B:  <br/> <input type="text" id="ambientB" value="0.8" />
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="panelsStayOpen-heading4">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapse4">
+                      Materials
+                    </button>
+                  </h2>
+                  <div id="panelsStayOpen-collapse4" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading4">
+                    <div class="accordion-body">
+                        <h2>Arm Material</h2>
+                        <div>
+                             <select class="form-control form-control-sm" id="arm-material">
+                               <option value="none">None</option>
+                               <option value="brass">Brass</option>
+                               <option value="chrome">Chrome</option>
+                               <option value="bronze">Bronze</option>
+                             </select>
+                         </div>
+                        <h2>Camera Material</h2>
+                        <div>
+                             <select class="form-control form-control-sm" id="camera-material">
+                               <option value="none">None</option>
+                               <option value="brass">Brass</option>
+                               <option value="chrome">Chrome</option>
+                               <option value="bronze">Bronze</option>
+                             </select>
+                         </div>
+                        <h2>Room Material</h2>
+                        <div>
+                             <select class="form-control form-control-sm" id="room-material">
+                               <option value="none">None</option>
+                               <option value="brass">Brass</option>
+                               <option value="chrome">Chrome</option>
+                               <option value="bronze">Bronze</option>
+                             </select>
+                         </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
           <!-- Avatar image in top left corner -->
-            <div class="accordion" id="objectSliders"></div>
             <!-- <h2>Arms</h2>
             <div>    
                 Arm Rotation <br />

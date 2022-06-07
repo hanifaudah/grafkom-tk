@@ -38,16 +38,18 @@ export function initInputs(state) {
         <input type="range" min="0" max="360" value="0" class="slider" id=${k2} disabled>
         </div>`))
     })
-    const $item = $(`<div class="accordion-item">
-    <h2 class="accordion-header" id="headingOne">
-    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+    // $body.prop("outerHTML")
+    // k1
+    const $item = $(`  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-heading${k1}">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse${k1}" aria-expanded="false" aria-controls="panelsStayOpen-collapse${k1}">
         ${k1}
-    </button>
+      </button>
     </h2>
-    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+    <div id="panelsStayOpen-collapse${k1}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading${k1}">
     ${$body.prop("outerHTML")}
     </div>
-</div>`)
+  </div>`)
     $("#objectSliders").append($item)
     })
 
