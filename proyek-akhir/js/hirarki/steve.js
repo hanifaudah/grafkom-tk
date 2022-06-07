@@ -6,6 +6,10 @@ export const state = {
   headSteveNode: undefined,
   armMaterial: undefined,
 
+  // dirs
+  frontRightLegDirection: 1,
+  frontLeftLegDirection: -1,
+
   // angles
   baseSteveAngle: 10,
   frontLeftLegSteveAngle: 0,
@@ -63,7 +67,7 @@ export function assemble(state) {
   var rightArm
   
   state.baseSteveNode = {"draw" : drawSteveBase, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(state.baseSteveNode.matrix, [8.0, 0, 10]);
+  mat4.translate(state.baseSteveNode.matrix, [8.0, 1, 10]);
   mat4.rotate(state.baseSteveNode.matrix, state.baseSteveAngle, [0.0, 1.0, 0.0]);
 
   state.headSteveNode = {"draw" : drawHead, "matrix" : mat4.identity(mat4.create())};
@@ -71,13 +75,13 @@ export function assemble(state) {
   mat4.rotate(state.headSteveNode.matrix, state.headSteveAngle, [0.0, 1.0, 0.0]);
   
   frontLeftLegNode = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(frontLeftLegNode.matrix, [-0.55, -1, 0]);
-  mat4.rotate(frontLeftLegNode.matrix, state.frontLeftLegAngle, [-1.0, 0.0, 1.0]);
+  mat4.translate(frontLeftLegNode.matrix, [-0.55, -2, 0]);
+  mat4.rotate(frontLeftLegNode.matrix, state.frontLeftLegSteveAngle, [-1.0, 0.0, 1.0]);
   mat4.translate(frontLeftLegNode.matrix, [0.0, -2.0, 0.0]);
 
   frontRightLegNode = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(frontRightLegNode.matrix, [0.55, -1, 0]);
-  mat4.rotate(frontRightLegNode.matrix, state.frontRightLegAngle, [-1.0, 0.0, 1.0]);
+  mat4.translate(frontRightLegNode.matrix, [0.55, -2, 0]);
+  mat4.rotate(frontRightLegNode.matrix, state.frontRightLegSteveAngle, [1, 0.0, 0]);
   mat4.translate(frontRightLegNode.matrix, [0.0, -2.0, 0.0]);
 
   leftArm = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
@@ -103,6 +107,12 @@ export function handleAnimation(state) {
   //ARM
   state.baseSteveAngle = (state.baseSteveAngle + update)%(2*Math.PI);
   document.getElementById("baseArmRotationSlider").value = state.baseSteveAngle * 180 / (Math.PI);
+
+  state.frontRightLegSteveAngle += state.frontRightLegDirection * 0.1;
+  if (state.frontRightLegSteveAngle >= 2 || state.frontRightLegSteveAngle <= 0) state.frontRightLegDirection *= -1
+
+  state.frontLeftLegSteveAngle += state.frontLeftLegDirection * 0.1;
+  if (state.frontLeftLegSteveAngle >= 2 || state.frontLeftLegSteveAngle <= 0) state.frontLeftLegDirection *= -1
   
   // state.pigsecondArmAngle += update*state.pigsecondArmDirection;
   // if(state.pigsecondArmAngle < 0 && state.pigsecondArmDirection == -1) state.pigsecondArmDirection *= -1;
