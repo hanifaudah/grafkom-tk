@@ -21,7 +21,7 @@ export const state = {
 function drawSteveBase(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
-  mat4.scale(state.mvMatrix, [0.5, 2, 1.1]);
+  mat4.scale(state.mvMatrix, [1.1, 2, 0.5]);
   //draw
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
@@ -34,7 +34,7 @@ function drawSteveBase(state, shadow) {
 function drawLeg(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
-  mat4.scale(state.mvMatrix, [0.5, 2, 0.55]);
+  mat4.scale(state.mvMatrix, [0.55, 2, 0.5]);
   //draw
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
@@ -71,22 +71,22 @@ export function assemble(state) {
   mat4.rotate(state.headSteveNode.matrix, state.headSteveAngle, [0.0, 1.0, 0.0]);
   
   frontLeftLegNode = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(frontLeftLegNode.matrix, [0, -1, -0.55]);
+  mat4.translate(frontLeftLegNode.matrix, [-0.55, -1, 0]);
   mat4.rotate(frontLeftLegNode.matrix, state.frontLeftLegAngle, [-1.0, 0.0, 1.0]);
   mat4.translate(frontLeftLegNode.matrix, [0.0, -2.0, 0.0]);
 
   frontRightLegNode = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(frontRightLegNode.matrix, [0, -1, 0.55]);
+  mat4.translate(frontRightLegNode.matrix, [0.55, -1, 0]);
   mat4.rotate(frontRightLegNode.matrix, state.frontRightLegAngle, [-1.0, 0.0, 1.0]);
   mat4.translate(frontRightLegNode.matrix, [0.0, -2.0, 0.0]);
 
   leftArm = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(leftArm.matrix, [0, 2, -1.55]);
+  mat4.translate(leftArm.matrix, [-1.55, 2, 0]);
   mat4.rotate(leftArm.matrix, state.leftArmSteveAngle, [-1.0, 0.0, 1.0]);
   mat4.translate(leftArm.matrix, [0.0, -2.0, 0.0]);
 
   rightArm = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(rightArm.matrix, [0, 2, 1.55]);
+  mat4.translate(rightArm.matrix, [1.55, 2, 0]);
   mat4.rotate(rightArm.matrix, state.rightArmSteveAngle, [-1.0, 0.0, 1.0]);
   mat4.translate(rightArm.matrix, [0.0, -2.0, 0.0]);
 
