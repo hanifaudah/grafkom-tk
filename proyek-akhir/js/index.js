@@ -12,6 +12,7 @@ import { state as pigState } from "./hirarki/pig.js"
 import { state as creeperState } from "./hirarki/creeper.js"
 import { state as steveState } from "./hirarki/steve.js"
 import { state as pistonState } from "./hirarki/piston.js"
+import { state as chestState } from "./hirarki/chest.js"
 
 
 let state = {
@@ -61,7 +62,8 @@ let state = {
     ...pigState,
     ...creeperState,
     ...steveState,
-    ...pistonState
+    ...pistonState,
+    ...chestState
 }
 
 state.center = state.V.create();
@@ -144,6 +146,7 @@ function drawScene() {
     traverse(state, state.baseCreeperNode, false);
     traverse(state, state.baseSteveNode, false);
     traverse(state, state.basePistonNode, false);
+    traverse(state, state.baseChestNode, false);
     
     // ADD OBJECT HERE: add traverse
 }

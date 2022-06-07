@@ -11,6 +11,7 @@ import { assemble as assemblePig, handleAnimation as handlePigAnimation } from "
 import { assemble as assembleCreeper, handleAnimation as handleCreeperAnimation } from "./creeper.js"
 import { assemble as assembleSteve, handleAnimation as handleSteveAnimation } from "./steve.js"
 import { assemble as assemblePiston, handleAnimation as handlePistonAnimation } from "./piston.js"
+import { assemble as assembleChest, handleAnimation as handleChestAnimation } from "./chest.js"
 
 //draws shadowmap for the side of the texture
 //0: positive x, ..., 5: negative z
@@ -69,6 +70,7 @@ export function drawShadowMap(state, side) {
     traverse(state, state.baseCreeperNode, true);
     traverse(state, state.baseSteveNode, true);
     traverse(state, state.basePistonNode, true);
+    traverse(state, state.baseChestNode, true);
     
     // ADD OBJECT HERE: traverse baseNode
 
@@ -93,6 +95,7 @@ export function initObjectTree(state) {
   assembleCreeper(state)
   assembleSteve(state)
   assemblePiston(state)
+  assembleChest(state)
 }
 
 export function animate(state) {
@@ -110,6 +113,7 @@ export function animate(state) {
       handleCreeperAnimation(state)
       handleSteveAnimation(state)
       handlePistonAnimation(state)
+      handleChestAnimation(state)
   }
   initObjectTree(state);
 }
