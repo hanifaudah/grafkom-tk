@@ -215,29 +215,27 @@ function setupMaterial(material, shadow) {
 function chooseTexture(i, shadow) {
 	if(!shadow) state.gl.uniform1i(state.gl.getUniformLocation(state.shaderProgram, "thetexture"), i);
 }
+var secondArmAngle = 0;
+var baseArmAngle = 0;
+var palmAngle = 0;
+var firstFingerBaseAngle = 0;
+var firstFingerTopAngle = 0; 
+var secondFingerBaseAngle = 0;
+var secondFingerTopAngle = 0;
+var thirdFingerBaseAngle = 0; 
+var thirdFingerTopAngle = 0; 
+var baseCameraAngle = 0;
+var firstCameraLegAngle = 0;
+var secondCameraLegAngle = 0;
+var thirdCameraLegAngle = 0;
+var secondCameraBodyTranslation = 0;
+var thirdCameraBodyTranslation = 0;
+var fourthCameraBodyTranslation = 0;
+var lensCameraTranslation = 0;
+var shutterCameraTranslation = 0.45;
+
 
 var animating = 1;
-var baseArmAngle = 0;
-var firstArmNode;
-var secondArmNode; var secondArmAngle = 0;
-var palmNode; var palmAngle = 0;
-var firstFingerBaseNode; var firstFingerBaseAngle = 0;
-var firstFingerTopNode; var firstFingerTopAngle = 0; 
-var secondFingerBaseNode; var secondFingerBaseAngle = 0;
-var secondFingerTopNode; var secondFingerTopAngle = 0;
-var thirdFingerBaseNode; var thirdFingerBaseAngle = 0; 
-var thirdFingerTopNode; var thirdFingerTopAngle = 0; 
-
-var baseCameraNode; var baseCameraAngle = 0;
-var firstCameraLegNode; var firstCameraLegAngle = 0;
-var secondCameraLegNode; var secondCameraLegAngle = 0;
-var thirdCameraLegNode; var thirdCameraLegAngle = 0;
-var firstCameraBodyNode;
-var secondCameraBodyNode; var secondCameraBodyTranslation = 0;
-var thirdCameraBodyNode; var thirdCameraBodyTranslation = 0;
-var fourthCameraBodyNode; var fourthCameraBodyTranslation = 0;
-var lensCameraNode; var lensCameraTranslation = 0;
-var shutterCameraNode; var shutterCameraTranslation = 0.45;
 
 function drawLightSource(state, shadow) {
     mvPushMatrix(state);
@@ -438,6 +436,27 @@ function drawShutterCamera(state, shadow) {
 
 
 function initObjectTree(state) {
+    var firstArmNode;
+    var secondArmNode; 
+    var palmNode; 
+    var firstFingerBaseNode; 
+    var firstFingerTopNode; 
+    var secondFingerBaseNode; 
+    var secondFingerTopNode; 
+    var thirdFingerBaseNode; 
+    var thirdFingerTopNode; 
+
+    var baseCameraNode; 
+    var firstCameraLegNode; 
+    var secondCameraLegNode; 
+    var thirdCameraLegNode; 
+    var firstCameraBodyNode;
+    var secondCameraBodyNode; 
+    var thirdCameraBodyNode; 
+    var fourthCameraBodyNode; 
+    var lensCameraNode; 
+    var shutterCameraNode; 
+    
     state.lightSourceNode = {"draw" : drawLightSource, "matrix" : mat4.identity(mat4.create())};
     mat4.translate(state.lightSourceNode.matrix, [document.getElementById("lightPositionX").value / 10.0, document.getElementById("lightPositionY").value / 10.0, document.getElementById("lightPositionZ").value / 10.0]);
     
