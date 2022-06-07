@@ -83,10 +83,6 @@ function initGL(canvas) {
     }
 }
 
-function degToRad(degrees) {
-    return degrees * Math.PI / 180;
-}
-
 function drawScene() {
 	state.lookAtMatrix = mat4.create();
 	state.gl.useProgram(state.shaderProgram);

@@ -1,4 +1,4 @@
-import { mvPushMatrix, mvPopMatrix } from "../util.js"
+import { mvPushMatrix, mvPopMatrix, degToRad } from "../util.js"
 import { setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture } from "./utils.js"
 
 export const state = {
@@ -13,12 +13,15 @@ export const state = {
   leftArmSteveDirection: 1,
 
   // angles
-  baseSteveAngle: 10,
+  baseSteveAngle: 0,
   frontLeftLegSteveAngle: 0,
   frontRightLegSteveAngle: 0,
   headSteveAngle: 0,
   leftArmSteveAngle: 3,
-  rightArmSteveAngle: 4
+  rightArmSteveAngle: 4,
+  steveX: 0,
+  steveZ: 0,
+  steveAngle: degToRad(360*0)
 }
 
 function drawSteveBase(state, shadow) {
@@ -64,9 +67,8 @@ export function assemble(state) {
   var frontRightLegNode;
   var leftArm
   var rightArm
-  
   state.baseSteveNode = {"draw" : drawSteveBase, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(state.baseSteveNode.matrix, [8.0, 1, 10]);
+  mat4.translate(state.baseSteveNode.matrix, [state.steveX, 0, state.steveZ]);
   mat4.rotate(state.baseSteveNode.matrix, state.baseSteveAngle, [0.0, 1.0, 0.0]);
 
   state.headSteveNode = {"draw" : drawHead, "matrix" : mat4.identity(mat4.create())};
@@ -106,8 +108,7 @@ export function handleAnimation(state) {
   var update = (0.05 * Math.PI * 10/ 180);
       
   //ARM
-  state.baseSteveAngle = (state.baseSteveAngle + update)%(2*Math.PI);
-  document.getElementById("baseArmRotationSlider").value = state.baseSteveAngle * 180 / (Math.PI);
+  state.baseSteveAngle = degToRad(state.steveAngle) - degToRad(90)
 
   state.frontRightLegSteveAngle += state.frontRightLegSteveDirection * 0.1;
   if (state.frontRightLegSteveAngle >= 1 || state.frontRightLegSteveAngle <= -1) state.frontRightLegSteveDirection *= -1
@@ -120,4 +121,10 @@ export function handleAnimation(state) {
 
   state.rightArmSteveAngle += state.rightArmSteveDirection * 0.1;
   if (state.rightArmSteveAngle >= 4 || state.rightArmSteveAngle <= 3) state.rightArmSteveDirection *= -1
+
+  // revolution
+  const radius = 10;
+  state.steveAngle += 1;
+  state.steveX = radius * Math.sin(degToRad(state.steveAngle))
+  state.steveZ = radius * Math.cos(degToRad(state.steveAngle))
 }

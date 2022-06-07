@@ -1,4 +1,4 @@
-import { mvPushMatrix, mvPopMatrix } from "../util.js"
+import { mvPushMatrix, mvPopMatrix, degToRad } from "../util.js"
 import { setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture } from "./utils.js"
 
 export const state = {
@@ -22,7 +22,10 @@ export const state = {
   backLeftLegPigAngle: 0,
   backRightLegPigAngle: 0,
   headPigAngle: 0,
-  nosePigAngle: 0
+  nosePigAngle: 0,
+  pigX: 0,
+  pigZ: 0,
+  pigAngle: degToRad(360*10)
 }
 
 function drawPigBase(state, shadow) {
@@ -84,7 +87,7 @@ export function assemble(state) {
   var noseNode
   
   state.basePigNode = {"draw" : drawPigBase, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(state.basePigNode.matrix, [5.0, -2.5, 0.0]);
+  mat4.translate(state.basePigNode.matrix, [state.pigX, -2.5, state.pigZ]);
   mat4.rotate(state.basePigNode.matrix, state.basePigAngle, [0.0, 1.0, 0.0]);
 
   state.headPigNode = {"draw" : drawHead, "matrix" : mat4.identity(mat4.create())};
@@ -127,8 +130,14 @@ export function handleAnimation(state) {
   var update = (0.05 * Math.PI * 10/ 180);
       
   //ARM
-  state.basePigAngle = (state.basePigAngle + update)%(2*Math.PI);
-  document.getElementById("baseArmRotationSlider").value = state.basePigAngle * 180 / (Math.PI);
+  state.basePigAngle = degToRad(state.pigAngle) - degToRad(90)
+  // document.getElementById("baseArmRotationSlider").value = state.basePigAngle * 180 / (Math.PI);
+
+  // revolution
+  const radius = 10;
+  state.pigAngle += 1;
+  state.pigX = radius * Math.sin(degToRad(state.pigAngle))
+  state.pigZ = radius * Math.cos(degToRad(state.pigAngle))
   
   // state.pigsecondArmAngle += update*state.pigsecondArmDirection;
   // if(state.pigsecondArmAngle < 0 && state.pigsecondArmDirection == -1) state.pigsecondArmDirection *= -1;
