@@ -74,7 +74,7 @@ function drawFingerTop(state, shadow) {
   mvPopMatrix(state, shadow);
 }
 
-export function assembleRobot(state) {
+export function assembleArm(state) {
   var firstArmNode;
   var secondArmNode; 
   var palmNode; 
@@ -143,4 +143,50 @@ export function assembleRobot(state) {
   secondFingerBaseNode.child = secondFingerTopNode;
   secondFingerBaseNode.sibling = thirdFingerBaseNode;
   thirdFingerBaseNode.child = thirdFingerTopNode;
+}
+
+export function handleArmAnimation(state) {
+  var update = (0.05 * Math.PI * 10/ 180);
+      
+  //ARM
+  state.baseArmAngle = (state.baseArmAngle + update)%(2*Math.PI);
+  document.getElementById("baseArmRotationSlider").value = state.baseArmAngle * 180 / (Math.PI);
+  
+  state.secondArmAngle += update*state.secondArmDirection;
+  if(state.secondArmAngle < 0 && state.secondArmDirection == -1) state.secondArmDirection *= -1;
+  if(state.secondArmAngle > Math.PI/2 && state.secondArmDirection == 1) state.secondArmDirection *= -1;
+  document.getElementById("secondArmRotationSlider").value = state.secondArmAngle * 180 / (Math.PI);
+  
+  state.palmAngle = (state.palmAngle + update)%(2*Math.PI);
+  document.getElementById("palmRotationSlider").value = state.palmAngle * 180 / (Math.PI);
+  
+  state.firstFingerBaseAngle += update*state.firstFingerBaseDirection;
+  if(state.firstFingerBaseAngle < -Math.PI/4 && state.firstFingerBaseDirection == -1) state.firstFingerBaseDirection *= -1;
+  if(state.firstFingerBaseAngle > Math.PI/8 && state.firstFingerBaseDirection == 1) state.firstFingerBaseDirection *= -1;
+  document.getElementById("firstFingerBaseRotationSlider").value = state.firstFingerBaseAngle * 180 / (Math.PI);
+  
+  state.firstFingerTopAngle += update*state.firstFingerTopDirection;
+  if(state.firstFingerTopAngle < 0 && state.firstFingerTopDirection == -1)state.firstFingerTopDirection *= -1;
+  if(state.firstFingerTopAngle > Math.PI/8 && state.firstFingerTopDirection == 1) state.firstFingerTopDirection *= -1;
+  document.getElementById("firstFingerTopRotationSlider").value = state.firstFingerTopAngle * 180 / (Math.PI);
+  
+  state.secondFingerBaseAngle += update*state.secondFingerBaseDirection;
+  if(state.secondFingerBaseAngle < -Math.PI/4 && state.secondFingerBaseDirection == -1) state.secondFingerBaseDirection *= -1;
+  if(state.secondFingerBaseAngle > Math.PI/8 && state.secondFingerBaseDirection == 1) state.secondFingerBaseDirection *= -1;
+  document.getElementById("secondFingerBaseRotationSlider").value = state.secondFingerBaseAngle * 180 / (Math.PI);
+  
+  state.secondFingerTopAngle += update*state.secondFingerTopDirection;
+  if(state.secondFingerTopAngle < 0 && state.secondFingerTopDirection == -1) state.secondFingerTopDirection *= -1;
+  if(state.secondFingerTopAngle > Math.PI/8 && state.secondFingerTopDirection == 1) state.secondFingerTopDirection *= -1;
+  document.getElementById("secondFingerTopRotationSlider").value = state.secondFingerTopAngle * 180 / (Math.PI);
+  
+  state.thirdFingerBaseAngle += update*state.thirdFingerBaseDirection;
+  if(state.thirdFingerBaseAngle < -Math.PI/4 && state.thirdFingerBaseDirection == -1) state.thirdFingerBaseDirection *= -1;
+  if(state.thirdFingerBaseAngle > Math.PI/8 && state.thirdFingerBaseDirection == 1) state.thirdFingerBaseDirection *= -1;
+  document.getElementById("thirdFingerBaseRotationSlider").value = state.thirdFingerBaseAngle * 180 / (Math.PI);
+  
+  state.thirdFingerTopAngle += update*state.thirdFingerTopDirection;
+  if(state.thirdFingerTopAngle < 0 && state.thirdFingerTopDirection == -1) state.thirdFingerTopDirection *= -1;
+  if(state.thirdFingerTopAngle > Math.PI/8 && state.thirdFingerTopDirection == 1) state.thirdFingerTopDirection *= -1;
+  document.getElementById("thirdFingerTopRotationSlider").value = state.thirdFingerTopAngle * 180 / (Math.PI);
 }

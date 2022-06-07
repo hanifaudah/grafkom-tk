@@ -1,3 +1,5 @@
+import { mvPushMatrix, mvPopMatrix } from "../util.js"
+
 export function setupToDrawCube(state, shadow) {
 	if(shadow) {
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexPositionBuffer);
@@ -115,4 +117,15 @@ function setupMaterialChrome(state, ) {
   state.gl.uniform3f(state.shaderProgram.uMaterialDiffuseColorUniform, 0.4, 0.4, 0.4774597);
   state.gl.uniform3f(state.shaderProgram.uMaterialSpecularColorUniform, 0.774597, 0.271906, 0.774597);
   state.gl.uniform1f(state.shaderProgram.uMaterialShininessUniform, 76.8);
+}
+
+export function traverse(state, node, shadow) {
+  mvPushMatrix(state);
+  //modifications
+  mat4.multiply(state.mvMatrix, node.matrix);
+  //draw
+  node.draw(state, shadow);
+  if("child" in node) traverse(state, node.child, shadow);
+  mvPopMatrix(state, shadow);
+  if("sibling" in node) traverse(state, node.sibling, shadow);
 }

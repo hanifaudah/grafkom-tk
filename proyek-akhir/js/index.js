@@ -1,6 +1,7 @@
 import { initInputs, initTexture, initShaders, initBuffers, initializeAtrributes } from "./init.js"
 import { Vector3, lookAt } from "./util.js"
-import { drawShadowMap, traverse, initObjectTree, animate } from "./hirarki/index.js"
+import { drawShadowMap, initObjectTree, animate } from "./hirarki/index.js"
+import { traverse } from "./hirarki/utils.js"
 
 let state = {
     gl: undefined,
@@ -44,7 +45,7 @@ let state = {
     roomNode: undefined,
     baseArmNode: undefined,
 
-    // animation direction
+    // arm animation direction
     secondArmDirection: 1,
     firstFingerBaseDirection: 1,
     firstFingerTopDirection: 1,
@@ -52,6 +53,8 @@ let state = {
     secondFingerTopDirection: 1,
     thirdFingerBaseDirection: 1,
     thirdFingerTopDirection: 1,
+
+    // arm camera direction
     firstCameraLegDirection: 1,
     secondCameraLegDirection: 1,
     thirdCameraLegDirection: 1,
@@ -61,7 +64,7 @@ let state = {
     lensCameraDirection: 1,
     shutterCameraDirection: 1,
 
-    // node angles
+    // arm node angles
     secondArmAngle: 0,
     baseArmAngle: 0,
     palmAngle: 0,
@@ -71,6 +74,8 @@ let state = {
     secondFingerTopAngle: 0,
     thirdFingerBaseAngle: 0, 
     thirdFingerTopAngle: 0, 
+
+    // camera node angles
     baseCameraAngle: 0,
     firstCameraLegAngle: 0,
     secondCameraLegAngle: 0,

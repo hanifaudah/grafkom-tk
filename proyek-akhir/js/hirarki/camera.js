@@ -160,3 +160,50 @@ export function assembleCamera(state) {
   fourthCameraBodyNode.child = lensCameraNode;
   secondCameraBodyNode.sibling = shutterCameraNode;
 }
+
+export function handleCameraAnimation(state) {
+  var update = (0.05 * Math.PI * 10/ 180);
+  
+  state.baseCameraAngle = (state.baseCameraAngle + update)%(2*Math.PI);
+  document.getElementById("baseCameraRotationSlider").value = state.baseCameraAngle * 180 / (Math.PI);
+  
+  state.firstCameraLegAngle += update*state.firstCameraLegDirection;
+  if(state.firstCameraLegAngle < 0 && state.firstCameraLegDirection == -1) state.firstCameraLegDirection *= -1;
+  if(state.firstCameraLegAngle > Math.PI/4 && state.firstCameraLegDirection == 1) state.firstCameraLegDirection *= -1;
+  document.getElementById("firstCameraLegRotationSlider").value = state.firstCameraLegAngle * 180 / (Math.PI);
+  
+  state.secondCameraLegAngle += update*state.secondCameraLegDirection;
+  if(state.secondCameraLegAngle < 0 && state.secondCameraLegDirection == -1) state.secondCameraLegDirection *= -1;
+  if(state.secondCameraLegAngle > Math.PI/4 && state.secondCameraLegDirection == 1) state.secondCameraLegDirection *= -1;
+  document.getElementById("secondCameraLegRotationSlider").value = state.secondCameraLegAngle * 180 / (Math.PI);
+  
+  state.thirdCameraLegAngle += update*state.thirdCameraLegDirection;
+  if(state.thirdCameraLegAngle < 0 && state.thirdCameraLegDirection == -1) state.thirdCameraLegDirection *= -1;
+  if(state.thirdCameraLegAngle > Math.PI/4 && state.thirdCameraLegDirection == 1)  state.thirdCameraLegDirection *= -1;
+  document.getElementById("thirdCameraLegRotationSlider").value = state.thirdCameraLegAngle * 180 / (Math.PI);
+  
+  state.secondCameraBodyTranslation += 0.5*update*state.secondCameraBodyDirection;
+  if(state.secondCameraBodyTranslation < 0.05 && state.secondCameraBodyDirection == -1) state.secondCameraBodyDirection *= -1;
+  if(state.secondCameraBodyTranslation > 0.3 && state.secondCameraBodyDirection == 1) state.secondCameraBodyDirection *= -1;
+  document.getElementById("secondCameraBodyTranslationSlider").value = state.secondCameraBodyTranslation * 100;
+  
+  state.thirdCameraBodyTranslation += 0.5*update*state.thirdCameraBodyDirection;
+  if(state.thirdCameraBodyTranslation < 0.05 && state.thirdCameraBodyDirection == -1) state.thirdCameraBodyDirection *= -1;
+  if(state.thirdCameraBodyTranslation > 0.2 &&  state.thirdCameraBodyDirection == 1) state.thirdCameraBodyDirection *= -1;
+  document.getElementById("thirdCameraBodyTranslationSlider").value = state.thirdCameraBodyTranslation * 100;
+  
+  state.fourthCameraBodyTranslation += 0.5*update*state.fourthCameraBodyDirection;
+  if(state.fourthCameraBodyTranslation < 0.05 && state.fourthCameraBodyDirection == -1) state.fourthCameraBodyDirection *= -1;
+  if(state.fourthCameraBodyTranslation > 0.2 &&  state.fourthCameraBodyDirection == 1) state.fourthCameraBodyDirection *= -1;
+  document.getElementById("fourthCameraBodyTranslationSlider").value = state.fourthCameraBodyTranslation * 100;
+  
+  state.lensCameraTranslation += 0.5*update*state.lensCameraDirection;
+  if(state.lensCameraTranslation < 0.1 && state.lensCameraDirection == -1) state.lensCameraDirection *= -1;
+  if(state.lensCameraTranslation > 0.25 &&  state.lensCameraDirection == 1) state.lensCameraDirection *= -1;
+  document.getElementById("lensCameraTranslationSlider").value = state.lensCameraTranslation * 100;
+  
+  state.shutterCameraTranslation += 0.5*update*state.shutterCameraDirection;
+  if(state.shutterCameraTranslation < 0.45 && state.shutterCameraDirection == -1) state.shutterCameraDirection *= -1;
+  if(state.shutterCameraTranslation > 0.55 &&  state.shutterCameraDirection == 1) state.shutterCameraDirection *= -1;
+  document.getElementById("shutterCameraTranslationSlider").value = state.shutterCameraTranslation * 100;
+}
