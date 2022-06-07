@@ -28,7 +28,7 @@ export const state = {
 function drawPigBase(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
-  mat4.scale(state.mvMatrix, [1.8, 0.9, 0.9]);
+  mat4.scale(state.mvMatrix, [0.9, 0.9, 1.8]);
   //draw
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
@@ -66,7 +66,7 @@ function drawHead(state, shadow) {
 function drawNose(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
-  mat4.scale(state.mvMatrix, [0.2, 0.2, 0.3]);
+  mat4.scale(state.mvMatrix, [0.3, 0.2, 0.2]);
   //draw
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
@@ -88,30 +88,30 @@ export function assemble(state) {
   mat4.rotate(state.basePigNode.matrix, state.basePigAngle, [0.0, 1.0, 0.0]);
 
   state.headPigNode = {"draw" : drawHead, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(state.headPigNode.matrix, [2.5, 0.5, 0.0]);
+  mat4.translate(state.headPigNode.matrix, [0, 0.5, -2.5]);
   mat4.rotate(state.headPigNode.matrix, state.headPigAngle, [0.0, 1.0, 0.0]);
 
   noseNode = {"draw" : drawNose, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(noseNode.matrix, [0.8, -0.2, 0]);
+  mat4.translate(noseNode.matrix, [0, -0.2, -0.8]);
   mat4.rotate(noseNode.matrix, state.nosePigAngle, [0.0, 1.0, 0.0]);
   
   frontLeftLegNode = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(frontLeftLegNode.matrix, [1.4, 0.5, -0.5]);
+  mat4.translate(frontLeftLegNode.matrix, [-0.5, 0.5, -1.4]);
   mat4.rotate(frontLeftLegNode.matrix, state.frontLeftLegAngle, [-1.0, 0.0, 1.0]);
   mat4.translate(frontLeftLegNode.matrix, [0.0, -2.0, 0.0]);
 
   frontRightLegNode = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(frontRightLegNode.matrix, [1.4, 0.5, 0.5]);
+  mat4.translate(frontRightLegNode.matrix, [0.5, 0.5, -1.4]);
   mat4.rotate(frontRightLegNode.matrix, state.frontRightLegAngle, [-1.0, 0.0, 1.0]);
   mat4.translate(frontRightLegNode.matrix, [0.0, -2.0, 0.0]);
 
   backLeftLegNode = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(backLeftLegNode.matrix, [-1.5, 0.5, -0.5]);
+  mat4.translate(backLeftLegNode.matrix, [-0.5, 0.5, 1.5]);
   mat4.rotate(backLeftLegNode.matrix, state.backLeftLegAngle, [-1.0, 0.0, 1.0]);
   mat4.translate(backLeftLegNode.matrix, [0.0, -2.0, 0.0]);
 
   backRightLegNode = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(backRightLegNode.matrix, [-1.5, 0.5, 0.5]);
+  mat4.translate(backRightLegNode.matrix, [0.5, 0.5, 1.5]);
   mat4.rotate(backRightLegNode.matrix, state.backRightLegAngle, [-1.0, 0.0, 1.0]);
   mat4.translate(backRightLegNode.matrix, [0.0, -2.0, 0.0]);
 
