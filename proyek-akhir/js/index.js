@@ -16,7 +16,29 @@ let state = {
     v: undefined,
     n: undefined,
     shadowMapLookAtMatrix: mat4.create(),
-    shadowMapTransform: mat4.create()
+    shadowMapTransform: mat4.create(),
+    lookAtMatrix: undefined,
+    cubeVertexPositionBuffer: undefined,
+    cubeVertexNormalBuffer: undefined,
+    cubeInsidesVertexNormalBuffer: undefined,
+    cubeVertexIndexBuffer: undefined,
+    cubeTextureBuffer: undefined,
+
+    cylinderVertexPositionBuffer: undefined,
+    cylinderVertexNormalBuffer: undefined,
+    cylinderVertexIndexBuffer: undefined,
+    cylinderTextureBuffer: undefined,
+
+    sphereVertexPositionBuffer: undefined,
+    sphereVertexNormalBuffer: undefined,
+    sphereVertexIndexBuffer: undefined,
+    sphereTextureBuffer: undefined,
+
+    shadowFrameBuffer: undefined,
+
+    armMaterial: undefined,
+    cameraMaterial: undefined,
+    roomMaterial: undefined,
 }
 
 state.center = state.V.create();
@@ -102,32 +124,10 @@ function degToRad(degrees) {
     return degrees * Math.PI / 180;
 }
 
-var cubeVertexPositionBuffer;
-var cubeVertexNormalBuffer;
-var cubeInsidesVertexNormalBuffer;
-var cubeVertexIndexBuffer;
-var cubeTextureBuffer;
-
-var cylinderVertexPositionBuffer;
-var cylinderVertexNormalBuffer;
-var cylinderVertexIndexBuffer;
-var cylinderTextureBuffer;
-
-var sphereVertexPositionBuffer;
-var sphereVertexNormalBuffer;
-var sphereVertexIndexBuffer;
-var sphereTextureBuffer;
-
-var shadowFrameBuffer;
-
-var armMaterial;
-var cameraMaterial;
-var roomMaterial;
-
 function initBuffers() {
     //DEFINING CUBE
-    cubeVertexPositionBuffer = state.gl.createBuffer();
-    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
+    state.cubeVertexPositionBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexPositionBuffer);
     const vertices = [
         // Front face
         -1.0, -1.0,  1.0,
@@ -161,10 +161,10 @@ function initBuffers() {
         -1.0,  1.0, -1.0
     ];
     state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(vertices), state.gl.STATIC_DRAW);
-    cubeVertexPositionBuffer.itemSize = 3;
-    cubeVertexPositionBuffer.numItems = 24;
-    cubeVertexNormalBuffer = state.gl.createBuffer();
-    cubeInsidesVertexNormalBuffer = state.gl.createBuffer();
+    state.cubeVertexPositionBuffer.itemSize = 3;
+    state.cubeVertexPositionBuffer.numItems = 24;
+    state.cubeVertexNormalBuffer = state.gl.createBuffer();
+    state.cubeInsidesVertexNormalBuffer = state.gl.createBuffer();
     var vertexNormals = [
         // Front face
          0.0,  0.0,  1.0,
@@ -201,18 +201,18 @@ function initBuffers() {
     for(var i = 0; i < vertexNormals.length; i++) {
         vertexInsidesNormals.push(vertexNormals[i] * -1);
     }
-    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexNormalBuffer);
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexNormalBuffer);
     state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(vertexNormals), state.gl.STATIC_DRAW);
-    cubeVertexNormalBuffer.itemSize = 3;
-    cubeVertexNormalBuffer.numItems = 24;
+    state.cubeVertexNormalBuffer.itemSize = 3;
+    state.cubeVertexNormalBuffer.numItems = 24;
     
-    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeInsidesVertexNormalBuffer);
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeInsidesVertexNormalBuffer);
     state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(vertexInsidesNormals), state.gl.STATIC_DRAW);
-    cubeInsidesVertexNormalBuffer.itemSize = 3;
-    cubeInsidesVertexNormalBuffer.numItems = 24;
+    state.cubeInsidesVertexNormalBuffer.itemSize = 3;
+    state.cubeInsidesVertexNormalBuffer.numItems = 24;
     
-    cubeVertexIndexBuffer = state.gl.createBuffer();
-    state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+    state.cubeVertexIndexBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, state.cubeVertexIndexBuffer);
     var cubeVertexIndices = [
         0, 1, 2,      0, 2, 3,    // Front face
         4, 5, 6,      4, 6, 7,    // Back face
@@ -222,8 +222,8 @@ function initBuffers() {
         20, 21, 22,   20, 22, 23  // Left face
     ];
     state.gl.bufferData(state.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), state.gl.STATIC_DRAW);
-    cubeVertexIndexBuffer.itemSize = 1;
-    cubeVertexIndexBuffer.numItems = 36;
+    state.cubeVertexIndexBuffer.itemSize = 1;
+    state.cubeVertexIndexBuffer.numItems = 36;
     
     var textureCubeCoords = [
       // Front face
@@ -262,11 +262,11 @@ function initBuffers() {
       1/3, 1.0,
       0.0, 1.0,
     ];
-    cubeTextureBuffer = state.gl.createBuffer();
-    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeTextureBuffer);
+    state.cubeTextureBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeTextureBuffer);
     state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(textureCubeCoords), state.gl.STATIC_DRAW);
-    cubeTextureBuffer.itemSize = 2;
-    cubeTextureBuffer.numItems = 24;
+    state.cubeTextureBuffer.itemSize = 2;
+    state.cubeTextureBuffer.numItems = 24;
         
     //DEFINING CYLINDER
     //try making it with 20 segments
@@ -299,26 +299,26 @@ function initBuffers() {
         cylinderTopVertices.push(x, 1, z);
         cylinderTopNormals.push(0.0, 1.0, 0.0);
     }
-    cylinderVertexPositionBuffer = state.gl.createBuffer();
-    cylinderVertexNormalBuffer = state.gl.createBuffer();
-    cylinderTextureBuffer = state.gl.createBuffer();
+    state.cylinderVertexPositionBuffer = state.gl.createBuffer();
+    state.cylinderVertexNormalBuffer = state.gl.createBuffer();
+    state.cylinderTextureBuffer = state.gl.createBuffer();
     var cylinderVertices = cylinderBotVertices.concat(cylinderSideVertices).concat(cylinderTopVertices);
     var cylinderNormals = cylinderBotNormals.concat(cylinderSideNormals).concat(cylinderTopNormals);
     var cylinderTextureCoordinates = cylinderBotTopTextureCoordinates.concat(cylinderSideTextureCoordinates).concat(cylinderBotTopTextureCoordinates);
-    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cylinderVertexPositionBuffer);
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cylinderVertexPositionBuffer);
     state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(cylinderVertices), state.gl.STATIC_DRAW);
-    cylinderVertexPositionBuffer.itemSize = 3;
-    cylinderVertexPositionBuffer.numItems = cylinderVertices.length / 3;
+    state.cylinderVertexPositionBuffer.itemSize = 3;
+    state.cylinderVertexPositionBuffer.numItems = cylinderVertices.length / 3;
     
-    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cylinderVertexNormalBuffer);
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cylinderVertexNormalBuffer);
     state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(cylinderNormals), state.gl.STATIC_DRAW);
-    cylinderVertexNormalBuffer.itemSize = 3;
-    cylinderVertexNormalBuffer.numItems = cylinderNormals.length / 3;
+    state.cylinderVertexNormalBuffer.itemSize = 3;
+    state.cylinderVertexNormalBuffer.numItems = cylinderNormals.length / 3;
     
-    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cylinderTextureBuffer);
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cylinderTextureBuffer);
     state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(cylinderTextureCoordinates), state.gl.STATIC_DRAW);
-    cylinderTextureBuffer.itemSize = 2;
-    cylinderTextureBuffer.numItems = cylinderTextureCoordinates.length / 2;
+    state.cylinderTextureBuffer.itemSize = 2;
+    state.cylinderTextureBuffer.numItems = cylinderTextureCoordinates.length / 2;
     
     var cylinderIndices = [];
     //bot vertices
@@ -341,11 +341,11 @@ function initBuffers() {
     //console.log(cylinderVertices.length);
     //console.log(cylinderIndices);
     
-    cylinderVertexIndexBuffer = state.gl.createBuffer();
-    state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cylinderVertexIndexBuffer);
+    state.cylinderVertexIndexBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, state.cylinderVertexIndexBuffer);
     state.gl.bufferData(state.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cylinderIndices), state.gl.STATIC_DRAW);
-    cylinderVertexIndexBuffer.itemSize = 1;
-    cylinderVertexIndexBuffer.numItems = cylinderIndices.length;
+    state.cylinderVertexIndexBuffer.itemSize = 1;
+    state.cylinderVertexIndexBuffer.numItems = cylinderIndices.length;
     
     //DEFINING SPHERE
     var latitudeBands = 30;
@@ -387,110 +387,110 @@ function initBuffers() {
             indexData.push(first + 1);
         }
     }
-    sphereVertexNormalBuffer = state.gl.createBuffer();
-    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, sphereVertexNormalBuffer);
+    state.sphereVertexNormalBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.sphereVertexNormalBuffer);
     state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(normalData), state.gl.STATIC_DRAW);
-    sphereVertexNormalBuffer.itemSize = 3;
-    sphereVertexNormalBuffer.numItems = normalData.length / 3;
-    sphereVertexPositionBuffer = state.gl.createBuffer();
-    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, sphereVertexPositionBuffer);
+    state.sphereVertexNormalBuffer.itemSize = 3;
+    state.sphereVertexNormalBuffer.numItems = normalData.length / 3;
+    state.sphereVertexPositionBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.sphereVertexPositionBuffer);
     state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(vertexPositionData), state.gl.STATIC_DRAW);
-    sphereVertexPositionBuffer.itemSize = 3;
-    sphereVertexPositionBuffer.numItems = vertexPositionData.length / 3;
-    sphereVertexIndexBuffer = state.gl.createBuffer();
-    state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, sphereVertexIndexBuffer);
+    state.sphereVertexPositionBuffer.itemSize = 3;
+    state.sphereVertexPositionBuffer.numItems = vertexPositionData.length / 3;
+    state.sphereVertexIndexBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, state.sphereVertexIndexBuffer);
     state.gl.bufferData(state.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexData), state.gl.STREAM_DRAW);
-    sphereVertexIndexBuffer.itemSize = 1;
-    sphereVertexIndexBuffer.numItems = indexData.length;
+    state.sphereVertexIndexBuffer.itemSize = 1;
+    state.sphereVertexIndexBuffer.numItems = indexData.length;
     
     //don't use textures for spheres. Thus, mark all as 0
-    sphereTextureBuffer = state.gl.createBuffer();
+    state.sphereTextureBuffer = state.gl.createBuffer();
     var sphereTextures = [];
     for(var i = 0; i < normalData.length / 3; i++) {
 		sphereTextures.push(0.0, 0.0);
 	}
 	
-	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, sphereTextureBuffer);
+	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.sphereTextureBuffer);
     state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(sphereTextures), state.gl.STATIC_DRAW);
-    sphereTextureBuffer.itemSize = 2;
-    sphereTextureBuffer.numItems = normalData.length / 3;
+    state.sphereTextureBuffer.itemSize = 2;
+    state.sphereTextureBuffer.numItems = normalData.length / 3;
     
-	shadowFrameBuffer = createFrameBufferObject(512, 512);
+	state.shadowFrameBuffer = createFrameBufferObject(512, 512);
 }
 
 function initializeAtrributes() {
-	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
-	state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
-	state.gl.vertexAttribPointer(state.shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexNormalBuffer);
-	state.gl.vertexAttribPointer(state.shaderProgram.vertexNormalAttribute, cubeVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeTextureBuffer);
-	state.gl.vertexAttribPointer(state.shaderProgram.vertexTextureAttribute, cubeTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-	state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexPositionBuffer);
+	state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, state.cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexPositionBuffer);
+	state.gl.vertexAttribPointer(state.shaderProgram.vertexPositionAttribute, state.cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexNormalBuffer);
+	state.gl.vertexAttribPointer(state.shaderProgram.vertexNormalAttribute, state.cubeVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeTextureBuffer);
+	state.gl.vertexAttribPointer(state.shaderProgram.vertexTextureAttribute, state.cubeTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+	state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, state.cubeVertexIndexBuffer);
 }
 
 function setupToDrawCube(shadow) {
 	if(shadow) {
-		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
-		state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexPositionBuffer);
+		state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, state.cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, state.cubeVertexIndexBuffer);
 	} else {
-		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
-		state.gl.vertexAttribPointer(state.shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexNormalBuffer);
-		state.gl.vertexAttribPointer(state.shaderProgram.vertexNormalAttribute, cubeVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeTextureBuffer);
-		state.gl.vertexAttribPointer(state.shaderProgram.vertexTextureAttribute, cubeTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexPositionBuffer);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexPositionAttribute, state.cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexNormalBuffer);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexNormalAttribute, state.cubeVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeTextureBuffer);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexTextureAttribute, state.cubeTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, state.cubeVertexIndexBuffer);
 	}
 }
 
 function setupToDrawCubeInsides(shadow) {
 	if(shadow) {
-		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
-		state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexPositionBuffer);
+		state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, state.cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, state.cubeVertexIndexBuffer);
 	} else {
-		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
-		state.gl.vertexAttribPointer(state.shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeInsidesVertexNormalBuffer);
-		state.gl.vertexAttribPointer(state.shaderProgram.vertexNormalAttribute, cubeInsidesVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeTextureBuffer);
-		state.gl.vertexAttribPointer(state.shaderProgram.vertexTextureAttribute, cubeTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexPositionBuffer);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexPositionAttribute, state.cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeInsidesVertexNormalBuffer);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexNormalAttribute, state.cubeInsidesVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeTextureBuffer);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexTextureAttribute, state.cubeTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, state.cubeVertexIndexBuffer);
 	}
 }
 
 function setupToDrawCylinder(shadow) {
 	if(shadow) {
-		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cylinderVertexPositionBuffer);
-		state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, cylinderVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cylinderVertexIndexBuffer);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cylinderVertexPositionBuffer);
+		state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, state.cylinderVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, state.cylinderVertexIndexBuffer);
 	} else {
-		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cylinderVertexPositionBuffer);
-		state.gl.vertexAttribPointer(state.shaderProgram.vertexPositionAttribute, cylinderVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cylinderVertexNormalBuffer);
-		state.gl.vertexAttribPointer(state.shaderProgram.vertexNormalAttribute, cylinderVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cylinderTextureBuffer);
-		state.gl.vertexAttribPointer(state.shaderProgram.vertexTextureAttribute, cylinderTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cylinderVertexIndexBuffer);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cylinderVertexPositionBuffer);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexPositionAttribute, state.cylinderVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cylinderVertexNormalBuffer);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexNormalAttribute, state.cylinderVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cylinderTextureBuffer);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexTextureAttribute, state.cylinderTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, state.cylinderVertexIndexBuffer);
 	}
 }
 
 function setupToDrawSphere(shadow) {
 	if(shadow) {
-		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, sphereVertexPositionBuffer);
-		state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, sphereVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, sphereVertexIndexBuffer);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.sphereVertexPositionBuffer);
+		state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, state.sphereVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, state.sphereVertexIndexBuffer);
 	} else {
-		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, sphereVertexPositionBuffer);
-		state.gl.vertexAttribPointer(state.shaderProgram.vertexPositionAttribute, sphereVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, sphereVertexNormalBuffer);
-		state.gl.vertexAttribPointer(state.shaderProgram.vertexNormalAttribute, sphereVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, sphereTextureBuffer);
-		state.gl.vertexAttribPointer(state.shaderProgram.vertexTextureAttribute, sphereTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, sphereVertexIndexBuffer);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.sphereVertexPositionBuffer);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexPositionAttribute, state.sphereVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.sphereVertexNormalBuffer);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexNormalAttribute, state.sphereVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.sphereTextureBuffer);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexTextureAttribute, state.sphereTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, state.sphereVertexIndexBuffer);
 	}
 }
 
@@ -571,7 +571,7 @@ function drawLightSource(shadow) {
     setMatrixUniforms(shadow);
     chooseTexture(1, shadow);
     setupMaterial("bronze", shadow);
-    state.gl.drawElements(state.gl.TRIANGLES, sphereVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, state.sphereVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -583,8 +583,8 @@ function drawRoom(shadow) {
     setupToDrawCubeInsides(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(1, shadow);
-    setupMaterial(roomMaterial, shadow);
-    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+    setupMaterial(state.roomMaterial, shadow);
+    state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -596,8 +596,8 @@ function drawArmBase(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(3, shadow);
-    setupMaterial(armMaterial, shadow);
-    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+    setupMaterial(state.armMaterial, shadow);
+    state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -609,7 +609,7 @@ function drawFirstArm(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(2, shadow);
-    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -621,7 +621,7 @@ function drawSecondArm(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(2, shadow);
-    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -633,7 +633,7 @@ function drawPalm(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(0, shadow);
-    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -645,7 +645,7 @@ function drawFingerBase(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(0, shadow);
-    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -657,7 +657,7 @@ function drawFingerTop(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(0, shadow);
-    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -670,8 +670,8 @@ function drawCameraBase(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(6, shadow);
-    setupMaterial(cameraMaterial, shadow);
-    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+    setupMaterial(state.cameraMaterial, shadow);
+    state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -683,7 +683,7 @@ function drawCameraLeg(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(6, shadow);
-    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -695,7 +695,7 @@ function drawCameraFirstBody(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(7, shadow);
-    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -707,7 +707,7 @@ function drawCameraSecondBody(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(7, shadow);
-    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -719,7 +719,7 @@ function drawCameraThirdBody(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(7, shadow);
-    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -731,7 +731,7 @@ function drawCameraFourthBody(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(7, shadow);
-    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -744,7 +744,7 @@ function drawLensCamera(shadow) {
     setupToDrawCylinder(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(8, shadow);
-    state.gl.drawElements(state.gl.TRIANGLES, cylinderVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, state.cylinderVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -756,7 +756,7 @@ function drawShutterCamera(shadow) {
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
     chooseTexture(6, shadow);
-    state.gl.drawElements(state.gl.TRIANGLES, cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+    state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
     mvPopMatrix(shadow);
 }
 
@@ -943,10 +943,10 @@ function drawShadowMap(side) {
 		0.0, -1.0, 0.0, //negative z
 	];
 	state.gl.useProgram(state.shadowMapShaderProgram);
-	state.gl.bindFramebuffer(state.gl.FRAMEBUFFER, shadowFrameBuffer);
-	state.gl.framebufferTexture2D(state.gl.FRAMEBUFFER, state.gl.COLOR_ATTACHMENT0, state.gl.TEXTURE_CUBE_MAP_POSITIVE_X+side, shadowFrameBuffer.depthBuffer, 0);
+	state.gl.bindFramebuffer(state.gl.FRAMEBUFFER, state.shadowFrameBuffer);
+	state.gl.framebufferTexture2D(state.gl.FRAMEBUFFER, state.gl.COLOR_ATTACHMENT0, state.gl.TEXTURE_CUBE_MAP_POSITIVE_X+side, state.shadowFrameBuffer.depthBuffer, 0);
 	
-	state.gl.viewport(0, 0, shadowFrameBuffer.width, shadowFrameBuffer.height);
+	state.gl.viewport(0, 0, state.shadowFrameBuffer.width, state.shadowFrameBuffer.height);
 	state.gl.clear(state.gl.COLOR_BUFFER_BIT | state.gl.DEPTH_BUFFER_BIT);
 	state.shadowMapLookAtMatrix = mat4.create();
 	lookAt(state.shadowMapLookAtMatrix,
@@ -959,7 +959,7 @@ function drawShadowMap(side) {
                   upVectors[side*3],
                   upVectors[side*3+1],
                   upVectors[side*3+2]);
-    mat4.perspective(90, shadowFrameBuffer.width / shadowFrameBuffer.height, 0.1, 100.0, state.shadowMapTransform);
+    mat4.perspective(90, state.shadowFrameBuffer.width / state.shadowFrameBuffer.height, 0.1, 100.0, state.shadowMapTransform);
     mat4.multiply(state.shadowMapTransform, state.shadowMapLookAtMatrix);
     mat4.set(state.shadowMapTransform, state.pMatrix);
     
@@ -979,20 +979,19 @@ function drawShadowMap(side) {
     state.gl.bindFramebuffer(state.gl.FRAMEBUFFER,  null);
 }
 
-var lookAtMatrix;
 function drawScene() {
-	lookAtMatrix = mat4.create();
+	state.lookAtMatrix = mat4.create();
 	state.gl.useProgram(state.shaderProgram);
     state.gl.viewport(0, 0, state.gl.viewportWidth, state.gl.viewportHeight);
     state.gl.clear(state.gl.COLOR_BUFFER_BIT | state.gl.DEPTH_BUFFER_BIT);
     state.pMatrix = mat4.create();
-    lookAt(lookAtMatrix,
+    lookAt(state.lookAtMatrix,
 		  0.0, 0.0, 0.0,
 		  0.0, 0.0, -10.0,
 		  0.0, 1.0, 0.0);
-    mat4.translate(lookAtMatrix, [document.getElementById("cameraPositionX").value / -10.0, document.getElementById("cameraPositionY").value / 10.0, document.getElementById("cameraPositionZ").value / 10.0])
+    mat4.translate(state.lookAtMatrix, [document.getElementById("cameraPositionX").value / -10.0, document.getElementById("cameraPositionY").value / 10.0, document.getElementById("cameraPositionZ").value / 10.0])
     mat4.perspective(45, state.gl.viewportWidth / state.gl.viewportHeight, 0.1, 100.0, state.pMatrix);
-    mat4.multiply(state.pMatrix, lookAtMatrix);
+    mat4.multiply(state.pMatrix, state.lookAtMatrix);
     
     state.gl.uniform1i(state.shaderProgram.useLightingUniform, document.getElementById("lighting").checked);
 	state.gl.uniform1i(state.shaderProgram.useTextureUniform, document.getElementById("texture").checked);
@@ -1023,7 +1022,7 @@ function drawScene() {
     );
     
     state.gl.activeTexture(state.gl.TEXTURE31);
-    state.gl.bindTexture(state.gl.TEXTURE_CUBE_MAP, shadowFrameBuffer.depthBuffer);
+    state.gl.bindTexture(state.gl.TEXTURE_CUBE_MAP, state.shadowFrameBuffer.depthBuffer);
     state.gl.uniform1i(state.shaderProgram.shadowMapUniform, 31);
     
     state.gl.uniform1f(state.shaderProgram.uFarPlaneUniform, 100.0);
@@ -1143,9 +1142,9 @@ function webGLStart() {
     var canvas = document.getElementById("canvas");
     canvas.height = window.innerHeight * 0.9;
     canvas.width = window.innerWidth;
-    armMaterial = document.getElementById("arm-material").value;
-    cameraMaterial = document.getElementById("camera-material").value;
-    roomMaterial = document.getElementById("room-material").value;
+    state.armMaterial = document.getElementById("arm-material").value;
+    state.cameraMaterial = document.getElementById("camera-material").value;
+    state.roomMaterial = document.getElementById("room-material").value;
     initGL(canvas);
     state = { ...state, ...initShaders(state)}
     initBuffers();
