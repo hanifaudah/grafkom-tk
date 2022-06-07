@@ -183,6 +183,12 @@ export function initTexture(state) {
        configureTexture(image9, gl.TEXTURE9, state);
     }
     image9.src = "img/steveHead.png"
+
+    var image10 = new Image();
+    image10.onload = function() {
+       configureTexture(image10, gl.TEXTURE10, state);
+    }
+    image10.src = "img/pigHead.png"
 }
 
 function configureTexture(image, textureno, state) {
