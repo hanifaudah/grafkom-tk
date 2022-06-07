@@ -120,7 +120,7 @@ export function assemble(state) {
   frontRightLegNode.sibling = backRightLegNode
   backRightLegNode.sibling = backLeftLegNode
   backLeftLegNode.sibling = state.headPigNode
-  state.headPigNode.child = noseNode
+  // state.headPigNode.child = noseNode
 }
 
 export function handleAnimation(state) {
