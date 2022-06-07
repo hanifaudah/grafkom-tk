@@ -1,4 +1,4 @@
-import { initInputs, initTexture, initShaders, initBuffers } from "./init.js"
+import { initInputs, initTexture, initShaders, initBuffers, initializeAtrributes } from "./init.js"
 import { Vector3, lookAt } from "./util.js"
 import { drawShadowMap, traverse, initObjectTree, animate } from "./hirarki.js"
 
@@ -106,18 +106,6 @@ function degToRad(degrees) {
     return degrees * Math.PI / 180;
 }
 
-function initializeAtrributes() {
-	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexPositionBuffer);
-	state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, state.cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexPositionBuffer);
-	state.gl.vertexAttribPointer(state.shaderProgram.vertexPositionAttribute, state.cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexNormalBuffer);
-	state.gl.vertexAttribPointer(state.shaderProgram.vertexNormalAttribute, state.cubeVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeTextureBuffer);
-	state.gl.vertexAttribPointer(state.shaderProgram.vertexTextureAttribute, state.cubeTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
-	state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, state.cubeVertexIndexBuffer);
-}
-
 function drawScene() {
 	state.lookAtMatrix = mat4.create();
 	state.gl.useProgram(state.shaderProgram);
@@ -198,7 +186,7 @@ function webGLStart() {
     initTexture(state);
     state.gl.clearColor(0.0, 0.0, 0.0, 1.0);
     state.gl.enable(state.gl.DEPTH_TEST);
-    initializeAtrributes()
+    initializeAtrributes(state, )
     tick();
 }
 
