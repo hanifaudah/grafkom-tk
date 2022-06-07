@@ -234,3 +234,24 @@ export function mvPopMatrix(state, shadow) {
 	state.gl.uniformMatrix3fv(state.shaderProgram.nMatrixUniform, false, normalMatrix);
 }
 }
+
+//adapted from http://learnwebstate.gl.brown37.net/11_advanced_rendering/shadows.html
+export function createFrameBufferObject(state, width, height) {
+    var frameBuffer, depthBuffer;
+	
+    frameBuffer = state.gl.createFramebuffer();
+    
+    depthBuffer = state.gl.createTexture();
+	state.gl.bindTexture(state.gl.TEXTURE_CUBE_MAP, depthBuffer);
+	for(var i = 0; i < 6; i++) state.gl.texImage2D(state.gl.TEXTURE_CUBE_MAP_POSITIVE_X+i, 0, state.gl.RGBA, width, height, 0,state.gl.RGBA, state.gl.UNSIGNED_BYTE, null);
+	state.gl.texParameteri(state.gl.TEXTURE_CUBE_MAP, state.gl.TEXTURE_MAG_FILTER, state.gl.NEAREST);
+    state.gl.texParameteri(state.gl.TEXTURE_CUBE_MAP, state.gl.TEXTURE_MIN_FILTER, state.gl.NEAREST);
+	state.gl.texParameteri(state.gl.TEXTURE_CUBE_MAP, state.gl.TEXTURE_WRAP_S, state.gl.CLAMP_TO_EDGE);
+	state.gl.texParameteri(state.gl.TEXTURE_CUBE_MAP, state.gl.TEXTURE_WRAP_T, state.gl.CLAMP_TO_EDGE);
+	
+    frameBuffer.depthBuffer = depthBuffer;
+    frameBuffer.width = width;
+    frameBuffer.height = height;
+
+    return frameBuffer;
+}

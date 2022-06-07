@@ -1,5 +1,5 @@
 import { initInputs, initTexture, initShaders } from "./init.js"
-import { Vector3, lookAt, mvPushMatrix, mvPopMatrix } from "./util.js"
+import { Vector3, lookAt, mvPushMatrix, mvPopMatrix, createFrameBufferObject } from "./util.js"
 import { drawShadowMap, traverse } from "./hirarki.js"
 
 let state = {
@@ -62,28 +62,6 @@ function initGL(canvas) {
     if (!state.gl) {
         alert("Could not initialise WebGL, sorry :-(");
     }
-}
-
-
-//adapted from http://learnwebstate.gl.brown37.net/11_advanced_rendering/shadows.html
-function createFrameBufferObject(width, height) {
-    var frameBuffer, depthBuffer;
-	
-    frameBuffer = state.gl.createFramebuffer();
-    
-    depthBuffer = state.gl.createTexture();
-	state.gl.bindTexture(state.gl.TEXTURE_CUBE_MAP, depthBuffer);
-	for(var i = 0; i < 6; i++) state.gl.texImage2D(state.gl.TEXTURE_CUBE_MAP_POSITIVE_X+i, 0, state.gl.RGBA, width, height, 0,state.gl.RGBA, state.gl.UNSIGNED_BYTE, null);
-	state.gl.texParameteri(state.gl.TEXTURE_CUBE_MAP, state.gl.TEXTURE_MAG_FILTER, state.gl.NEAREST);
-    state.gl.texParameteri(state.gl.TEXTURE_CUBE_MAP, state.gl.TEXTURE_MIN_FILTER, state.gl.NEAREST);
-	state.gl.texParameteri(state.gl.TEXTURE_CUBE_MAP, state.gl.TEXTURE_WRAP_S, state.gl.CLAMP_TO_EDGE);
-	state.gl.texParameteri(state.gl.TEXTURE_CUBE_MAP, state.gl.TEXTURE_WRAP_T, state.gl.CLAMP_TO_EDGE);
-	
-    frameBuffer.depthBuffer = depthBuffer;
-    frameBuffer.width = width;
-    frameBuffer.height = height;
-
-    return frameBuffer;
 }
 
 function setMatrixUniforms(shadow) {
@@ -395,7 +373,7 @@ function initBuffers() {
     state.sphereTextureBuffer.itemSize = 2;
     state.sphereTextureBuffer.numItems = normalData.length / 3;
     
-	state.shadowFrameBuffer = createFrameBufferObject(512, 512);
+	state.shadowFrameBuffer = createFrameBufferObject(state, 512, 512);
 }
 
 function initializeAtrributes() {
