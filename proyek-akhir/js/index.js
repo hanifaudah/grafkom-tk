@@ -1,8 +1,10 @@
 import { initInputs, initTexture, initShaders } from "./init.js"
 import { Vector3 } from "./util.js"
 
-const state = {
-    gl: undefined
+let state = {
+    gl: undefined,
+    shaderProgram: undefined,
+    shadowMapShaderProgram: undefined
 }
 
 function initGL(canvas) {
@@ -39,9 +41,6 @@ function createFrameBufferObject(width, height) {
     return frameBuffer;
 }
 
-var shaderProgram;
-var shadowMapShaderProgram;
-
 var mvMatrix = mat4.create();
 var mvMatrixStack = [];
 var pMatrix = mat4.create();
@@ -58,29 +57,29 @@ function mvPopMatrix(shadow) {
     }
     mvMatrix = mvMatrixStack.pop();    
     if(shadow) {
-		state.gl.uniformMatrix4fv(shadowMapShaderProgram.pMatrixUniform, false, pMatrix);
-		state.gl.uniformMatrix4fv(shadowMapShaderProgram.mvMatrixUniform, false, mvMatrix);
+		state.gl.uniformMatrix4fv(state.shadowMapShaderProgram.pMatrixUniform, false, pMatrix);
+		state.gl.uniformMatrix4fv(state.shadowMapShaderProgram.mvMatrixUniform, false, mvMatrix);
 	} else {
-		state.gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
-		state.gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+		state.gl.uniformMatrix4fv(state.shaderProgram.pMatrixUniform, false, pMatrix);
+		state.gl.uniformMatrix4fv(state.shaderProgram.mvMatrixUniform, false, mvMatrix);
 		var normalMatrix = mat3.create();
 		mat4.toInverseMat3(mvMatrix, normalMatrix);
 		mat3.transpose(normalMatrix);
-		state.gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
+		state.gl.uniformMatrix3fv(state.shaderProgram.nMatrixUniform, false, normalMatrix);
 	}
 }
 
 function setMatrixUniforms(shadow) {
     if(shadow) {
-		state.gl.uniformMatrix4fv(shadowMapShaderProgram.pMatrixUniform, false, pMatrix);
-		state.gl.uniformMatrix4fv(shadowMapShaderProgram.mvMatrixUniform, false, mvMatrix);
+		state.gl.uniformMatrix4fv(state.shadowMapShaderProgram.pMatrixUniform, false, pMatrix);
+		state.gl.uniformMatrix4fv(state.shadowMapShaderProgram.mvMatrixUniform, false, mvMatrix);
 	} else {
-		state.gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
-		state.gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+		state.gl.uniformMatrix4fv(state.shaderProgram.pMatrixUniform, false, pMatrix);
+		state.gl.uniformMatrix4fv(state.shaderProgram.mvMatrixUniform, false, mvMatrix);
 		var normalMatrix = mat3.create();
 		mat4.toInverseMat3(mvMatrix, normalMatrix);
 		mat3.transpose(normalMatrix);
-		state.gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
+		state.gl.uniformMatrix3fv(state.shaderProgram.nMatrixUniform, false, normalMatrix);
 	}
 }
 
@@ -406,28 +405,28 @@ function initBuffers() {
 
 function initializeAtrributes() {
 	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
-	state.gl.vertexAttribPointer(shadowMapShaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+	state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
-	state.gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+	state.gl.vertexAttribPointer(state.shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexNormalBuffer);
-	state.gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cubeVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+	state.gl.vertexAttribPointer(state.shaderProgram.vertexNormalAttribute, cubeVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeTextureBuffer);
-	state.gl.vertexAttribPointer(shaderProgram.vertexTextureAttribute, cubeTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+	state.gl.vertexAttribPointer(state.shaderProgram.vertexTextureAttribute, cubeTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 	state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
 }
 
 function setupToDrawCube(shadow) {
 	if(shadow) {
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
-		state.gl.vertexAttribPointer(shadowMapShaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
 	} else {
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
-		state.gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexNormalBuffer);
-		state.gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cubeVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexNormalAttribute, cubeVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeTextureBuffer);
-		state.gl.vertexAttribPointer(shaderProgram.vertexTextureAttribute, cubeTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexTextureAttribute, cubeTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
 	}
 }
@@ -435,15 +434,15 @@ function setupToDrawCube(shadow) {
 function setupToDrawCubeInsides(shadow) {
 	if(shadow) {
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
-		state.gl.vertexAttribPointer(shadowMapShaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
 	} else {
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
-		state.gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeInsidesVertexNormalBuffer);
-		state.gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cubeInsidesVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexNormalAttribute, cubeInsidesVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cubeTextureBuffer);
-		state.gl.vertexAttribPointer(shaderProgram.vertexTextureAttribute, cubeTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexTextureAttribute, cubeTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
 	}
 }
@@ -451,15 +450,15 @@ function setupToDrawCubeInsides(shadow) {
 function setupToDrawCylinder(shadow) {
 	if(shadow) {
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cylinderVertexPositionBuffer);
-		state.gl.vertexAttribPointer(shadowMapShaderProgram.vertexPositionAttribute, cylinderVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, cylinderVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cylinderVertexIndexBuffer);
 	} else {
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cylinderVertexPositionBuffer);
-		state.gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cylinderVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexPositionAttribute, cylinderVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cylinderVertexNormalBuffer);
-		state.gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cylinderVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexNormalAttribute, cylinderVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, cylinderTextureBuffer);
-		state.gl.vertexAttribPointer(shaderProgram.vertexTextureAttribute, cylinderTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexTextureAttribute, cylinderTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, cylinderVertexIndexBuffer);
 	}
 }
@@ -467,43 +466,43 @@ function setupToDrawCylinder(shadow) {
 function setupToDrawSphere(shadow) {
 	if(shadow) {
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, sphereVertexPositionBuffer);
-		state.gl.vertexAttribPointer(shadowMapShaderProgram.vertexPositionAttribute, sphereVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, sphereVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, sphereVertexIndexBuffer);
 	} else {
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, sphereVertexPositionBuffer);
-		state.gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, sphereVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexPositionAttribute, sphereVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, sphereVertexNormalBuffer);
-		state.gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, sphereVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexNormalAttribute, sphereVertexNormalBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, sphereTextureBuffer);
-		state.gl.vertexAttribPointer(shaderProgram.vertexTextureAttribute, sphereTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
+		state.gl.vertexAttribPointer(state.shaderProgram.vertexTextureAttribute, sphereTextureBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 		state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, sphereVertexIndexBuffer);
 	}
 }
 
 function setupMaterialBrass() {
-    state.gl.uniform3f(shaderProgram.uMaterialAmbientColorUniform, 0.329412, 0.223529, 0.027451);
-    state.gl.uniform3f(shaderProgram.uMaterialDiffuseColorUniform, 0.780392, 0.568627, 0.113725);
-    state.gl.uniform3f(shaderProgram.uMaterialSpecularColorUniform, 0.992157, 0.941176, 0.807843);
-    state.gl.uniform1f(shaderProgram.uMaterialShininessUniform, 27.8974);
+    state.gl.uniform3f(state.shaderProgram.uMaterialAmbientColorUniform, 0.329412, 0.223529, 0.027451);
+    state.gl.uniform3f(state.shaderProgram.uMaterialDiffuseColorUniform, 0.780392, 0.568627, 0.113725);
+    state.gl.uniform3f(state.shaderProgram.uMaterialSpecularColorUniform, 0.992157, 0.941176, 0.807843);
+    state.gl.uniform1f(state.shaderProgram.uMaterialShininessUniform, 27.8974);
 }
 
 function setupMaterialBronze() {
-    state.gl.uniform3f(shaderProgram.uMaterialAmbientColorUniform, 0.2125, 0.1275, 0.054);
-    state.gl.uniform3f(shaderProgram.uMaterialDiffuseColorUniform, 0.714, 0.4284, 0.18144);
-    state.gl.uniform3f(shaderProgram.uMaterialSpecularColorUniform, 0.393548, 0.271906, 0.166721);
-    state.gl.uniform1f(shaderProgram.uMaterialShininessUniform, 25.6);
+    state.gl.uniform3f(state.shaderProgram.uMaterialAmbientColorUniform, 0.2125, 0.1275, 0.054);
+    state.gl.uniform3f(state.shaderProgram.uMaterialDiffuseColorUniform, 0.714, 0.4284, 0.18144);
+    state.gl.uniform3f(state.shaderProgram.uMaterialSpecularColorUniform, 0.393548, 0.271906, 0.166721);
+    state.gl.uniform1f(state.shaderProgram.uMaterialShininessUniform, 25.6);
 }
 
 function setupMaterialChrome() {
-    state.gl.uniform3f(shaderProgram.uMaterialAmbientColorUniform, 0.25, 0.25, 0.25);
-    state.gl.uniform3f(shaderProgram.uMaterialDiffuseColorUniform, 0.4, 0.4, 0.4774597);
-    state.gl.uniform3f(shaderProgram.uMaterialSpecularColorUniform, 0.774597, 0.271906, 0.774597);
-    state.gl.uniform1f(shaderProgram.uMaterialShininessUniform, 76.8);
+    state.gl.uniform3f(state.shaderProgram.uMaterialAmbientColorUniform, 0.25, 0.25, 0.25);
+    state.gl.uniform3f(state.shaderProgram.uMaterialDiffuseColorUniform, 0.4, 0.4, 0.4774597);
+    state.gl.uniform3f(state.shaderProgram.uMaterialSpecularColorUniform, 0.774597, 0.271906, 0.774597);
+    state.gl.uniform1f(state.shaderProgram.uMaterialShininessUniform, 76.8);
 }
 
 function setupMaterial(material, shadow) {
 	if(!shadow) {
-		state.gl.uniform1i(shaderProgram.useMaterialUniform, true);
+		state.gl.uniform1i(state.shaderProgram.useMaterialUniform, true);
 		if(material == "brass") {
 			setupMaterialBrass();
 		} else if(material == "bronze") {
@@ -512,13 +511,13 @@ function setupMaterial(material, shadow) {
 			setupMaterialChrome();
 		} else if(material == "none") {
 			setupMaterialChrome();
-			state.gl.uniform1i(shaderProgram.useMaterialUniform, false);
+			state.gl.uniform1i(state.shaderProgram.useMaterialUniform, false);
 		}
 	}
 }
 
 function chooseTexture(i, shadow) {
-	if(!shadow) state.gl.uniform1i(state.gl.getUniformLocation(shaderProgram, "thetexture"), i);
+	if(!shadow) state.gl.uniform1i(state.gl.getUniformLocation(state.shaderProgram, "thetexture"), i);
 }
 	
 
@@ -940,7 +939,7 @@ function drawShadowMap(side) {
 		0.0, -1.0, 0.0, //positive z
 		0.0, -1.0, 0.0, //negative z
 	];
-	state.gl.useProgram(shadowMapShaderProgram);
+	state.gl.useProgram(state.shadowMapShaderProgram);
 	state.gl.bindFramebuffer(state.gl.FRAMEBUFFER, shadowFrameBuffer);
 	state.gl.framebufferTexture2D(state.gl.FRAMEBUFFER, state.gl.COLOR_ATTACHMENT0, state.gl.TEXTURE_CUBE_MAP_POSITIVE_X+side, shadowFrameBuffer.depthBuffer, 0);
 	
@@ -962,12 +961,12 @@ function drawShadowMap(side) {
     mat4.set(shadowMapTransform, pMatrix);
     
     state.gl.uniform3f(
-        shadowMapShaderProgram.pointLightingLocationUniform,
+        state.shadowMapShaderProgram.pointLightingLocationUniform,
         parseFloat(document.getElementById("lightPositionX").value / 10.0),
         parseFloat(document.getElementById("lightPositionY").value / 10.0),
         parseFloat(document.getElementById("lightPositionZ").value / 10.0)
     );
-    state.gl.uniform1f(shadowMapShaderProgram.uFarPlaneUniform, 100.0);
+    state.gl.uniform1f(state.shadowMapShaderProgram.uFarPlaneUniform, 100.0);
     
     mat4.identity(mvMatrix);
     traverse(roomNode, true);
@@ -980,7 +979,7 @@ function drawShadowMap(side) {
 var lookAtMatrix;
 function drawScene() {
 	lookAtMatrix = mat4.create();
-	state.gl.useProgram(shaderProgram);
+	state.gl.useProgram(state.shaderProgram);
     state.gl.viewport(0, 0, state.gl.viewportWidth, state.gl.viewportHeight);
     state.gl.clear(state.gl.COLOR_BUFFER_BIT | state.gl.DEPTH_BUFFER_BIT);
     pMatrix = mat4.create();
@@ -992,29 +991,29 @@ function drawScene() {
     mat4.perspective(45, state.gl.viewportWidth / state.gl.viewportHeight, 0.1, 100.0, pMatrix);
     mat4.multiply(pMatrix, lookAtMatrix);
     
-    state.gl.uniform1i(shaderProgram.useLightingUniform, document.getElementById("lighting").checked);
-	state.gl.uniform1i(shaderProgram.useTextureUniform, document.getElementById("texture").checked);
+    state.gl.uniform1i(state.shaderProgram.useLightingUniform, document.getElementById("lighting").checked);
+	state.gl.uniform1i(state.shaderProgram.useTextureUniform, document.getElementById("texture").checked);
 	
     state.gl.uniform3f(
-        shaderProgram.ambientColorUniform,
+        state.shaderProgram.ambientColorUniform,
         parseFloat(document.getElementById("ambientR").value),
         parseFloat(document.getElementById("ambientG").value),
         parseFloat(document.getElementById("ambientB").value)
     );
     state.gl.uniform3f(
-        shaderProgram.pointLightingLocationUniform,
+        state.shaderProgram.pointLightingLocationUniform,
         parseFloat(document.getElementById("lightPositionX").value / 10.0),
         parseFloat(document.getElementById("lightPositionY").value / 10.0),
         parseFloat(document.getElementById("lightPositionZ").value / 10.0)
     );
     state.gl.uniform3f(
-        shaderProgram.pointLightingDiffuseColorUniform,
+        state.shaderProgram.pointLightingDiffuseColorUniform,
         parseFloat(document.getElementById("pointR").value),
         parseFloat(document.getElementById("pointG").value),
         parseFloat(document.getElementById("pointB").value)
     );
     state.gl.uniform3f(
-        shaderProgram.pointLightingSpecularColorUniform,
+        state.shaderProgram.pointLightingSpecularColorUniform,
         parseFloat(document.getElementById("pointR").value),
         parseFloat(document.getElementById("pointG").value),
         parseFloat(document.getElementById("pointB").value)
@@ -1022,9 +1021,9 @@ function drawScene() {
     
     state.gl.activeTexture(state.gl.TEXTURE31);
     state.gl.bindTexture(state.gl.TEXTURE_CUBE_MAP, shadowFrameBuffer.depthBuffer);
-    state.gl.uniform1i(shaderProgram.shadowMapUniform, 31);
+    state.gl.uniform1i(state.shaderProgram.shadowMapUniform, 31);
     
-    state.gl.uniform1f(shaderProgram.uFarPlaneUniform, 100.0);
+    state.gl.uniform1f(state.shaderProgram.uFarPlaneUniform, 100.0);
     
     mat4.identity(mvMatrix);
     traverse(lightSourceNode, false);
@@ -1145,7 +1144,7 @@ function webGLStart() {
     cameraMaterial = document.getElementById("camera-material").value;
     roomMaterial = document.getElementById("room-material").value;
     initGL(canvas);
-    ({ shaderProgram, shadowMapShaderProgram } = initShaders(state));
+    state = { ...state, ...initShaders(state)}
     initBuffers();
     initObjectTree();
     initInputs();
