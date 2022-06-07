@@ -177,3 +177,60 @@ export var Vector3 = function () {
 											  + v[2].toFixed(digits));
 	};
 };
+
+// a method to generate lookat matrix
+// taken from http://learnwebstate.gl.brown37.net/lib/learn_webgl_matrix.js because mat4.lookat seems buggy
+export const lookAt = function (state, M, eye_x, eye_y, eye_z, center_x, center_y, center_z, up_dx, up_dy, up_dz) {
+
+	// Local coordinate system for the camera:
+	//   state.u maps to the x-axis
+	//   state.v maps to the y-axis
+	//   state.n maps to the z-axis
+
+	state.V.set(state.center, center_x, center_y, center_z);
+	state.V.set(state.eye, eye_x, eye_y, eye_z);
+	state.V.set(state.up, up_dx, up_dy, up_dz);
+
+	state.V.subtract(state.n, state.eye, state.center);  // state.n = state.eye - state.center
+	state.V.normalize(state.n);
+
+	state.V.crossProduct(state.u, state.up, state.n);
+	state.V.normalize(state.u);
+
+	state.V.crossProduct(state.v, state.n, state.u);
+	state.V.normalize(state.v);
+
+	var tx = - state.V.dotProduct(state.u,state.eye);
+	var ty = - state.V.dotProduct(state.v,state.eye);
+	var tz = - state.V.dotProduct(state.n,state.eye);
+
+	// Set the camera matrix
+	M[0] = state.u[0];  M[4] = state.u[1];  M[8]  = state.u[2];  M[12] = tx;
+	M[1] = state.v[0];  M[5] = state.v[1];  M[9]  = state.v[2];  M[13] = ty;
+	M[2] = state.n[0];  M[6] = state.n[1];  M[10] = state.n[2];  M[14] = tz;
+	M[3] = 0;     M[7] = 0;     M[11] = 0;     M[15] = 1;
+};
+
+export function mvPushMatrix(state) {
+	var copy = mat4.create();
+	mat4.set(state.mvMatrix, copy);
+	state.mvMatrixStack.push(copy);
+}
+
+export function mvPopMatrix(state, shadow) {
+	if (state.mvMatrixStack.length == 0) {
+			throw "Invalid popMatrix!";
+	}
+	state.mvMatrix = state.mvMatrixStack.pop();    
+	if(shadow) {
+	state.gl.uniformMatrix4fv(state.shadowMapShaderProgram.pMatrixUniform, false, state.pMatrix);
+	state.gl.uniformMatrix4fv(state.shadowMapShaderProgram.mvMatrixUniform, false, state.mvMatrix);
+} else {
+	state.gl.uniformMatrix4fv(state.shaderProgram.pMatrixUniform, false, state.pMatrix);
+	state.gl.uniformMatrix4fv(state.shaderProgram.mvMatrixUniform, false, state.mvMatrix);
+	var normalMatrix = mat3.create();
+	mat4.toInverseMat3(state.mvMatrix, normalMatrix);
+	mat3.transpose(normalMatrix);
+	state.gl.uniformMatrix3fv(state.shaderProgram.nMatrixUniform, false, normalMatrix);
+}
+}

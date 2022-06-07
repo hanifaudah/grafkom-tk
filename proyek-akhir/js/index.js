@@ -1,5 +1,6 @@
 import { initInputs, initTexture, initShaders } from "./init.js"
-import { Vector3 } from "./util.js"
+import { Vector3, lookAt, mvPushMatrix, mvPopMatrix } from "./util.js"
+import { drawShadowMap, traverse } from "./hirarki.js"
 
 let state = {
     gl: undefined,
@@ -39,6 +40,9 @@ let state = {
     armMaterial: undefined,
     cameraMaterial: undefined,
     roomMaterial: undefined,
+    lightSourceNode: undefined,
+    roomNode: undefined,
+    baseArmNode: undefined,
 }
 
 state.center = state.V.create();
@@ -80,30 +84,6 @@ function createFrameBufferObject(width, height) {
     frameBuffer.height = height;
 
     return frameBuffer;
-}
-
-function mvPushMatrix() {
-    var copy = mat4.create();
-    mat4.set(state.mvMatrix, copy);
-    state.mvMatrixStack.push(copy);
-}
-
-function mvPopMatrix(shadow) {
-    if (state.mvMatrixStack.length == 0) {
-        throw "Invalid popMatrix!";
-    }
-    state.mvMatrix = state.mvMatrixStack.pop();    
-    if(shadow) {
-		state.gl.uniformMatrix4fv(state.shadowMapShaderProgram.pMatrixUniform, false, state.pMatrix);
-		state.gl.uniformMatrix4fv(state.shadowMapShaderProgram.mvMatrixUniform, false, state.mvMatrix);
-	} else {
-		state.gl.uniformMatrix4fv(state.shaderProgram.pMatrixUniform, false, state.pMatrix);
-		state.gl.uniformMatrix4fv(state.shaderProgram.mvMatrixUniform, false, state.mvMatrix);
-		var normalMatrix = mat3.create();
-		mat4.toInverseMat3(state.mvMatrix, normalMatrix);
-		mat3.transpose(normalMatrix);
-		state.gl.uniformMatrix3fv(state.shaderProgram.nMatrixUniform, false, normalMatrix);
-	}
 }
 
 function setMatrixUniforms(shadow) {
@@ -537,11 +517,7 @@ function chooseTexture(i, shadow) {
 	
 
 var animating = 1;
-
-var lightSourceNode;
-var roomNode;
-
-var baseArmNode; var baseArmAngle = 0;
+var baseArmAngle = 0;
 var firstArmNode;
 var secondArmNode; var secondArmAngle = 0; var secondArmDirection = 1;
 var palmNode; var palmAngle = 0;
@@ -564,7 +540,7 @@ var lensCameraNode; var lensCameraTranslation = 0; var lensCameraDirection = 1;
 var shutterCameraNode; var shutterCameraTranslation = 0.45; var shutterCameraDirection = 1;
 
 function drawLightSource(shadow) {
-    mvPushMatrix();
+    mvPushMatrix(state);
     //item specific modifications
     //draw
     setupToDrawSphere(shadow);
@@ -572,11 +548,11 @@ function drawLightSource(shadow) {
     chooseTexture(1, shadow);
     setupMaterial("bronze", shadow);
     state.gl.drawElements(state.gl.TRIANGLES, state.sphereVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
-    mvPopMatrix(shadow);
+    mvPopMatrix(state, shadow);
 }
 
 function drawRoom(shadow) {
-    mvPushMatrix();
+    mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [10.0, 5.0, 30.0]);
     //draw
@@ -585,11 +561,11 @@ function drawRoom(shadow) {
     chooseTexture(1, shadow);
     setupMaterial(state.roomMaterial, shadow);
     state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
-    mvPopMatrix(shadow);
+    mvPopMatrix(state, shadow);
 }
 
 function drawArmBase(shadow) {
-    mvPushMatrix();
+    mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [1.0, 0.25, 1.0]);
     //draw
@@ -598,11 +574,11 @@ function drawArmBase(shadow) {
     chooseTexture(3, shadow);
     setupMaterial(state.armMaterial, shadow);
     state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
-    mvPopMatrix(shadow);
+    mvPopMatrix(state, shadow);
 }
 
 function drawFirstArm(shadow) {
-    mvPushMatrix();
+    mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.5, 2.0, 0.5]);
     //draw
@@ -610,11 +586,11 @@ function drawFirstArm(shadow) {
     setMatrixUniforms(shadow);
     chooseTexture(2, shadow);
     state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
-    mvPopMatrix(shadow);
+    mvPopMatrix(state, shadow);
 }
 
 function drawSecondArm(shadow) {
-    mvPushMatrix();
+    mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.5, 2.0, 0.5]);
     //draw
@@ -622,11 +598,11 @@ function drawSecondArm(shadow) {
     setMatrixUniforms(shadow);
     chooseTexture(2, shadow);
     state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
-    mvPopMatrix(shadow);
+    mvPopMatrix(state, shadow);
 }
 
 function drawPalm(shadow) {
-    mvPushMatrix();
+    mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.75, 0.25, 0.75]);
     //draw
@@ -634,11 +610,11 @@ function drawPalm(shadow) {
     setMatrixUniforms(shadow);
     chooseTexture(0, shadow);
     state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
-    mvPopMatrix(shadow);
+    mvPopMatrix(state, shadow);
 }
 
 function drawFingerBase(shadow) {
-    mvPushMatrix();
+    mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.15, 0.3, 0.15]);
     //draw
@@ -646,11 +622,11 @@ function drawFingerBase(shadow) {
     setMatrixUniforms(shadow);
     chooseTexture(0, shadow);
     state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
-    mvPopMatrix(shadow);
+    mvPopMatrix(state, shadow);
 }
 
 function drawFingerTop(shadow) {
-    mvPushMatrix();
+    mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.15, 0.3, 0.15]);
     //draw
@@ -658,12 +634,12 @@ function drawFingerTop(shadow) {
     setMatrixUniforms(shadow);
     chooseTexture(0, shadow);
     state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
-    mvPopMatrix(shadow);
+    mvPopMatrix(state, shadow);
 }
 
 
 function drawCameraBase(shadow) {
-    mvPushMatrix();
+    mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.75, 0.25, 0.75]);
     //draw
@@ -672,11 +648,11 @@ function drawCameraBase(shadow) {
     chooseTexture(6, shadow);
     setupMaterial(state.cameraMaterial, shadow);
     state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
-    mvPopMatrix(shadow);
+    mvPopMatrix(state, shadow);
 }
 
 function drawCameraLeg(shadow) {
-    mvPushMatrix();
+    mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.15, 2.0, 0.15]);
     //draw
@@ -684,11 +660,11 @@ function drawCameraLeg(shadow) {
     setMatrixUniforms(shadow);
     chooseTexture(6, shadow);
     state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
-    mvPopMatrix(shadow);
+    mvPopMatrix(state, shadow);
 }
 
 function drawCameraFirstBody(shadow) {
-    mvPushMatrix();
+    mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.2, 0.5, 0.55]);
     //draw
@@ -696,11 +672,11 @@ function drawCameraFirstBody(shadow) {
     setMatrixUniforms(shadow);
     chooseTexture(7, shadow);
     state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
-    mvPopMatrix(shadow);
+    mvPopMatrix(state, shadow);
 }
 
 function drawCameraSecondBody(shadow) {
-    mvPushMatrix();
+    mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.1, 0.45, 0.5]);
     //draw
@@ -708,11 +684,11 @@ function drawCameraSecondBody(shadow) {
     setMatrixUniforms(shadow);
     chooseTexture(7, shadow);
     state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
-    mvPopMatrix(shadow);
+    mvPopMatrix(state, shadow);
 }
 
 function drawCameraThirdBody(shadow) {
-    mvPushMatrix();
+    mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.1, 0.4, 0.45]);
     //draw
@@ -720,11 +696,11 @@ function drawCameraThirdBody(shadow) {
     setMatrixUniforms(shadow);
     chooseTexture(7, shadow);
     state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
-    mvPopMatrix(shadow);
+    mvPopMatrix(state, shadow);
 }
 
 function drawCameraFourthBody(shadow) {
-    mvPushMatrix();
+    mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.1, 0.35, 0.4]);
     //draw
@@ -732,11 +708,11 @@ function drawCameraFourthBody(shadow) {
     setMatrixUniforms(shadow);
     chooseTexture(7, shadow);
     state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
-    mvPopMatrix(shadow);
+    mvPopMatrix(state, shadow);
 }
 
 function drawLensCamera(shadow) {
-    mvPushMatrix();
+    mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.3, 0.2, 0.3]);
     //mat4.scale(state.mvMatrix, [0.5, 0.5, 0.5]);
@@ -745,11 +721,11 @@ function drawLensCamera(shadow) {
     setMatrixUniforms(shadow);
     chooseTexture(8, shadow);
     state.gl.drawElements(state.gl.TRIANGLES, state.cylinderVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
-    mvPopMatrix(shadow);
+    mvPopMatrix(state, shadow);
 }
 
 function drawShutterCamera(shadow) {
-    mvPushMatrix();
+    mvPushMatrix(state);
     //item specific modifications
     mat4.scale(state.mvMatrix, [0.15, 0.1, 0.1]);
     //draw
@@ -757,21 +733,21 @@ function drawShutterCamera(shadow) {
     setMatrixUniforms(shadow);
     chooseTexture(6, shadow);
     state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
-    mvPopMatrix(shadow);
+    mvPopMatrix(state, shadow);
 }
 
 
 function initObjectTree() {
-    lightSourceNode = {"draw" : drawLightSource, "matrix" : mat4.identity(mat4.create())};
-    mat4.translate(lightSourceNode.matrix, [document.getElementById("lightPositionX").value / 10.0, document.getElementById("lightPositionY").value / 10.0, document.getElementById("lightPositionZ").value / 10.0]);
+    state.lightSourceNode = {"draw" : drawLightSource, "matrix" : mat4.identity(mat4.create())};
+    mat4.translate(state.lightSourceNode.matrix, [document.getElementById("lightPositionX").value / 10.0, document.getElementById("lightPositionY").value / 10.0, document.getElementById("lightPositionZ").value / 10.0]);
     
-    roomNode = {"draw" : drawRoom, "matrix" : mat4.identity(mat4.create())};
+    state.roomNode = {"draw" : drawRoom, "matrix" : mat4.identity(mat4.create())};
     
     //ARM
     
-    baseArmNode = {"draw" : drawArmBase, "matrix" : mat4.identity(mat4.create())};
-    mat4.translate(baseArmNode.matrix, [-5.0, -4.5, 0.0]);
-    mat4.rotate(baseArmNode.matrix, baseArmAngle, [0.0, 1.0, 0.0]);
+    state.baseArmNode = {"draw" : drawArmBase, "matrix" : mat4.identity(mat4.create())};
+    mat4.translate(state.baseArmNode.matrix, [-5.0, -4.5, 0.0]);
+    mat4.rotate(state.baseArmNode.matrix, baseArmAngle, [0.0, 1.0, 0.0]);
     
     firstArmNode = {"draw" : drawFirstArm, "matrix" : mat4.identity(mat4.create())};
     mat4.translate(firstArmNode.matrix, [0.0, 2.25, 0.0]);
@@ -856,7 +832,7 @@ function initObjectTree() {
     shutterCameraNode = {"draw" : drawShutterCamera, "matrix" : mat4.identity(mat4.create())};
     mat4.translate(shutterCameraNode.matrix, [0.0, 0.35, shutterCameraTranslation]); //0.45 - 0.55
     
-    baseArmNode.child = firstArmNode;
+    state.baseArmNode.child = firstArmNode;
     firstArmNode.child = secondArmNode;
     secondArmNode.child = palmNode;
     palmNode.child = firstFingerBaseNode;
@@ -866,7 +842,7 @@ function initObjectTree() {
     secondFingerBaseNode.sibling = thirdFingerBaseNode;
     thirdFingerBaseNode.child = thirdFingerTopNode;
     
-    baseArmNode.sibling = baseCameraNode;
+    state.baseArmNode.sibling = baseCameraNode;
     baseCameraNode.child = firstCameraLegNode;
     firstCameraLegNode.sibling = secondCameraLegNode;
     secondCameraLegNode.sibling = thirdCameraLegNode;
@@ -878,114 +854,13 @@ function initObjectTree() {
     secondCameraBodyNode.sibling = shutterCameraNode;
 }
 
-function traverse(node, shadow) {
-    mvPushMatrix();
-    //modifications
-    mat4.multiply(state.mvMatrix, node.matrix);
-    //draw
-    node.draw(shadow);
-    if("child" in node) traverse(node.child, shadow);
-    mvPopMatrix(shadow);
-    if("sibling" in node) traverse(node.sibling, shadow);
-}
-
-// a method to generate lookat matrix
-// taken from http://learnwebstate.gl.brown37.net/lib/learn_webgl_matrix.js because mat4.lookat seems buggy
-const lookAt = function (M, eye_x, eye_y, eye_z, center_x, center_y, center_z, up_dx, up_dy, up_dz) {
-
-    // Local coordinate system for the camera:
-    //   state.u maps to the x-axis
-    //   state.v maps to the y-axis
-    //   state.n maps to the z-axis
-
-    state.V.set(state.center, center_x, center_y, center_z);
-    state.V.set(state.eye, eye_x, eye_y, eye_z);
-    state.V.set(state.up, up_dx, up_dy, up_dz);
-
-    state.V.subtract(state.n, state.eye, state.center);  // state.n = state.eye - state.center
-    state.V.normalize(state.n);
-
-    state.V.crossProduct(state.u, state.up, state.n);
-    state.V.normalize(state.u);
-
-    state.V.crossProduct(state.v, state.n, state.u);
-    state.V.normalize(state.v);
-
-    var tx = - state.V.dotProduct(state.u,state.eye);
-    var ty = - state.V.dotProduct(state.v,state.eye);
-    var tz = - state.V.dotProduct(state.n,state.eye);
-
-    // Set the camera matrix
-    M[0] = state.u[0];  M[4] = state.u[1];  M[8]  = state.u[2];  M[12] = tx;
-    M[1] = state.v[0];  M[5] = state.v[1];  M[9]  = state.v[2];  M[13] = ty;
-    M[2] = state.n[0];  M[6] = state.n[1];  M[10] = state.n[2];  M[14] = tz;
-    M[3] = 0;     M[7] = 0;     M[11] = 0;     M[15] = 1;
-};
-
-//draws shadowmap for the side of the texture
-//0: positive x, ..., 5: negative z
-function drawShadowMap(side) {
-	var centers = [
-		1.0, 0.0,  0.0, //positive x
-		-1.0, 0.0, 0.0, //negative x
-		0.0,  1.0, 0.0, //positive y
-		0.0, -1.0, 0.0, //negative y
-		0.0, 0.0, 1.0, //positive z
-		0.0, 0.0, -1.0, //negative z
-	];
-	
-	var upVectors = [
-		0.0, -1.0,  0.0, //positive x
-		0.0, -1.0, 0.0, //negative x
-		0.0, 0.0, 1.0, //positive y
-		0.0, 0.0, -1.0, //negative y
-		0.0, -1.0, 0.0, //positive z
-		0.0, -1.0, 0.0, //negative z
-	];
-	state.gl.useProgram(state.shadowMapShaderProgram);
-	state.gl.bindFramebuffer(state.gl.FRAMEBUFFER, state.shadowFrameBuffer);
-	state.gl.framebufferTexture2D(state.gl.FRAMEBUFFER, state.gl.COLOR_ATTACHMENT0, state.gl.TEXTURE_CUBE_MAP_POSITIVE_X+side, state.shadowFrameBuffer.depthBuffer, 0);
-	
-	state.gl.viewport(0, 0, state.shadowFrameBuffer.width, state.shadowFrameBuffer.height);
-	state.gl.clear(state.gl.COLOR_BUFFER_BIT | state.gl.DEPTH_BUFFER_BIT);
-	state.shadowMapLookAtMatrix = mat4.create();
-	lookAt(state.shadowMapLookAtMatrix,
-                  parseFloat(document.getElementById("lightPositionX").value / 10.0),
-				  parseFloat(document.getElementById("lightPositionY").value / 10.0),
-				  parseFloat(document.getElementById("lightPositionZ").value / 10.0),
-                  parseFloat(document.getElementById("lightPositionX").value / 10.0)+centers[side*3], 
-                  parseFloat(document.getElementById("lightPositionY").value / 10.0)+centers[side*3+1], 
-                  parseFloat(document.getElementById("lightPositionZ").value / 10.0)+centers[side*3+2],
-                  upVectors[side*3],
-                  upVectors[side*3+1],
-                  upVectors[side*3+2]);
-    mat4.perspective(90, state.shadowFrameBuffer.width / state.shadowFrameBuffer.height, 0.1, 100.0, state.shadowMapTransform);
-    mat4.multiply(state.shadowMapTransform, state.shadowMapLookAtMatrix);
-    mat4.set(state.shadowMapTransform, state.pMatrix);
-    
-    state.gl.uniform3f(
-        state.shadowMapShaderProgram.pointLightingLocationUniform,
-        parseFloat(document.getElementById("lightPositionX").value / 10.0),
-        parseFloat(document.getElementById("lightPositionY").value / 10.0),
-        parseFloat(document.getElementById("lightPositionZ").value / 10.0)
-    );
-    state.gl.uniform1f(state.shadowMapShaderProgram.uFarPlaneUniform, 100.0);
-    
-    mat4.identity(state.mvMatrix);
-    traverse(roomNode, true);
-    mat4.translate(state.mvMatrix, [0, 0, -20]);
-    traverse(baseArmNode, true);
-    
-    state.gl.bindFramebuffer(state.gl.FRAMEBUFFER,  null);
-}
-
 function drawScene() {
 	state.lookAtMatrix = mat4.create();
 	state.gl.useProgram(state.shaderProgram);
     state.gl.viewport(0, 0, state.gl.viewportWidth, state.gl.viewportHeight);
     state.gl.clear(state.gl.COLOR_BUFFER_BIT | state.gl.DEPTH_BUFFER_BIT);
     state.pMatrix = mat4.create();
-    lookAt(state.lookAtMatrix,
+    lookAt(state, state.lookAtMatrix,
 		  0.0, 0.0, 0.0,
 		  0.0, 0.0, -10.0,
 		  0.0, 1.0, 0.0);
@@ -1028,11 +903,11 @@ function drawScene() {
     state.gl.uniform1f(state.shaderProgram.uFarPlaneUniform, 100.0);
     
     mat4.identity(state.mvMatrix);
-    traverse(lightSourceNode, false);
-    traverse(roomNode, false);
+    traverse(state, state.lightSourceNode, false);
+    traverse(state, state.roomNode, false);
     
     mat4.translate(state.mvMatrix, [0, 0, -20]);
-    traverse(baseArmNode, false);
+    traverse(state, state.baseArmNode, false);
 }
 
 function animate() {
@@ -1132,7 +1007,7 @@ function animate() {
 function tick() {
     requestAnimationFrame(tick);
     for(var i = 0; i < 6; i++) {
-		drawShadowMap(i);
+		drawShadowMap(state, i);
     }
     drawScene();
     animate();
