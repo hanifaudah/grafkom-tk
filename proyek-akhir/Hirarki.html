@@ -182,92 +182,6 @@
           <input type="checkbox" id="animation" checked /> Use animation<br/>
           <input type="checkbox" id="lighting" checked /> Use lighting<br/>
           <input type="checkbox" id="texture" checked /> Use texture<br/>
-          <div class="input-light">
-                <!-- Camera controls -->
-                <!-- <h2>Camera Position</h2> -->
-                <!-- <div id="cam-btns">
-                    <button id="0">Overview</button>
-                    <button id="1">Pig POV</button>
-                </div>
-                <div id="cam-controls">
-                    <div>
-                        X<br />
-                        <input type="range" min="-100" max="100" value="0" class="slider" id="cameraPositionX">
-                    </div>
-                    <div>
-                        Y<br />
-                        <input type="range" min="-50" max="400" value="20" class="slider" id="cameraPositionY">
-                    </div>
-                    <div>
-                        Z<br />
-                        <input type="range" min="-200" max="100" value="-100" class="slider" id="cameraPositionZ">
-                    </div>
-                </div> -->
-                <!-- Light controls -->
-                <!-- <h2>Point light</h2> -->
-                <!-- <div>
-                    X<br />
-                    <input type="range" min="-100" max="100" value="0" class="slider" id="lightPositionX">
-                </div>
-                <div>
-                    Y<br />
-                    <input type="range" min="-50" max="50" value="0" class="slider" id="lightPositionY">
-                </div>
-                <div>
-                    Z<br />
-                    <input type="range" min="-300" max="100" value="-200" class="slider" id="lightPositionZ">
-                </div>
-                <div>
-                    R: <br/>  <input type="text" id="pointR" value="0.5" />
-                </div>
-                <div>
-                    G: <br/>  <input type="text" id="pointG" value="0.5" />
-                </div>
-                <div>
-                    B:  <br/> <input type="text" id="pointB" value="0.5" />
-                </div> -->
-            </div>
-            <div class="input-light">
-                <!-- <h2>Ambient light</h2> -->
-                <!-- <div>
-                    R: <br/>  <input type="text" id="ambientR" value="0.8" />
-                </div>
-                <div>
-                    G:  <br/> <input type="text" id="ambientG" value="0.8" />
-                </div>
-                <div>
-                    B:  <br/> <input type="text" id="ambientB" value="0.8" />
-                </div> -->
-            </div>
-            <div>
-               <!-- <h2>Arm Material</h2>
-               <div>
-                    <select class="form-control form-control-sm" id="arm-material">
-                      <option value="none">None</option>
-                      <option value="brass">Brass</option>
-                      <option value="chrome">Chrome</option>
-                      <option value="bronze">Bronze</option>
-                    </select>
-                </div>
-               <h2>Camera Material</h2>
-               <div>
-                    <select class="form-control form-control-sm" id="camera-material">
-                      <option value="none">None</option>
-                      <option value="brass">Brass</option>
-                      <option value="chrome">Chrome</option>
-                      <option value="bronze">Bronze</option>
-                    </select>
-                </div>
-               <h2>Room Material</h2>
-               <div>
-                    <select class="form-control form-control-sm" id="room-material">
-                      <option value="none">None</option>
-                      <option value="brass">Brass</option>
-                      <option value="chrome">Chrome</option>
-                      <option value="bronze">Bronze</option>
-                    </select>
-                </div> -->
-            </div>
 
             <div class="accordion" id="objectSliders" style="color: black;">
                 <div class="accordion-item">
@@ -353,7 +267,7 @@
                 </div>
                 <div class="accordion-item">
                   <h2 class="accordion-header" id="panelsStayOpen-heading4">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapse4">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse4" aria-expanded="false" aria-controls="panelsStayOpen-collapse4">
                       Materials
                     </button>
                   </h2>
@@ -390,82 +304,6 @@
                   </div>
                 </div>
               </div>
-          <!-- Avatar image in top left corner -->
-            <!-- <h2>Arms</h2>
-            <div>    
-                Arm Rotation <br />
-                <input type="range" min="0" max="360" value="0" class="slider" id="baseArmRotationSlider" disabled>
-            </div>
-            <div>
-                Second Arm Rotation<br />
-                <input type="range" min="0" max="90" value="0" class="slider" id="secondArmRotationSlider" disabled>
-            </div>
-            <div>
-                Palm Rotation<br />
-                <input type="range" min="0" max="360" value="0" class="slider" id="palmRotationSlider" disabled>
-            </div>
-            <div>
-                First Finger (Base) Rotation<br />
-                <input type="range" min="-45" max="23" value="0" class="slider" id="firstFingerBaseRotationSlider" disabled>
-            </div>
-            <div>
-                First Finger (Top) Rotation<br />
-                <input type="range" min="0" max="23" value="0" class="slider" id="firstFingerTopRotationSlider" disabled>
-            </div>
-            <div>
-                Second Finger (Base) Rotation<br />
-                <input type="range" min="-45" max="23" value="0" class="slider" id="secondFingerBaseRotationSlider" disabled>
-            </div>
-            <div>
-                Second Finger (Top) Rotation<br />
-                <input type="range" min="0" max="23" value="0" class="slider" id="secondFingerTopRotationSlider" disabled>
-            </div>
-            <div>
-                Third Finger (Base) Rotation<br />
-                <input type="range" min="-45" max="23" value="0" class="slider" id="thirdFingerBaseRotationSlider" disabled>
-            </div>
-            <div>
-                Third Finger (Top) Rotation<br />
-                <input type="range" min="0" max="23" value="0" class="slider" id="thirdFingerTopRotationSlider" disabled>
-            </div>
-            
-            <h2>CAMERA</h2>
-            <div>
-                Camera Rotation<br />
-                <input type="range" min="0" max="360" value="0" class="slider" id="baseCameraRotationSlider" disabled>            
-            </div>
-            <div>
-                First Tripod Leg Rotation<br />
-                <input type="range" min="0" max="45" value="0" class="slider" id="firstCameraLegRotationSlider" disabled>       
-            </div>
-            <div>
-                Second Tripod Leg Rotation<br />
-                <input type="range" min="0" max="45" value="0" class="slider" id="secondCameraLegRotationSlider" disabled>       
-            </div>
-            <div>
-                Third Tripod Leg Rotation<br />
-                <input type="range" min="0" max="45" value="0" class="slider" id="thirdCameraLegRotationSlider" disabled>          
-            </div>
-            <div>
-                Camera First Zooming Layer Translation<br />
-                <input type="range" min="5" max="30" value="0" class="slider" id="secondCameraBodyTranslationSlider" disabled>
-            </div>
-            <div>
-                Camera Second Zooming Layer Translation<br />
-                 <input type="range" min="5" max="20" value="0" class="slider" id="thirdCameraBodyTranslationSlider" disabled>         
-            </div>
-            <div>
-                Camera Third Zooming Layer Translation<br />
-                <input type="range" min="5" max="20" value="0" class="slider" id="fourthCameraBodyTranslationSlider" disabled> 
-            </div>
-            <div>
-                Camera Lens Translation<br />
-                 <input type="range" min="5" max="25" value="0" class="slider" id="lensCameraTranslationSlider" disabled>    
-            </div>
-            <div>
-                Camera Shutter Translation<br />
-                <input type="range" min="45" max="55" value="0" class="slider" id="shutterCameraTranslationSlider" disabled>        
-            </div> -->
         </div>
         <div>
             <canvas id="canvas" style="border: none;" width="1024" height="768"></canvas>
