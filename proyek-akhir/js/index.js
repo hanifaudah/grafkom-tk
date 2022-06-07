@@ -4,7 +4,10 @@ import { Vector3 } from "./util.js"
 let state = {
     gl: undefined,
     shaderProgram: undefined,
-    shadowMapShaderProgram: undefined
+    shadowMapShaderProgram: undefined,
+    mvMatrix: mat4.create(),
+    mvMatrixStack: [],
+    pMatrix: mat4.create()
 }
 
 function initGL(canvas) {
@@ -41,29 +44,25 @@ function createFrameBufferObject(width, height) {
     return frameBuffer;
 }
 
-var mvMatrix = mat4.create();
-var mvMatrixStack = [];
-var pMatrix = mat4.create();
-
 function mvPushMatrix() {
     var copy = mat4.create();
-    mat4.set(mvMatrix, copy);
-    mvMatrixStack.push(copy);
+    mat4.set(state.mvMatrix, copy);
+    state.mvMatrixStack.push(copy);
 }
 
 function mvPopMatrix(shadow) {
-    if (mvMatrixStack.length == 0) {
+    if (state.mvMatrixStack.length == 0) {
         throw "Invalid popMatrix!";
     }
-    mvMatrix = mvMatrixStack.pop();    
+    state.mvMatrix = state.mvMatrixStack.pop();    
     if(shadow) {
-		state.gl.uniformMatrix4fv(state.shadowMapShaderProgram.pMatrixUniform, false, pMatrix);
-		state.gl.uniformMatrix4fv(state.shadowMapShaderProgram.mvMatrixUniform, false, mvMatrix);
+		state.gl.uniformMatrix4fv(state.shadowMapShaderProgram.pMatrixUniform, false, state.pMatrix);
+		state.gl.uniformMatrix4fv(state.shadowMapShaderProgram.mvMatrixUniform, false, state.mvMatrix);
 	} else {
-		state.gl.uniformMatrix4fv(state.shaderProgram.pMatrixUniform, false, pMatrix);
-		state.gl.uniformMatrix4fv(state.shaderProgram.mvMatrixUniform, false, mvMatrix);
+		state.gl.uniformMatrix4fv(state.shaderProgram.pMatrixUniform, false, state.pMatrix);
+		state.gl.uniformMatrix4fv(state.shaderProgram.mvMatrixUniform, false, state.mvMatrix);
 		var normalMatrix = mat3.create();
-		mat4.toInverseMat3(mvMatrix, normalMatrix);
+		mat4.toInverseMat3(state.mvMatrix, normalMatrix);
 		mat3.transpose(normalMatrix);
 		state.gl.uniformMatrix3fv(state.shaderProgram.nMatrixUniform, false, normalMatrix);
 	}
@@ -71,13 +70,13 @@ function mvPopMatrix(shadow) {
 
 function setMatrixUniforms(shadow) {
     if(shadow) {
-		state.gl.uniformMatrix4fv(state.shadowMapShaderProgram.pMatrixUniform, false, pMatrix);
-		state.gl.uniformMatrix4fv(state.shadowMapShaderProgram.mvMatrixUniform, false, mvMatrix);
+		state.gl.uniformMatrix4fv(state.shadowMapShaderProgram.pMatrixUniform, false, state.pMatrix);
+		state.gl.uniformMatrix4fv(state.shadowMapShaderProgram.mvMatrixUniform, false, state.mvMatrix);
 	} else {
-		state.gl.uniformMatrix4fv(state.shaderProgram.pMatrixUniform, false, pMatrix);
-		state.gl.uniformMatrix4fv(state.shaderProgram.mvMatrixUniform, false, mvMatrix);
+		state.gl.uniformMatrix4fv(state.shaderProgram.pMatrixUniform, false, state.pMatrix);
+		state.gl.uniformMatrix4fv(state.shaderProgram.mvMatrixUniform, false, state.mvMatrix);
 		var normalMatrix = mat3.create();
-		mat4.toInverseMat3(mvMatrix, normalMatrix);
+		mat4.toInverseMat3(state.mvMatrix, normalMatrix);
 		mat3.transpose(normalMatrix);
 		state.gl.uniformMatrix3fv(state.shaderProgram.nMatrixUniform, false, normalMatrix);
 	}
@@ -563,7 +562,7 @@ function drawLightSource(shadow) {
 function drawRoom(shadow) {
     mvPushMatrix();
     //item specific modifications
-    mat4.scale(mvMatrix, [10.0, 5.0, 30.0]);
+    mat4.scale(state.mvMatrix, [10.0, 5.0, 30.0]);
     //draw
     setupToDrawCubeInsides(shadow);
     setMatrixUniforms(shadow);
@@ -576,7 +575,7 @@ function drawRoom(shadow) {
 function drawArmBase(shadow) {
     mvPushMatrix();
     //item specific modifications
-    mat4.scale(mvMatrix, [1.0, 0.25, 1.0]);
+    mat4.scale(state.mvMatrix, [1.0, 0.25, 1.0]);
     //draw
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
@@ -589,7 +588,7 @@ function drawArmBase(shadow) {
 function drawFirstArm(shadow) {
     mvPushMatrix();
     //item specific modifications
-    mat4.scale(mvMatrix, [0.5, 2.0, 0.5]);
+    mat4.scale(state.mvMatrix, [0.5, 2.0, 0.5]);
     //draw
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
@@ -601,7 +600,7 @@ function drawFirstArm(shadow) {
 function drawSecondArm(shadow) {
     mvPushMatrix();
     //item specific modifications
-    mat4.scale(mvMatrix, [0.5, 2.0, 0.5]);
+    mat4.scale(state.mvMatrix, [0.5, 2.0, 0.5]);
     //draw
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
@@ -613,7 +612,7 @@ function drawSecondArm(shadow) {
 function drawPalm(shadow) {
     mvPushMatrix();
     //item specific modifications
-    mat4.scale(mvMatrix, [0.75, 0.25, 0.75]);
+    mat4.scale(state.mvMatrix, [0.75, 0.25, 0.75]);
     //draw
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
@@ -625,7 +624,7 @@ function drawPalm(shadow) {
 function drawFingerBase(shadow) {
     mvPushMatrix();
     //item specific modifications
-    mat4.scale(mvMatrix, [0.15, 0.3, 0.15]);
+    mat4.scale(state.mvMatrix, [0.15, 0.3, 0.15]);
     //draw
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
@@ -637,7 +636,7 @@ function drawFingerBase(shadow) {
 function drawFingerTop(shadow) {
     mvPushMatrix();
     //item specific modifications
-    mat4.scale(mvMatrix, [0.15, 0.3, 0.15]);
+    mat4.scale(state.mvMatrix, [0.15, 0.3, 0.15]);
     //draw
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
@@ -650,7 +649,7 @@ function drawFingerTop(shadow) {
 function drawCameraBase(shadow) {
     mvPushMatrix();
     //item specific modifications
-    mat4.scale(mvMatrix, [0.75, 0.25, 0.75]);
+    mat4.scale(state.mvMatrix, [0.75, 0.25, 0.75]);
     //draw
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
@@ -663,7 +662,7 @@ function drawCameraBase(shadow) {
 function drawCameraLeg(shadow) {
     mvPushMatrix();
     //item specific modifications
-    mat4.scale(mvMatrix, [0.15, 2.0, 0.15]);
+    mat4.scale(state.mvMatrix, [0.15, 2.0, 0.15]);
     //draw
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
@@ -675,7 +674,7 @@ function drawCameraLeg(shadow) {
 function drawCameraFirstBody(shadow) {
     mvPushMatrix();
     //item specific modifications
-    mat4.scale(mvMatrix, [0.2, 0.5, 0.55]);
+    mat4.scale(state.mvMatrix, [0.2, 0.5, 0.55]);
     //draw
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
@@ -687,7 +686,7 @@ function drawCameraFirstBody(shadow) {
 function drawCameraSecondBody(shadow) {
     mvPushMatrix();
     //item specific modifications
-    mat4.scale(mvMatrix, [0.1, 0.45, 0.5]);
+    mat4.scale(state.mvMatrix, [0.1, 0.45, 0.5]);
     //draw
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
@@ -699,7 +698,7 @@ function drawCameraSecondBody(shadow) {
 function drawCameraThirdBody(shadow) {
     mvPushMatrix();
     //item specific modifications
-    mat4.scale(mvMatrix, [0.1, 0.4, 0.45]);
+    mat4.scale(state.mvMatrix, [0.1, 0.4, 0.45]);
     //draw
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
@@ -711,7 +710,7 @@ function drawCameraThirdBody(shadow) {
 function drawCameraFourthBody(shadow) {
     mvPushMatrix();
     //item specific modifications
-    mat4.scale(mvMatrix, [0.1, 0.35, 0.4]);
+    mat4.scale(state.mvMatrix, [0.1, 0.35, 0.4]);
     //draw
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
@@ -723,8 +722,8 @@ function drawCameraFourthBody(shadow) {
 function drawLensCamera(shadow) {
     mvPushMatrix();
     //item specific modifications
-    mat4.scale(mvMatrix, [0.3, 0.2, 0.3]);
-    //mat4.scale(mvMatrix, [0.5, 0.5, 0.5]);
+    mat4.scale(state.mvMatrix, [0.3, 0.2, 0.3]);
+    //mat4.scale(state.mvMatrix, [0.5, 0.5, 0.5]);
     //draw
     setupToDrawCylinder(shadow);
     setMatrixUniforms(shadow);
@@ -736,7 +735,7 @@ function drawLensCamera(shadow) {
 function drawShutterCamera(shadow) {
     mvPushMatrix();
     //item specific modifications
-    mat4.scale(mvMatrix, [0.15, 0.1, 0.1]);
+    mat4.scale(state.mvMatrix, [0.15, 0.1, 0.1]);
     //draw
     setupToDrawCube(shadow);
     setMatrixUniforms(shadow);
@@ -866,7 +865,7 @@ function initObjectTree() {
 function traverse(node, shadow) {
     mvPushMatrix();
     //modifications
-    mat4.multiply(mvMatrix, node.matrix);
+    mat4.multiply(state.mvMatrix, node.matrix);
     //draw
     node.draw(shadow);
     if("child" in node) traverse(node.child, shadow);
@@ -958,7 +957,7 @@ function drawShadowMap(side) {
                   upVectors[side*3+2]);
     mat4.perspective(90, shadowFrameBuffer.width / shadowFrameBuffer.height, 0.1, 100.0, shadowMapTransform);
     mat4.multiply(shadowMapTransform, shadowMapLookAtMatrix);
-    mat4.set(shadowMapTransform, pMatrix);
+    mat4.set(shadowMapTransform, state.pMatrix);
     
     state.gl.uniform3f(
         state.shadowMapShaderProgram.pointLightingLocationUniform,
@@ -968,9 +967,9 @@ function drawShadowMap(side) {
     );
     state.gl.uniform1f(state.shadowMapShaderProgram.uFarPlaneUniform, 100.0);
     
-    mat4.identity(mvMatrix);
+    mat4.identity(state.mvMatrix);
     traverse(roomNode, true);
-    mat4.translate(mvMatrix, [0, 0, -20]);
+    mat4.translate(state.mvMatrix, [0, 0, -20]);
     traverse(baseArmNode, true);
     
     state.gl.bindFramebuffer(state.gl.FRAMEBUFFER,  null);
@@ -982,14 +981,14 @@ function drawScene() {
 	state.gl.useProgram(state.shaderProgram);
     state.gl.viewport(0, 0, state.gl.viewportWidth, state.gl.viewportHeight);
     state.gl.clear(state.gl.COLOR_BUFFER_BIT | state.gl.DEPTH_BUFFER_BIT);
-    pMatrix = mat4.create();
+    state.pMatrix = mat4.create();
     lookAt(lookAtMatrix,
 		  0.0, 0.0, 0.0,
 		  0.0, 0.0, -10.0,
 		  0.0, 1.0, 0.0);
     mat4.translate(lookAtMatrix, [document.getElementById("cameraPositionX").value / -10.0, document.getElementById("cameraPositionY").value / 10.0, document.getElementById("cameraPositionZ").value / 10.0])
-    mat4.perspective(45, state.gl.viewportWidth / state.gl.viewportHeight, 0.1, 100.0, pMatrix);
-    mat4.multiply(pMatrix, lookAtMatrix);
+    mat4.perspective(45, state.gl.viewportWidth / state.gl.viewportHeight, 0.1, 100.0, state.pMatrix);
+    mat4.multiply(state.pMatrix, lookAtMatrix);
     
     state.gl.uniform1i(state.shaderProgram.useLightingUniform, document.getElementById("lighting").checked);
 	state.gl.uniform1i(state.shaderProgram.useTextureUniform, document.getElementById("texture").checked);
@@ -1025,11 +1024,11 @@ function drawScene() {
     
     state.gl.uniform1f(state.shaderProgram.uFarPlaneUniform, 100.0);
     
-    mat4.identity(mvMatrix);
+    mat4.identity(state.mvMatrix);
     traverse(lightSourceNode, false);
     traverse(roomNode, false);
     
-    mat4.translate(mvMatrix, [0, 0, -20]);
+    mat4.translate(state.mvMatrix, [0, 0, -20]);
     traverse(baseArmNode, false);
 }
 
