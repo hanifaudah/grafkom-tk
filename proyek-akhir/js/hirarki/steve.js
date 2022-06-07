@@ -17,8 +17,8 @@ export const state = {
   frontLeftLegSteveAngle: 0,
   frontRightLegSteveAngle: 0,
   headSteveAngle: 0,
-  leftArmSteveAngle: 0,
-  rightArmSteveAngle: 0
+  leftArmSteveAngle: 3,
+  rightArmSteveAngle: 4
 }
 
 function drawSteveBase(state, shadow) {
@@ -86,11 +86,13 @@ export function assemble(state) {
   leftArm = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
   mat4.translate(leftArm.matrix, [-1.55, 2, 0]);
   mat4.rotate(leftArm.matrix, state.leftArmSteveAngle, [1.0, 0.0, 0]);
+  mat4.rotate(leftArm.matrix, -0.2, [0, 0.0, 1]);
   mat4.translate(leftArm.matrix, [0.0, -2.0, 0.0]);
 
   rightArm = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
   mat4.translate(rightArm.matrix, [1.55, 2, 0]);
   mat4.rotate(rightArm.matrix, state.rightArmSteveAngle, [1.0, 0.0, 0]);
+  mat4.rotate(rightArm.matrix, 0.2, [0, 0.0, 1]);
   mat4.translate(rightArm.matrix, [0.0, -2.0, 0.0]);
 
   state.baseSteveNode.child = frontLeftLegNode
@@ -114,46 +116,8 @@ export function handleAnimation(state) {
   if (state.frontLeftLegSteveAngle >= 1 || state.frontLeftLegSteveAngle <= -1) state.frontLeftLegSteveDirection *= -1
 
   state.leftArmSteveAngle += state.leftArmSteveDirection * 0.1;
-  if (state.leftArmSteveAngle >= 1 || state.leftArmSteveAngle <= -1) state.leftArmSteveDirection *= -1
+  if (state.leftArmSteveAngle >= 4 || state.leftArmSteveAngle <= 3) state.leftArmSteveDirection *= -1
 
   state.rightArmSteveAngle += state.rightArmSteveDirection * 0.1;
-  if (state.rightArmSteveAngle >= 1 || state.rightArmSteveAngle <= -1) state.rightArmSteveDirection *= -1
-  
-  // state.pigsecondArmAngle += update*state.pigsecondArmDirection;
-  // if(state.pigsecondArmAngle < 0 && state.pigsecondArmDirection == -1) state.pigsecondArmDirection *= -1;
-  // if(state.pigsecondArmAngle > Math.PI/2 && state.pigsecondArmDirection == 1) state.pigsecondArmDirection *= -1;
-  // document.getElementById("secondArmRotationSlider").value = state.pigsecondArmAngle * 180 / (Math.PI);
-  
-  // state.pigpalmAngle = (state.pigpalmAngle + update)%(2*Math.PI);
-  // document.getElementById("palmRotationSlider").value = state.pigpalmAngle * 180 / (Math.PI);
-  
-  // state.pigfirstFingerBaseAngle += update*state.pigfirstFingerBaseDirection;
-  // if(state.pigfirstFingerBaseAngle < -Math.PI/4 && state.pigfirstFingerBaseDirection == -1) state.pigfirstFingerBaseDirection *= -1;
-  // if(state.pigfirstFingerBaseAngle > Math.PI/8 && state.pigfirstFingerBaseDirection == 1) state.pigfirstFingerBaseDirection *= -1;
-  // document.getElementById("firstFingerBaseRotationSlider").value = state.pigfirstFingerBaseAngle * 180 / (Math.PI);
-  
-  // state.pigfirstFingerTopAngle += update*state.pigfirstFingerTopDirection;
-  // if(state.pigfirstFingerTopAngle < 0 && state.pigfirstFingerTopDirection == -1)state.pigfirstFingerTopDirection *= -1;
-  // if(state.pigfirstFingerTopAngle > Math.PI/8 && state.pigfirstFingerTopDirection == 1) state.pigfirstFingerTopDirection *= -1;
-  // document.getElementById("firstFingerTopRotationSlider").value = state.pigfirstFingerTopAngle * 180 / (Math.PI);
-  
-  // state.pigsecondFingerBaseAngle += update*state.pigsecondFingerBaseDirection;
-  // if(state.pigsecondFingerBaseAngle < -Math.PI/4 && state.pigsecondFingerBaseDirection == -1) state.pigsecondFingerBaseDirection *= -1;
-  // if(state.pigsecondFingerBaseAngle > Math.PI/8 && state.pigsecondFingerBaseDirection == 1) state.pigsecondFingerBaseDirection *= -1;
-  // document.getElementById("secondFingerBaseRotationSlider").value = state.pigsecondFingerBaseAngle * 180 / (Math.PI);
-  
-  // state.pigsecondFingerTopAngle += update*state.pigsecondFingerTopDirection;
-  // if(state.pigsecondFingerTopAngle < 0 && state.pigsecondFingerTopDirection == -1) state.pigsecondFingerTopDirection *= -1;
-  // if(state.pigsecondFingerTopAngle > Math.PI/8 && state.pigsecondFingerTopDirection == 1) state.pigsecondFingerTopDirection *= -1;
-  // document.getElementById("secondFingerTopRotationSlider").value = state.pigsecondFingerTopAngle * 180 / (Math.PI);
-  
-  // state.pigthirdFingerBaseAngle += update*state.pigthirdFingerBaseDirection;
-  // if(state.pigthirdFingerBaseAngle < -Math.PI/4 && state.pigthirdFingerBaseDirection == -1) state.pigthirdFingerBaseDirection *= -1;
-  // if(state.pigthirdFingerBaseAngle > Math.PI/8 && state.pigthirdFingerBaseDirection == 1) state.pigthirdFingerBaseDirection *= -1;
-  // document.getElementById("thirdFingerBaseRotationSlider").value = state.pigthirdFingerBaseAngle * 180 / (Math.PI);
-  
-  // state.pigthirdFingerTopAngle += update*state.pigthirdFingerTopDirection;
-  // if(state.pigthirdFingerTopAngle < 0 && state.pigthirdFingerTopDirection == -1) state.pigthirdFingerTopDirection *= -1;
-  // if(state.pigthirdFingerTopAngle > Math.PI/8 && state.pigthirdFingerTopDirection == 1) state.pigthirdFingerTopDirection *= -1;
-  // document.getElementById("thirdFingerTopRotationSlider").value = state.pigthirdFingerTopAngle * 180 / (Math.PI);
+  if (state.rightArmSteveAngle >= 4 || state.rightArmSteveAngle <= 3) state.rightArmSteveDirection *= -1
 }
