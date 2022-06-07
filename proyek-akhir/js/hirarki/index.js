@@ -8,6 +8,7 @@ import { traverse } from "./utils.js"
 // ADD OBJECT HERE: import assemble and handleAnimation func
 
 import { assemble as assemblePig, handleAnimation as handlePigAnimation } from "./pig.js"
+import { assemble as assembleCreeper, handleAnimation as handleCreeperAnimation } from "./creeper.js"
 
 //draws shadowmap for the side of the texture
 //0: positive x, ..., 5: negative z
@@ -85,6 +86,7 @@ export function initObjectTree(state) {
 
   // ADD OBJECT HERE: assemble object
   assemblePig(state)
+  assembleCreeper(state)
 }
 
 export function animate(state) {
@@ -99,6 +101,7 @@ export function animate(state) {
 
       // ADD OBJECT HERE: handle animation func
       handlePigAnimation(state)
+      handleCreeperAnimation(state)
   }
   initObjectTree(state);
 }

@@ -9,6 +9,7 @@ import { state as cameraState } from "./hirarki/camera.js"
 
 // ADD OBJECT HERE: import state
 import { state as pigState } from "./hirarki/pig.js"
+import { state as creeperState } from "./hirarki/creeper.js"
 
 
 let state = {
@@ -55,6 +56,7 @@ let state = {
 
     // ADD OBJECT HERE: spread state here
     ...pigState,
+    ...creeperState,
 }
 
 state.center = state.V.create();
