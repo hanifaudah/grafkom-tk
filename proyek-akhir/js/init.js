@@ -207,6 +207,12 @@ export function initTexture(state) {
     }
     image12.src = "img/pigLeg.png"
 
+    // Creeper head
+    var image13 = new Image();
+    image13.onload = function() {
+       configureTexture(image13, gl.TEXTURE13, state);
+    }
+    image13.src = "img/creeperHead.png"
 }
 
 function configureTexture(image, textureno, state) {

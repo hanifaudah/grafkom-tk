@@ -22,7 +22,7 @@ export const state = {
   nosePigAngle: 0,
   pigX: 0,
   pigZ: 0,
-  pigAngle: degToRad(360*10)
+  pigAngle: degToRad(360*120*3)
 }
 
 function drawPigBase(state, shadow) {
