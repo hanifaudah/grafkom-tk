@@ -1,6 +1,30 @@
 import { mvPushMatrix, mvPopMatrix } from "../util.js"
 import { setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture, setupToDrawCylinder } from "./utils.js"
 
+export const state = {
+  // camera animation direction
+  firstCameraLegDirection: 1,
+  secondCameraLegDirection: 1,
+  thirdCameraLegDirection: 1,
+  secondCameraBodyDirection: 1,
+  thirdCameraBodyDirection: 1,
+  fourthCameraBodyDirection: 1,
+  lensCameraDirection: 1,
+  shutterCameraDirection: 1,
+  
+  // camera node angles
+  baseCameraAngle: 0,
+  firstCameraLegAngle: 0,
+  secondCameraLegAngle: 0,
+  thirdCameraLegAngle: 0,
+  secondCameraBodyTranslation: 0,
+  thirdCameraBodyTranslation: 0,
+  fourthCameraBodyTranslation: 0,
+  lensCameraTranslation: 0,
+  shutterCameraTranslation: 0.45,
+  animating: 1
+}
+
 function drawCameraBase(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications

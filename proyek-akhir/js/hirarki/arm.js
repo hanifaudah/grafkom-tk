@@ -2,6 +2,7 @@ import { mvPushMatrix, mvPopMatrix } from "../util.js"
 import { setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture } from "./utils.js"
 
 export const state = {
+  // direction
   secondArmDirection: 1,
   firstFingerBaseDirection: 1,
   firstFingerTopDirection: 1,
@@ -10,7 +11,7 @@ export const state = {
   thirdFingerBaseDirection: 1,
   thirdFingerTopDirection: 1,
 
-  // arm node angles
+  // angles
   secondArmAngle: 0,
   baseArmAngle: 0,
   palmAngle: 0,

@@ -2,7 +2,10 @@ import { initInputs, initTexture, initShaders, initBuffers, initializeAtrributes
 import { Vector3, lookAt } from "./util.js"
 import { drawShadowMap, initObjectTree, animate } from "./hirarki/index.js"
 import { traverse } from "./hirarki/utils.js"
+
+// object animation state
 import { state as armState } from "./hirarki/arm.js"
+import { state as cameraState } from "./hirarki/camera.js"
 
 let state = {
     gl: undefined,
@@ -46,48 +49,8 @@ let state = {
     roomNode: undefined,
     baseArmNode: undefined,
 
-    // // arm animation direction
-    // secondArmDirection: 1,
-    // firstFingerBaseDirection: 1,
-    // firstFingerTopDirection: 1,
-    // secondFingerBaseDirection: 1,
-    // secondFingerTopDirection: 1,
-    // thirdFingerBaseDirection: 1,
-    // thirdFingerTopDirection: 1,
-
-    // camera animation direction
-    firstCameraLegDirection: 1,
-    secondCameraLegDirection: 1,
-    thirdCameraLegDirection: 1,
-    secondCameraBodyDirection: 1,
-    thirdCameraBodyDirection: 1,
-    fourthCameraBodyDirection: 1,
-    lensCameraDirection: 1,
-    shutterCameraDirection: 1,
-
-    // // arm node angles
-    // secondArmAngle: 0,
-    // baseArmAngle: 0,
-    // palmAngle: 0,
-    // firstFingerBaseAngle: 0,
-    // firstFingerTopAngle: 0, 
-    // secondFingerBaseAngle: 0,
-    // secondFingerTopAngle: 0,
-    // thirdFingerBaseAngle: 0, 
-    // thirdFingerTopAngle: 0,
     ...armState,
-
-    // camera node angles
-    baseCameraAngle: 0,
-    firstCameraLegAngle: 0,
-    secondCameraLegAngle: 0,
-    thirdCameraLegAngle: 0,
-    secondCameraBodyTranslation: 0,
-    thirdCameraBodyTranslation: 0,
-    fourthCameraBodyTranslation: 0,
-    lensCameraTranslation: 0,
-    shutterCameraTranslation: 0.45,
-    animating: 1
+    ...cameraState
 }
 
 state.center = state.V.create();
