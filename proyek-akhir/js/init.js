@@ -10,6 +10,12 @@ function renderCameraInputs(state) {
 }
 
 export function initInputs(state) {
+  const controls = {
+    "Steve": {
+        baseSteveAngle: "Steve Rotation"
+    }
+  }
+
   renderCameraInputs(state)
   $("#cam-btns #0").click(function () {
     state.pov = 0;
@@ -22,114 +28,151 @@ export function initInputs(state) {
   document.getElementById("animation").checked = true;
   document.getElementById("lighting").checked = true;
   document.getElementById("texture").checked = true;
+
+  // render sliders
+  Object.keys(controls).forEach(k1 => {
+    const $body = $('<div class="accordion-body"></div>')
+    Object.keys(controls[k1]).forEach(k2 => {
+        $body.append($(`<div>    
+        ${controls[k1][k2]} <br />
+        <input type="range" min="0" max="360" value="0" class="slider" id=${k2} disabled>
+        </div>`))
+    })
+    const $item = $(`<div class="accordion-item">
+    <h2 class="accordion-header" id="headingOne">
+    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        ${k1}
+    </button>
+    </h2>
+    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+    ${$body.prop("outerHTML")}
+    </div>
+</div>`)
+    $("#objectSliders").append($item)
+    })
+
   document.getElementById("animation").onchange = function() {
       state.animating ^= 1;
+    Object.keys(controls).forEach(k1 => {
+        Object.keys(controls[k1]).forEach(k2 => {
+            document.getElementById(k2).disabled = state.animating
+        })
+    })
       if(state.animating) {
-          document.getElementById("baseArmRotationSlider").disabled = true;
-          document.getElementById("secondArmRotationSlider").disabled = true;
-          document.getElementById("palmRotationSlider").disabled = true;
-          document.getElementById("firstFingerBaseRotationSlider").disabled = true;
-          document.getElementById("firstFingerTopRotationSlider").disabled = true;
-          document.getElementById("secondFingerBaseRotationSlider").disabled = true;
-          document.getElementById("secondFingerTopRotationSlider").disabled = true;
-          document.getElementById("thirdFingerBaseRotationSlider").disabled = true;
-          document.getElementById("thirdFingerTopRotationSlider").disabled = true;
-          document.getElementById("baseCameraRotationSlider").disabled = true;
-          document.getElementById("firstCameraLegRotationSlider").disabled = true;
-          document.getElementById("secondCameraLegRotationSlider").disabled = true;
-          document.getElementById("thirdCameraLegRotationSlider").disabled = true;
-          document.getElementById("secondCameraBodyTranslationSlider").disabled = true;
-          document.getElementById("thirdCameraBodyTranslationSlider").disabled = true;
-          document.getElementById("fourthCameraBodyTranslationSlider").disabled = true;
-          document.getElementById("lensCameraTranslationSlider").disabled = true;
-          document.getElementById("shutterCameraTranslationSlider").disabled = true;
+        //   Object.keys(controls).map(k => document.getElementById(k).disabled = true)
+        //   document.getElementById("baseArmRotationSlider").disabled = true;
+        //   document.getElementById("secondArmRotationSlider").disabled = true;
+        //   document.getElementById("palmRotationSlider").disabled = true;
+        //   document.getElementById("firstFingerBaseRotationSlider").disabled = true;
+        //   document.getElementById("firstFingerTopRotationSlider").disabled = true;
+        //   document.getElementById("secondFingerBaseRotationSlider").disabled = true;
+        //   document.getElementById("secondFingerTopRotationSlider").disabled = true;
+        //   document.getElementById("thirdFingerBaseRotationSlider").disabled = true;
+        //   document.getElementById("thirdFingerTopRotationSlider").disabled = true;
+        //   document.getElementById("baseCameraRotationSlider").disabled = true;
+        //   document.getElementById("firstCameraLegRotationSlider").disabled = true;
+        //   document.getElementById("secondCameraLegRotationSlider").disabled = true;
+        //   document.getElementById("thirdCameraLegRotationSlider").disabled = true;
+        //   document.getElementById("secondCameraBodyTranslationSlider").disabled = true;
+        //   document.getElementById("thirdCameraBodyTranslationSlider").disabled = true;
+        //   document.getElementById("fourthCameraBodyTranslationSlider").disabled = true;
+        //   document.getElementById("lensCameraTranslationSlider").disabled = true;
+        //   document.getElementById("shutterCameraTranslationSlider").disabled = true;
       } else {
-          document.getElementById("baseArmRotationSlider").disabled = false;
-          document.getElementById("secondArmRotationSlider").disabled = false;
-          document.getElementById("palmRotationSlider").disabled = false;
-          document.getElementById("firstFingerBaseRotationSlider").disabled = false;
-          document.getElementById("firstFingerTopRotationSlider").disabled = false;
-          document.getElementById("secondFingerBaseRotationSlider").disabled = false;
-          document.getElementById("secondFingerTopRotationSlider").disabled = false;
-          document.getElementById("thirdFingerBaseRotationSlider").disabled = false;
-          document.getElementById("thirdFingerTopRotationSlider").disabled = false;
-          document.getElementById("baseCameraRotationSlider").disabled = false;
-          document.getElementById("firstCameraLegRotationSlider").disabled = false;
-          document.getElementById("secondCameraLegRotationSlider").disabled = false;
-          document.getElementById("thirdCameraLegRotationSlider").disabled = false;
-          document.getElementById("secondCameraBodyTranslationSlider").disabled = false;
-          document.getElementById("thirdCameraBodyTranslationSlider").disabled = false;
-          document.getElementById("fourthCameraBodyTranslationSlider").disabled = false;
-          document.getElementById("lensCameraTranslationSlider").disabled = false;
-          document.getElementById("shutterCameraTranslationSlider").disabled = false;
+        // Object.keys(controls).map(k => document.getElementById(k).disabled = false)
+        //   document.getElementById("baseArmRotationSlider").disabled = false;
+        //   document.getElementById("secondArmRotationSlider").disabled = false;
+        //   document.getElementById("palmRotationSlider").disabled = false;
+        //   document.getElementById("firstFingerBaseRotationSlider").disabled = false;
+        //   document.getElementById("firstFingerTopRotationSlider").disabled = false;
+        //   document.getElementById("secondFingerBaseRotationSlider").disabled = false;
+        //   document.getElementById("secondFingerTopRotationSlider").disabled = false;
+        //   document.getElementById("thirdFingerBaseRotationSlider").disabled = false;
+        //   document.getElementById("thirdFingerTopRotationSlider").disabled = false;
+        //   document.getElementById("baseCameraRotationSlider").disabled = false;
+        //   document.getElementById("firstCameraLegRotationSlider").disabled = false;
+        //   document.getElementById("secondCameraLegRotationSlider").disabled = false;
+        //   document.getElementById("thirdCameraLegRotationSlider").disabled = false;
+        //   document.getElementById("secondCameraBodyTranslationSlider").disabled = false;
+        //   document.getElementById("thirdCameraBodyTranslationSlider").disabled = false;
+        //   document.getElementById("fourthCameraBodyTranslationSlider").disabled = false;
+        //   document.getElementById("lensCameraTranslationSlider").disabled = false;
+        //   document.getElementById("shutterCameraTranslationSlider").disabled = false;
       }
   };
-  document.getElementById("baseArmRotationSlider").oninput = function() {
-      baseArmAngle = document.getElementById("baseArmRotationSlider").value * Math.PI / 180;
-  }
-  document.getElementById("secondArmRotationSlider").oninput = function() {
-      secondArmAngle = document.getElementById("secondArmRotationSlider").value * Math.PI / 180;
-  }
-  document.getElementById("palmRotationSlider").oninput = function() {
-      palmAngle = document.getElementById("palmRotationSlider").value * Math.PI / 180;
-  }
-  document.getElementById("firstFingerBaseRotationSlider").oninput = function() {
-      firstFingerBaseAngle = document.getElementById("firstFingerBaseRotationSlider").value * Math.PI / 180;
-  }
-  document.getElementById("firstFingerTopRotationSlider").oninput = function() {
-      firstFingerTopAngle = document.getElementById("firstFingerTopRotationSlider").value * Math.PI / 180;
-  }
-  document.getElementById("secondFingerBaseRotationSlider").oninput = function() {
-      secondFingerBaseAngle = document.getElementById("secondFingerBaseRotationSlider").value * Math.PI / 180;
-  }
-  document.getElementById("secondFingerTopRotationSlider").oninput = function() {
-      secondFingerTopAngle = document.getElementById("secondFingerTopRotationSlider").value * Math.PI / 180;
-  }
-  document.getElementById("thirdFingerBaseRotationSlider").oninput = function() {
-      thirdFingerBaseAngle = document.getElementById("thirdFingerBaseRotationSlider").value * Math.PI / 180;
-  }
-  document.getElementById("thirdFingerTopRotationSlider").oninput = function() {
-      thirdFingerTopAngle = document.getElementById("thirdFingerTopRotationSlider").value * Math.PI / 180;
-  }
-  document.getElementById("baseCameraRotationSlider").oninput = function() {
-      baseCameraAngle = document.getElementById("baseCameraRotationSlider").value * Math.PI / 180;
-  }
-  document.getElementById("firstCameraLegRotationSlider").oninput = function() {
-      firstCameraLegAngle = document.getElementById("firstCameraLegRotationSlider").value * Math.PI / 180;
-  }
-  document.getElementById("secondCameraLegRotationSlider").oninput = function() {
-      secondCameraLegAngle = document.getElementById("secondCameraLegRotationSlider").value * Math.PI / 180;
-  }
-  document.getElementById("thirdCameraLegRotationSlider").oninput = function() {
-      thirdCameraLegAngle = document.getElementById("thirdCameraLegRotationSlider").value * Math.PI / 180;
-  }
-  document.getElementById("secondCameraBodyTranslationSlider").oninput = function() {
-      thirdCameraLegAngle = document.getElementById("thirdCameraLegRotationSlider").value * Math.PI / 180;
-  }
-  document.getElementById("secondCameraBodyTranslationSlider").oninput = function() {
-      secondCameraBodyTranslation = document.getElementById("secondCameraBodyTranslationSlider").value / 100;
-  }
-  document.getElementById("thirdCameraBodyTranslationSlider").oninput = function() {
-      thirdCameraBodyTranslation = document.getElementById("thirdCameraBodyTranslationSlider").value / 100;
-  }
-  document.getElementById("fourthCameraBodyTranslationSlider").oninput = function() {
-      fourthCameraBodyTranslation = document.getElementById("fourthCameraBodyTranslationSlider").value / 100;
-  }
-  document.getElementById("lensCameraTranslationSlider").oninput = function() {
-      lensCameraTranslation = document.getElementById("lensCameraTranslationSlider").value / 100;
-  }
-  document.getElementById("shutterCameraTranslationSlider").oninput = function() {
-      shutterCameraTranslation = document.getElementById("shutterCameraTranslationSlider").value / 100;
-  }
-  document.getElementById("arm-material").onchange = function() {
-      armMaterial = document.getElementById("arm-material").value;
-  }
-  document.getElementById("camera-material").onchange = function() {
-      cameraMaterial = document.getElementById("camera-material").value;
-  }
-  document.getElementById("room-material").onchange = function() {
-      roomMaterial = document.getElementById("room-material").value;
-  }
+  Object.keys(controls).map(k1 => {
+    Object.keys(controls[k1]).forEach(k2 => {
+        document.getElementById(k2).oninput = function() {
+            state[k2] = document.getElementById(k2).value * Math.PI / 180;
+        }
+    })
+  })
+//   document.getElementById("baseArmRotationSlider").oninput = function() {
+//       baseArmAngle = document.getElementById("baseArmRotationSlider").value * Math.PI / 180;
+//   }
+//   document.getElementById("secondArmRotationSlider").oninput = function() {
+//       secondArmAngle = document.getElementById("secondArmRotationSlider").value * Math.PI / 180;
+//   }
+//   document.getElementById("palmRotationSlider").oninput = function() {
+//       palmAngle = document.getElementById("palmRotationSlider").value * Math.PI / 180;
+//   }
+//   document.getElementById("firstFingerBaseRotationSlider").oninput = function() {
+//       firstFingerBaseAngle = document.getElementById("firstFingerBaseRotationSlider").value * Math.PI / 180;
+//   }
+//   document.getElementById("firstFingerTopRotationSlider").oninput = function() {
+//       firstFingerTopAngle = document.getElementById("firstFingerTopRotationSlider").value * Math.PI / 180;
+//   }
+//   document.getElementById("secondFingerBaseRotationSlider").oninput = function() {
+//       secondFingerBaseAngle = document.getElementById("secondFingerBaseRotationSlider").value * Math.PI / 180;
+//   }
+//   document.getElementById("secondFingerTopRotationSlider").oninput = function() {
+//       secondFingerTopAngle = document.getElementById("secondFingerTopRotationSlider").value * Math.PI / 180;
+//   }
+//   document.getElementById("thirdFingerBaseRotationSlider").oninput = function() {
+//       thirdFingerBaseAngle = document.getElementById("thirdFingerBaseRotationSlider").value * Math.PI / 180;
+//   }
+//   document.getElementById("thirdFingerTopRotationSlider").oninput = function() {
+//       thirdFingerTopAngle = document.getElementById("thirdFingerTopRotationSlider").value * Math.PI / 180;
+//   }
+//   document.getElementById("baseCameraRotationSlider").oninput = function() {
+//       baseCameraAngle = document.getElementById("baseCameraRotationSlider").value * Math.PI / 180;
+//   }
+//   document.getElementById("firstCameraLegRotationSlider").oninput = function() {
+//       firstCameraLegAngle = document.getElementById("firstCameraLegRotationSlider").value * Math.PI / 180;
+//   }
+//   document.getElementById("secondCameraLegRotationSlider").oninput = function() {
+//       secondCameraLegAngle = document.getElementById("secondCameraLegRotationSlider").value * Math.PI / 180;
+//   }
+//   document.getElementById("thirdCameraLegRotationSlider").oninput = function() {
+//       thirdCameraLegAngle = document.getElementById("thirdCameraLegRotationSlider").value * Math.PI / 180;
+//   }
+//   document.getElementById("secondCameraBodyTranslationSlider").oninput = function() {
+//       thirdCameraLegAngle = document.getElementById("thirdCameraLegRotationSlider").value * Math.PI / 180;
+//   }
+//   document.getElementById("secondCameraBodyTranslationSlider").oninput = function() {
+//       secondCameraBodyTranslation = document.getElementById("secondCameraBodyTranslationSlider").value / 100;
+//   }
+//   document.getElementById("thirdCameraBodyTranslationSlider").oninput = function() {
+//       thirdCameraBodyTranslation = document.getElementById("thirdCameraBodyTranslationSlider").value / 100;
+//   }
+//   document.getElementById("fourthCameraBodyTranslationSlider").oninput = function() {
+//       fourthCameraBodyTranslation = document.getElementById("fourthCameraBodyTranslationSlider").value / 100;
+//   }
+//   document.getElementById("lensCameraTranslationSlider").oninput = function() {
+//       lensCameraTranslation = document.getElementById("lensCameraTranslationSlider").value / 100;
+//   }
+//   document.getElementById("shutterCameraTranslationSlider").oninput = function() {
+//       shutterCameraTranslation = document.getElementById("shutterCameraTranslationSlider").value / 100;
+//   }
+//   document.getElementById("arm-material").onchange = function() {
+//       armMaterial = document.getElementById("arm-material").value;
+//   }
+//   document.getElementById("camera-material").onchange = function() {
+//       cameraMaterial = document.getElementById("camera-material").value;
+//   }
+//   document.getElementById("room-material").onchange = function() {
+//       roomMaterial = document.getElementById("room-material").value;
+//   }
 }
 
 export function initTexture(state) {

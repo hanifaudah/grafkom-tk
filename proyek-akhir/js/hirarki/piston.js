@@ -77,7 +77,7 @@ export function handleAnimation(state) {
       
   //ARM
   state.basePistonAngle = (state.basePistonAngle + update)%(2*Math.PI);
-  document.getElementById("baseArmRotationSlider").value = state.basePistonAngle * 180 / (Math.PI);
+  // document.getElementById("baseArmRotationSlider").value = state.basePistonAngle * 180 / (Math.PI);
   
   state.neckPistonTranslate += state.neckPistonDirection * 0.1;
   if (state.neckPistonTranslate >= 3 || state.neckPistonTranslate <= 0) state.neckPistonDirection *= -1
