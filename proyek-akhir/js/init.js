@@ -175,6 +175,14 @@ export function initTexture(state) {
        configureTexture(image8, gl.TEXTURE8, state);
     }
     image8.src = "img/glass.jpg"
+
+    // STEVE
+
+    var image9 = new Image();
+    image9.onload = function() {
+       configureTexture(image9, gl.TEXTURE9, state);
+    }
+    image9.src = "img/steveHead.png"
 }
 
 function configureTexture(image, textureno, state) {
@@ -388,41 +396,42 @@ export function initBuffers(state) {
     state.cubeVertexIndexBuffer.numItems = 36;
     
     var textureCubeCoords = [
-      // Front face
-      0.0, 0.0,
-      1.0, 0.0,
-      1.0, 1.0,
-      0.0, 1.0,
+    // Left face
+    1/2, 1/2,
+    3/4, 1/2,
+    3/4, 1,
+    1/2, 1,
 
-      // Back face
-      0.6, 0.5,
-      0.6, 1.0,
-      0.3, 1.0,
-      0.3, 0.5,
+    // Right face
+    1/4, 1/2,
+    1/4, 1.0,
+    0, 1,
+    0, 1/2,
 
-      // Top face
-      0.0, 0.0,
-      1/3, 0.0,
-      1/3, 0.5,
-      0.0, 0.5,
-    
-      // Bottom face
-      1/3, 0.0,
-      2/3, 0.0,
-      2/3, 0.5,
-      1/3, 0.5,
+    // Top face
+    0.0, 0.0,
+    1/4, 0.0,
+    1/4, 1/2,
+    0.0, 1/2,
 
-      // Right face
-      1.0, 1/2,
-      1.0, 1.0,
-      2/3, 1.0,
-      2/3, 1/2,
+    // Bottom face
+    1/4, 0.0,
+    1/2, 0.0,
+    1/2, 1/2,
+    1/4, 0.5,
 
-      // Left face
-      0.0, 1/2,
-      1/3, 1/2,
-      1/3, 1.0,
-      0.0, 1.0,
+        // Back face
+        1, 1/2,
+        1, 1,
+        3/4, 1,
+        3/4, 1/2,
+
+    // Front face
+    1/4, 1/2,
+    1/2, 1/2,
+    1/2, 1,
+    1/4, 1,
+
     ];
     state.cubeTextureBuffer = state.gl.createBuffer();
     state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeTextureBuffer);
