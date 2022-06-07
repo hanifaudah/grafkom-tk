@@ -395,18 +395,56 @@ export function initBuffers(state) {
     state.cubeVertexIndexBuffer.itemSize = 1;
     state.cubeVertexIndexBuffer.numItems = 36;
     
-    var textureCubeCoords = [
-    // Left face
-    1/2, 1/2,
-    3/4, 1/2,
-    3/4, 1,
-    1/2, 1,
+    // var textureCubeCoords = [
+    // // Left face
+    // 1/2, 1/2,
+    // 3/4, 1/2,
+    // 3/4, 1,
+    // 1/2, 1,
 
-    // Right face
+    // // Right face
+    // 1/4, 1/2,
+    // 1/4, 1.0,
+    // 0, 1,
+    // 0, 1/2,
+
+    // // Top face
+    // 0.0, 0.0,
+    // 1/4, 0.0,
+    // 1/4, 1/2,
+    // 0.0, 1/2,
+
+    // // Bottom face
+    // 1/4, 0.0,
+    // 1/2, 0.0,
+    // 1/2, 1/2,
+    // 1/4, 0.5,
+
+    // // Back face
+    // 1, 1/2,
+    // 1, 1,
+    // 3/4, 1,
+    // 3/4, 1/2,
+
+    // // Front face
+    // 1/4, 1/2,
+    // 1/2, 1/2,
+    // 1/2, 1,
+    // 1/4, 1,
+
+    // ];
+    var textureCubeCoords = [
+    // Back face
+    3/4, 1/2,
+    1, 1/2,
+    1, 1,
+    3/4, 1,
+
+    // Front face
+    1/2, 1/2,
+    1/2, 1,
+    1/4, 1,
     1/4, 1/2,
-    1/4, 1.0,
-    0, 1,
-    0, 1/2,
 
     // Top face
     0.0, 0.0,
@@ -420,17 +458,18 @@ export function initBuffers(state) {
     1/2, 1/2,
     1/4, 0.5,
 
-        // Back face
-        1, 1/2,
-        1, 1,
-        3/4, 1,
-        3/4, 1/2,
-
-    // Front face
-    1/4, 1/2,
-    1/2, 1/2,
+    // Right face
+    3/4, 1/2,
+    3/4, 1,
     1/2, 1,
-    1/4, 1,
+    1/2, 1/2,
+
+    // Left face
+    0, 1/2,
+    1/4, 1/2,
+    1/4, 1.0,
+    0, 1,
+
 
     ];
     state.cubeTextureBuffer = state.gl.createBuffer();
