@@ -184,11 +184,29 @@ export function initTexture(state) {
     }
     image9.src = "img/steveHead.png"
 
+    // PIG
+
+    // Pig Head
     var image10 = new Image();
     image10.onload = function() {
        configureTexture(image10, gl.TEXTURE10, state);
     }
     image10.src = "img/pigHead.png"
+
+    // Pig Body
+    var image11 = new Image();
+    image11.onload = function() {
+       configureTexture(image11, gl.TEXTURE11, state);
+    }
+    image11.src = "img/pigBody.png"
+
+    // Pig Leg
+    var image12 = new Image();
+    image12.onload = function() {
+       configureTexture(image12, gl.TEXTURE12, state);
+    }
+    image12.src = "img/pigLeg.png"
+
 }
 
 function configureTexture(image, textureno, state) {
