@@ -4,6 +4,9 @@ import { assembleCamera,handleCameraAnimation } from "./camera.js";
 import { assembleLightSource } from "./lightSource.js"
 import { assembleRoom } from "./room.js"
 import { traverse } from "./utils.js"
+
+// ADD OBJECT HERE: import assemble and handleAnimation func
+
 import { assemble as assemblePig, handleAnimation as handlePigAnimation } from "./pig.js"
 
 //draws shadowmap for the side of the texture
@@ -59,7 +62,7 @@ export function drawShadowMap(state, side) {
     traverse(state, state.roomNode, true);
     mat4.translate(state.mvMatrix, [0, 0, -20]);
     traverse(state, state.baseArmNode, true);
-    
+    // ADD OBJECT HERE: traverse baseNode
     state.gl.bindFramebuffer(state.gl.FRAMEBUFFER,  null);
 }
 
@@ -76,8 +79,7 @@ export function initObjectTree(state) {
   //CAMERA
   assembleCamera(state)
 
-  // //PIG
-  // assemblePig(state)
+  // ADD OBJECT HERE: assemble object
 }
 
 export function animate(state) {
@@ -89,6 +91,8 @@ export function animate(state) {
       
       //CAMERA
       handleCameraAnimation(state)
+
+      // ADD OBJECT HERE: handle animation func
   }
   initObjectTree(state);
 }

@@ -2,6 +2,8 @@ import { mvPushMatrix, mvPopMatrix } from "../util.js"
 import { setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture, setupToDrawCylinder } from "./utils.js"
 
 export const state = {
+  cameraMaterial: undefined,
+
   // camera animation direction
   firstCameraLegDirection: 1,
   secondCameraLegDirection: 1,
