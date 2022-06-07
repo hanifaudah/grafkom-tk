@@ -58,7 +58,7 @@ export function assemble(state) {
   var headPistonNode
   
   state.basePistonNode = {"draw" : drawPistonBase, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(state.basePistonNode.matrix, [-3, -3, 0]);
+  mat4.translate(state.basePistonNode.matrix, [-3, -4, 0]);
   // mat4.rotate(state.basePistonNode.matrix, state.basePistonAngle, [0.0, 1.0, 0.0]);
 
   neckPistonNode = {"draw" : drawNeck, "matrix" : mat4.identity(mat4.create())};

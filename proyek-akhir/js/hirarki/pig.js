@@ -84,7 +84,7 @@ export function assemble(state) {
   var noseNode
   
   state.basePigNode = {"draw" : drawPigBase, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(state.basePigNode.matrix, [state.pigX, -2.5, state.pigZ]);
+  mat4.translate(state.basePigNode.matrix, [state.pigX, -3.1, state.pigZ]);
   mat4.rotate(state.basePigNode.matrix, state.basePigAngle, [0.0, 1.0, 0.0]);
 
   state.headPigNode = {"draw" : drawHead, "matrix" : mat4.identity(mat4.create())};

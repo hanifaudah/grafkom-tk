@@ -70,7 +70,7 @@ export function assemble(state) {
   var headNode;
   
   state.baseCreeperNode = {"draw" : drawCreeperBase, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(state.baseCreeperNode.matrix, [state.creeperX, -1.6, state.creeperZ]);
+  mat4.translate(state.baseCreeperNode.matrix, [state.creeperX, -2, state.creeperZ]);
   mat4.rotate(state.baseCreeperNode.matrix, state.baseCreeperAngle, [0.0, 1.0, 0.0]);
 
   headNode = {"draw" : drawHead, "matrix" : mat4.identity(mat4.create())};

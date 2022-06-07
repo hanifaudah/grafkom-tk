@@ -68,7 +68,7 @@ export function assemble(state) {
   var leftArm
   var rightArm
   state.baseSteveNode = {"draw" : drawSteveBase, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(state.baseSteveNode.matrix, [state.steveX, 0, state.steveZ]);
+  mat4.translate(state.baseSteveNode.matrix, [state.steveX, 1, state.steveZ]);
   mat4.rotate(state.baseSteveNode.matrix, state.baseSteveAngle, [0.0, 1.0, 0.0]);
 
   state.headSteveNode = {"draw" : drawHead, "matrix" : mat4.identity(mat4.create())};
