@@ -15,6 +15,8 @@ let state = {
     u: undefined,
     v: undefined,
     n: undefined,
+    shadowMapLookAtMatrix: mat4.create(),
+    shadowMapTransform: mat4.create()
 }
 
 state.center = state.V.create();
@@ -887,9 +889,6 @@ function traverse(node, shadow) {
     if("sibling" in node) traverse(node.sibling, shadow);
 }
 
-var shadowMapLookAtMatrix = mat4.create();
-var shadowMapTransform = mat4.create();
-
 // a method to generate lookat matrix
 // taken from http://learnwebstate.gl.brown37.net/lib/learn_webgl_matrix.js because mat4.lookat seems buggy
 const lookAt = function (M, eye_x, eye_y, eye_z, center_x, center_y, center_z, up_dx, up_dy, up_dz) {
@@ -949,8 +948,8 @@ function drawShadowMap(side) {
 	
 	state.gl.viewport(0, 0, shadowFrameBuffer.width, shadowFrameBuffer.height);
 	state.gl.clear(state.gl.COLOR_BUFFER_BIT | state.gl.DEPTH_BUFFER_BIT);
-	shadowMapLookAtMatrix = mat4.create();
-	lookAt(shadowMapLookAtMatrix,
+	state.shadowMapLookAtMatrix = mat4.create();
+	lookAt(state.shadowMapLookAtMatrix,
                   parseFloat(document.getElementById("lightPositionX").value / 10.0),
 				  parseFloat(document.getElementById("lightPositionY").value / 10.0),
 				  parseFloat(document.getElementById("lightPositionZ").value / 10.0),
@@ -960,9 +959,9 @@ function drawShadowMap(side) {
                   upVectors[side*3],
                   upVectors[side*3+1],
                   upVectors[side*3+2]);
-    mat4.perspective(90, shadowFrameBuffer.width / shadowFrameBuffer.height, 0.1, 100.0, shadowMapTransform);
-    mat4.multiply(shadowMapTransform, shadowMapLookAtMatrix);
-    mat4.set(shadowMapTransform, state.pMatrix);
+    mat4.perspective(90, shadowFrameBuffer.width / shadowFrameBuffer.height, 0.1, 100.0, state.shadowMapTransform);
+    mat4.multiply(state.shadowMapTransform, state.shadowMapLookAtMatrix);
+    mat4.set(state.shadowMapTransform, state.pMatrix);
     
     state.gl.uniform3f(
         state.shadowMapShaderProgram.pointLightingLocationUniform,
