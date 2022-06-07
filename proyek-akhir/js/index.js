@@ -7,8 +7,22 @@ let state = {
     shadowMapShaderProgram: undefined,
     mvMatrix: mat4.create(),
     mvMatrixStack: [],
-    pMatrix: mat4.create()
+    pMatrix: mat4.create(),
+    V: new Vector3(),
+    center: undefined,
+    eye: undefined,
+    up: undefined,
+    u: undefined,
+    v: undefined,
+    n: undefined,
 }
+
+state.center = state.V.create();
+state.eye = state.V.create();
+state.up = state.V.create();
+state.u = state.V.create();
+state.v = state.V.create();
+state.n = state.V.create();
 
 function initGL(canvas) {
     try {
@@ -877,44 +891,36 @@ var shadowMapLookAtMatrix = mat4.create();
 var shadowMapPerspectiveMatrix = mat4.create();
 var shadowMapTransform = mat4.create();
 
-var V = new Vector3();
-var center = V.create();
-var eye = V.create();
-var up = V.create();
-var u = V.create();
-var v = V.create();
-var n = V.create();
-
 // a method to generate lookat matrix
 // taken from http://learnwebstate.gl.brown37.net/lib/learn_webgl_matrix.js because mat4.lookat seems buggy
 const lookAt = function (M, eye_x, eye_y, eye_z, center_x, center_y, center_z, up_dx, up_dy, up_dz) {
 
     // Local coordinate system for the camera:
-    //   u maps to the x-axis
-    //   v maps to the y-axis
-    //   n maps to the z-axis
+    //   state.u maps to the x-axis
+    //   state.v maps to the y-axis
+    //   state.n maps to the z-axis
 
-    V.set(center, center_x, center_y, center_z);
-    V.set(eye, eye_x, eye_y, eye_z);
-    V.set(up, up_dx, up_dy, up_dz);
+    state.V.set(state.center, center_x, center_y, center_z);
+    state.V.set(state.eye, eye_x, eye_y, eye_z);
+    state.V.set(state.up, up_dx, up_dy, up_dz);
 
-    V.subtract(n, eye, center);  // n = eye - center
-    V.normalize(n);
+    state.V.subtract(state.n, state.eye, state.center);  // state.n = state.eye - state.center
+    state.V.normalize(state.n);
 
-    V.crossProduct(u, up, n);
-    V.normalize(u);
+    state.V.crossProduct(state.u, state.up, state.n);
+    state.V.normalize(state.u);
 
-    V.crossProduct(v, n, u);
-    V.normalize(v);
+    state.V.crossProduct(state.v, state.n, state.u);
+    state.V.normalize(state.v);
 
-    var tx = - V.dotProduct(u,eye);
-    var ty = - V.dotProduct(v,eye);
-    var tz = - V.dotProduct(n,eye);
+    var tx = - state.V.dotProduct(state.u,state.eye);
+    var ty = - state.V.dotProduct(state.v,state.eye);
+    var tz = - state.V.dotProduct(state.n,state.eye);
 
     // Set the camera matrix
-    M[0] = u[0];  M[4] = u[1];  M[8]  = u[2];  M[12] = tx;
-    M[1] = v[0];  M[5] = v[1];  M[9]  = v[2];  M[13] = ty;
-    M[2] = n[0];  M[6] = n[1];  M[10] = n[2];  M[14] = tz;
+    M[0] = state.u[0];  M[4] = state.u[1];  M[8]  = state.u[2];  M[12] = tx;
+    M[1] = state.v[0];  M[5] = state.v[1];  M[9]  = state.v[2];  M[13] = ty;
+    M[2] = state.n[0];  M[6] = state.n[1];  M[10] = state.n[2];  M[14] = tz;
     M[3] = 0;     M[7] = 0;     M[11] = 0;     M[15] = 1;
 };
 
