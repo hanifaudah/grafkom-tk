@@ -6,7 +6,10 @@ import { traverse } from "./hirarki/utils.js"
 // object animation state
 import { state as armState } from "./hirarki/arm.js"
 import { state as cameraState } from "./hirarki/camera.js"
+
 // ADD OBJECT HERE: import state
+import { state as pigState } from "./hirarki/pig.js"
+
 
 let state = {
     gl: undefined,
@@ -48,9 +51,10 @@ let state = {
     roomNode: undefined,
 
     ...armState,
-    ...cameraState
+    ...cameraState,
 
     // ADD OBJECT HERE: spread state here
+    ...pigState,
 }
 
 state.center = state.V.create();
@@ -130,9 +134,10 @@ function drawScene() {
     
     mat4.translate(state.mvMatrix, [0, 0, -20]);
     traverse(state, state.baseArmNode, false);
-
+    
     // ADD OBJECT HERE: add traverse
-    // traverse(state, state.roomNode, false);
+    // mat4.translate(state.mvMatrix, [0, 0, -20]);
+    // traverse(state, state.basePigNode, false);
 }
 
 function tick() {

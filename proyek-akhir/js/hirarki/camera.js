@@ -3,6 +3,7 @@ import { setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture, setup
 
 export const state = {
   cameraMaterial: undefined,
+  baseCameraNode: undefined,
 
   // camera animation direction
   firstCameraLegDirection: 1,
@@ -126,7 +127,6 @@ function drawShutterCamera(state, shadow) {
 }
 
 export function assembleCamera(state) {
-  var baseCameraNode; 
   var firstCameraLegNode; 
   var secondCameraLegNode; 
   var thirdCameraLegNode; 
@@ -137,9 +137,10 @@ export function assembleCamera(state) {
   var lensCameraNode; 
   var shutterCameraNode; 
 
-  baseCameraNode = {"draw" : drawCameraBase, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(baseCameraNode.matrix, [5.0, 1.0, 0.0]);
-  mat4.rotate(baseCameraNode.matrix, state.baseCameraAngle, [0.0, 1.0, 0.0]);
+  state.baseCameraNode = {"draw" : drawCameraBase, "matrix" : mat4.identity(mat4.create())};
+  // console.log(state.baseCameraNode)
+  mat4.translate(state.baseCameraNode.matrix, [5.0, 1.0, 0.0]);
+  mat4.rotate(state.baseCameraNode.matrix, state.baseCameraAngle, [0.0, 1.0, 0.0]);
   
   firstCameraLegNode = {"draw" : drawCameraLeg, "matrix" : mat4.identity(mat4.create())};
   mat4.translate(firstCameraLegNode.matrix, [0.45, -0.25, 0.45]);
@@ -175,8 +176,9 @@ export function assembleCamera(state) {
   shutterCameraNode = {"draw" : drawShutterCamera, "matrix" : mat4.identity(mat4.create())};
   mat4.translate(shutterCameraNode.matrix, [0.0, 0.35, state.shutterCameraTranslation]); //0.45 - 0.55
   
-  state.baseArmNode.sibling = baseCameraNode;
-  baseCameraNode.child = firstCameraLegNode;
+  state.baseArmNode.sibling = state.baseCameraNode;
+  // console.log(state.baseCameraNode)
+  state.baseCameraNode.child = firstCameraLegNode;
   firstCameraLegNode.sibling = secondCameraLegNode;
   secondCameraLegNode.sibling = thirdCameraLegNode;
   thirdCameraLegNode.sibling = firstCameraBodyNode;

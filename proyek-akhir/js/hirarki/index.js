@@ -62,7 +62,11 @@ export function drawShadowMap(state, side) {
     traverse(state, state.roomNode, true);
     mat4.translate(state.mvMatrix, [0, 0, -20]);
     traverse(state, state.baseArmNode, true);
+    
     // ADD OBJECT HERE: traverse baseNode
+    // mat4.translate(state.mvMatrix, [0, 0, -20]);
+    // traverse(state, state.basePigNode, true);
+
     state.gl.bindFramebuffer(state.gl.FRAMEBUFFER,  null);
 }
 
@@ -80,6 +84,7 @@ export function initObjectTree(state) {
   assembleCamera(state)
 
   // ADD OBJECT HERE: assemble object
+  assemblePig(state)
 }
 
 export function animate(state) {
@@ -93,6 +98,7 @@ export function animate(state) {
       handleCameraAnimation(state)
 
       // ADD OBJECT HERE: handle animation func
+      handlePigAnimation(state)
   }
   initObjectTree(state);
 }
