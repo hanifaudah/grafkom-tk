@@ -1,3 +1,5 @@
+import { createFrameBufferObject } from "./util.js"
+
 export function initInputs() {
   document.getElementById("animation").checked = true;
   document.getElementById("lighting").checked = true;
@@ -264,4 +266,298 @@ function getShader(gl, id) {
         return null;
     }
     return shader;
+}
+
+export function initBuffers(state) {
+    //DEFINING CUBE
+    state.cubeVertexPositionBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexPositionBuffer);
+    const vertices = [
+        // Front face
+        -1.0, -1.0,  1.0,
+         1.0, -1.0,  1.0,
+         1.0,  1.0,  1.0,
+        -1.0,  1.0,  1.0,
+        // Back face
+        -1.0, -1.0, -1.0,
+        -1.0,  1.0, -1.0,
+         1.0,  1.0, -1.0,
+         1.0, -1.0, -1.0,
+        // Top face
+        -1.0,  1.0, -1.0,
+        -1.0,  1.0,  1.0,
+         1.0,  1.0,  1.0,
+         1.0,  1.0, -1.0,
+        // Bottom face
+        -1.0, -1.0, -1.0,
+         1.0, -1.0, -1.0,
+         1.0, -1.0,  1.0,
+        -1.0, -1.0,  1.0,
+        // Right face
+         1.0, -1.0, -1.0,
+         1.0,  1.0, -1.0,
+         1.0,  1.0,  1.0,
+         1.0, -1.0,  1.0,
+        // Left face
+        -1.0, -1.0, -1.0,
+        -1.0, -1.0,  1.0,
+        -1.0,  1.0,  1.0,
+        -1.0,  1.0, -1.0
+    ];
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(vertices), state.gl.STATIC_DRAW);
+    state.cubeVertexPositionBuffer.itemSize = 3;
+    state.cubeVertexPositionBuffer.numItems = 24;
+    state.cubeVertexNormalBuffer = state.gl.createBuffer();
+    state.cubeInsidesVertexNormalBuffer = state.gl.createBuffer();
+    var vertexNormals = [
+        // Front face
+         0.0,  0.0,  1.0,
+         0.0,  0.0,  1.0,
+         0.0,  0.0,  1.0,
+         0.0,  0.0,  1.0,
+        // Back face
+         0.0,  0.0, -1.0,
+         0.0,  0.0, -1.0,
+         0.0,  0.0, -1.0,
+         0.0,  0.0, -1.0,
+        // Top face
+         0.0,  1.0,  0.0,
+         0.0,  1.0,  0.0,
+         0.0,  1.0,  0.0,
+         0.0,  1.0,  0.0,
+        // Bottom face
+         0.0, -1.0,  0.0,
+         0.0, -1.0,  0.0,
+         0.0, -1.0,  0.0,
+         0.0, -1.0,  0.0,
+        // Right face
+         1.0,  0.0,  0.0,
+         1.0,  0.0,  0.0,
+         1.0,  0.0,  0.0,
+         1.0,  0.0,  0.0,
+        // Left face
+        -1.0,  0.0,  0.0,
+        -1.0,  0.0,  0.0,
+        -1.0,  0.0,  0.0,
+        -1.0,  0.0,  0.0,
+    ];
+    var vertexInsidesNormals = [];
+    for(var i = 0; i < vertexNormals.length; i++) {
+        vertexInsidesNormals.push(vertexNormals[i] * -1);
+    }
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexNormalBuffer);
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(vertexNormals), state.gl.STATIC_DRAW);
+    state.cubeVertexNormalBuffer.itemSize = 3;
+    state.cubeVertexNormalBuffer.numItems = 24;
+    
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeInsidesVertexNormalBuffer);
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(vertexInsidesNormals), state.gl.STATIC_DRAW);
+    state.cubeInsidesVertexNormalBuffer.itemSize = 3;
+    state.cubeInsidesVertexNormalBuffer.numItems = 24;
+    
+    state.cubeVertexIndexBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, state.cubeVertexIndexBuffer);
+    var cubeVertexIndices = [
+        0, 1, 2,      0, 2, 3,    // Front face
+        4, 5, 6,      4, 6, 7,    // Back face
+        8, 9, 10,     8, 10, 11,  // Top face
+        12, 13, 14,   12, 14, 15, // Bottom face
+        16, 17, 18,   16, 18, 19, // Right face
+        20, 21, 22,   20, 22, 23  // Left face
+    ];
+    state.gl.bufferData(state.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), state.gl.STATIC_DRAW);
+    state.cubeVertexIndexBuffer.itemSize = 1;
+    state.cubeVertexIndexBuffer.numItems = 36;
+    
+    var textureCubeCoords = [
+      // Front face
+      0.0, 0.0,
+      1.0, 0.0,
+      1.0, 1.0,
+      0.0, 1.0,
+
+      // Back face
+      0.6, 0.5,
+      0.6, 1.0,
+      0.3, 1.0,
+      0.3, 0.5,
+
+      // Top face
+      0.0, 0.0,
+      1/3, 0.0,
+      1/3, 0.5,
+      0.0, 0.5,
+    
+      // Bottom face
+      1/3, 0.0,
+      2/3, 0.0,
+      2/3, 0.5,
+      1/3, 0.5,
+
+      // Right face
+      1.0, 1/2,
+      1.0, 1.0,
+      2/3, 1.0,
+      2/3, 1/2,
+
+      // Left face
+      0.0, 1/2,
+      1/3, 1/2,
+      1/3, 1.0,
+      0.0, 1.0,
+    ];
+    state.cubeTextureBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeTextureBuffer);
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(textureCubeCoords), state.gl.STATIC_DRAW);
+    state.cubeTextureBuffer.itemSize = 2;
+    state.cubeTextureBuffer.numItems = 24;
+        
+    //DEFINING CYLINDER
+    //try making it with 20 segments
+    var segment = 20;
+    var deltaTheta = Math.PI * 360 / (180 * segment);
+    var x, z;
+    var cylinderBotVertices = [0, 0, 0];
+    var cylinderTopVertices = [0, 1, 0];
+    var cylinderSideVertices = [];
+    var cylinderBotNormals = [0.0, -1.0, 0.0];
+    var cylinderTopNormals = [0.0, 1.0, 0.0];
+    var cylinderSideNormals = [];
+    var cylinderBotTopTextureCoordinates = [0.5, 0.5];
+    var cylinderSideTextureCoordinates = [];
+    for(var i = 0; i <= segment; i++) {
+        x = Math.cos(deltaTheta * i);
+        z = Math.sin(deltaTheta * i);
+        
+        cylinderBotVertices.push(x, 0, z);
+        cylinderBotNormals.push(0.0, -1.0, 0.0);
+        cylinderBotTopTextureCoordinates.push((x+1)/2, (z+1)/2);
+        
+        cylinderSideVertices.push(x, 0, z);
+        cylinderSideNormals.push(x, 0, z);
+        cylinderSideTextureCoordinates.push(i / segment, 0.0);
+        cylinderSideVertices.push(x, 1, z);
+        cylinderSideNormals.push(x, 0, z);
+        cylinderSideTextureCoordinates.push(i / segment, 1.0);
+        
+        cylinderTopVertices.push(x, 1, z);
+        cylinderTopNormals.push(0.0, 1.0, 0.0);
+    }
+    state.cylinderVertexPositionBuffer = state.gl.createBuffer();
+    state.cylinderVertexNormalBuffer = state.gl.createBuffer();
+    state.cylinderTextureBuffer = state.gl.createBuffer();
+    var cylinderVertices = cylinderBotVertices.concat(cylinderSideVertices).concat(cylinderTopVertices);
+    var cylinderNormals = cylinderBotNormals.concat(cylinderSideNormals).concat(cylinderTopNormals);
+    var cylinderTextureCoordinates = cylinderBotTopTextureCoordinates.concat(cylinderSideTextureCoordinates).concat(cylinderBotTopTextureCoordinates);
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cylinderVertexPositionBuffer);
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(cylinderVertices), state.gl.STATIC_DRAW);
+    state.cylinderVertexPositionBuffer.itemSize = 3;
+    state.cylinderVertexPositionBuffer.numItems = cylinderVertices.length / 3;
+    
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cylinderVertexNormalBuffer);
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(cylinderNormals), state.gl.STATIC_DRAW);
+    state.cylinderVertexNormalBuffer.itemSize = 3;
+    state.cylinderVertexNormalBuffer.numItems = cylinderNormals.length / 3;
+    
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cylinderTextureBuffer);
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(cylinderTextureCoordinates), state.gl.STATIC_DRAW);
+    state.cylinderTextureBuffer.itemSize = 2;
+    state.cylinderTextureBuffer.numItems = cylinderTextureCoordinates.length / 2;
+    
+    var cylinderIndices = [];
+    //bot vertices
+    for(var i = 2; i < cylinderBotVertices.length / 3; i++) {
+        cylinderIndices.push(0, i-1, i);
+    }
+    cylinderIndices.push(0, cylinderBotVertices.length/3-1, 1);
+    var offset = cylinderBotVertices.length/3;
+    //side vertices
+    for(var i = 2; i < cylinderSideVertices.length/3; i++) {
+        cylinderIndices.push(offset+i-2, offset+i-1, offset+i);
+    }
+    cylinderIndices.push(offset+cylinderSideVertices.length/3-2, offset+cylinderSideVertices.length/3-1, offset);
+    cylinderIndices.push(offset+cylinderSideVertices.length/3-1, offset, offset+1);
+    offset += cylinderSideVertices.length/3;
+    for(var i = 2; i < cylinderTopVertices.length/3; i++) {
+        cylinderIndices.push(offset, offset+i-1, offset+i);
+    }
+    cylinderIndices.push(offset, offset+cylinderTopVertices.length/3-1, offset+1);
+    //console.log(cylinderVertices.length);
+    //console.log(cylinderIndices);
+    
+    state.cylinderVertexIndexBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, state.cylinderVertexIndexBuffer);
+    state.gl.bufferData(state.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cylinderIndices), state.gl.STATIC_DRAW);
+    state.cylinderVertexIndexBuffer.itemSize = 1;
+    state.cylinderVertexIndexBuffer.numItems = cylinderIndices.length;
+    
+    //DEFINING SPHERE
+    var latitudeBands = 30;
+    var longitudeBands = 30;
+    var radius = 0.5;
+    var vertexPositionData = [];
+    var normalData = [];
+    for (var latNumber=0; latNumber <= latitudeBands; latNumber++) {
+        var theta = latNumber * Math.PI / latitudeBands;
+        var sinTheta = Math.sin(theta);
+        var cosTheta = Math.cos(theta);
+        for (var longNumber=0; longNumber <= longitudeBands; longNumber++) {
+            var phi = longNumber * 2 * Math.PI / longitudeBands;
+            var sinPhi = Math.sin(phi);
+            var cosPhi = Math.cos(phi);
+            var x = cosPhi * sinTheta;
+            var y = cosTheta;
+            var z = sinPhi * sinTheta;
+            var u = 1 - (longNumber / longitudeBands);
+            var v = 1 - (latNumber / latitudeBands);
+            normalData.push(-x);
+            normalData.push(-y);
+            normalData.push(-z);
+            vertexPositionData.push(radius * x);
+            vertexPositionData.push(radius * y);
+            vertexPositionData.push(radius * z);
+        }
+    }
+    var indexData = [];
+    for (var latNumber=0; latNumber < latitudeBands; latNumber++) {
+        for (var longNumber=0; longNumber < longitudeBands; longNumber++) {
+            var first = (latNumber * (longitudeBands + 1)) + longNumber;
+            var second = first + longitudeBands + 1;
+            indexData.push(first);
+            indexData.push(second);
+            indexData.push(first + 1);
+            indexData.push(second);
+            indexData.push(second + 1);
+            indexData.push(first + 1);
+        }
+    }
+    state.sphereVertexNormalBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.sphereVertexNormalBuffer);
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(normalData), state.gl.STATIC_DRAW);
+    state.sphereVertexNormalBuffer.itemSize = 3;
+    state.sphereVertexNormalBuffer.numItems = normalData.length / 3;
+    state.sphereVertexPositionBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.sphereVertexPositionBuffer);
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(vertexPositionData), state.gl.STATIC_DRAW);
+    state.sphereVertexPositionBuffer.itemSize = 3;
+    state.sphereVertexPositionBuffer.numItems = vertexPositionData.length / 3;
+    state.sphereVertexIndexBuffer = state.gl.createBuffer();
+    state.gl.bindBuffer(state.gl.ELEMENT_ARRAY_BUFFER, state.sphereVertexIndexBuffer);
+    state.gl.bufferData(state.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexData), state.gl.STREAM_DRAW);
+    state.sphereVertexIndexBuffer.itemSize = 1;
+    state.sphereVertexIndexBuffer.numItems = indexData.length;
+    
+    //don't use textures for spheres. Thus, mark all as 0
+    state.sphereTextureBuffer = state.gl.createBuffer();
+    var sphereTextures = [];
+    for(var i = 0; i < normalData.length / 3; i++) {
+		sphereTextures.push(0.0, 0.0);
+	}
+	
+	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.sphereTextureBuffer);
+    state.gl.bufferData(state.gl.ARRAY_BUFFER, new Float32Array(sphereTextures), state.gl.STATIC_DRAW);
+    state.sphereTextureBuffer.itemSize = 2;
+    state.sphereTextureBuffer.numItems = normalData.length / 3;
+    
+	state.shadowFrameBuffer = createFrameBufferObject(state, 512, 512);
 }
