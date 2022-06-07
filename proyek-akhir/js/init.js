@@ -12,7 +12,34 @@ function renderCameraInputs(state) {
 export function initInputs(state) {
   const controls = {
     "Steve": {
-        baseSteveAngle: "Steve Rotation"
+        baseSteveAngle: "Steve Rotation",
+        frontLeftLegSteveAngle: "Left Leg Rotation",
+        frontRightLegSteveAngle: "Right Leg Rotation",
+        headSteveAngle: "Head Rotation",
+        leftArmSteveAngle: "Left Arm Rotation",
+        rightArmSteveAngle: "Right Arm Rotation",
+        steveX: "X",
+        steveZ: "Z"
+    },
+    "Pig": {
+        basePigAngle: "Pig Rotation",
+        frontLeftLegPigAngle: "Front Left Leg Rotation",
+        frontRightLegPigAngle: "Front Right Leg Rotation",
+        backLeftLegPigAngle: "Back Left Leg Rotation",
+        backRightLegPigAngle: "Back Right Leg Rotation",
+        headPigAngle: "Head Rotation",
+        pigX: "X",
+        pigZ: "Z"
+    },
+    "Creeper": {
+        baseCreeperAngle: "Creeper Rotation",
+        frontLeftLegCreeperAngle: "Front Left Leg Rotation",
+        frontRightLegCreeperAngle: "Front Right Leg Rotation",
+        backLeftLegCreeperAngle: "Back Left Leg Rotation",
+        backRightLegCreeperAngle: "Back Right Leg Rotation",
+        headAngle: "Head Rotation",
+        creeperX: "X",
+        creeperZ: "Z"
     }
   }
 
