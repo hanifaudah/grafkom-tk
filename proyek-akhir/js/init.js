@@ -5,8 +5,8 @@ export function initInputs() {
   document.getElementById("lighting").checked = true;
   document.getElementById("texture").checked = true;
   document.getElementById("animation").onchange = function() {
-      animating ^= 1;
-      if(animating) {
+      state.animating ^= 1;
+      if(state.animating) {
           document.getElementById("baseArmRotationSlider").disabled = true;
           document.getElementById("secondArmRotationSlider").disabled = true;
           document.getElementById("palmRotationSlider").disabled = true;
