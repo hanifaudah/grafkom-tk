@@ -888,7 +888,6 @@ function traverse(node, shadow) {
 }
 
 var shadowMapLookAtMatrix = mat4.create();
-var shadowMapPerspectiveMatrix = mat4.create();
 var shadowMapTransform = mat4.create();
 
 // a method to generate lookat matrix
