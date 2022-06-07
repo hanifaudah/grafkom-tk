@@ -4,7 +4,7 @@ import { setMatrixUniforms, setupMaterial, setupToDrawCubeInsides, chooseTexture
 function drawRoom(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
-  mat4.scale(state.mvMatrix, [10.0, 5.0, 30.0]);
+  mat4.scale(state.mvMatrix, [20.0, 20.0, 30.0]);
   //draw
   setupToDrawCubeInsides(state, shadow);
   setMatrixUniforms(state, shadow);
@@ -16,4 +16,5 @@ function drawRoom(state, shadow) {
 
 export function assembleRoom(state) {
   state.roomNode = {"draw" : drawRoom, "matrix" : mat4.identity(mat4.create())};
+  mat4.translate(state.roomNode.matrix, [0, 15, 0]);
 }

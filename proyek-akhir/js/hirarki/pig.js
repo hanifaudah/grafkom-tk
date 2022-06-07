@@ -3,6 +3,7 @@ import { setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture } from
 
 export const state = {
   basePigNode: undefined,
+  pigHeadNode: undefined,
   armMaterial: undefined,
 
   // direction
@@ -80,16 +81,15 @@ export function assemble(state) {
   var frontRightLegNode;
   var backLeftLegNode;
   var backRightLegNode;
-  var headNode;
   var noseNode
   
   state.basePigNode = {"draw" : drawPigBase, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(state.basePigNode.matrix, [5.0, -3.2, 0.0]);
+  mat4.translate(state.basePigNode.matrix, [5.0, -2.5, 0.0]);
   mat4.rotate(state.basePigNode.matrix, state.basePigAngle, [0.0, 1.0, 0.0]);
 
-  headNode = {"draw" : drawHead, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(headNode.matrix, [2.5, 0.5, 0.0]);
-  mat4.rotate(headNode.matrix, state.headAngle, [0.0, 1.0, 0.0]);
+  state.pigHeadNode = {"draw" : drawHead, "matrix" : mat4.identity(mat4.create())};
+  mat4.translate(state.pigHeadNode.matrix, [2.5, 0.5, 0.0]);
+  mat4.rotate(state.pigHeadNode.matrix, state.headAngle, [0.0, 1.0, 0.0]);
 
   noseNode = {"draw" : drawNose, "matrix" : mat4.identity(mat4.create())};
   mat4.translate(noseNode.matrix, [0.8, -0.2, 0]);
@@ -120,9 +120,9 @@ export function assemble(state) {
   frontLeftLegNode.sibling = frontRightLegNode
   frontRightLegNode.sibling = backRightLegNode
   backRightLegNode.sibling = backLeftLegNode
-  backLeftLegNode.sibling = headNode
-  // state.basePigNode.child = headNode
-  headNode.child = noseNode
+  backLeftLegNode.sibling = state.pigHeadNode
+  // state.basePigNode.child = state.pigHeadNode
+  state.pigHeadNode.child = noseNode
 }
 
 export function handleAnimation(state) {

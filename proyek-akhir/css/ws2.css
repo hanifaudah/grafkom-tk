@@ -40,6 +40,14 @@ body, h1,h2,h3,h4,h5,h6 {
     margin-left: 50px;
 }
 
+#cam-btns button {
+    color: black;
+}
+
+#cam-btns button.active {
+    outline: 1px solid blue;
+}
+
 @media screen and (max-height: 450px) {
   .sidenav {padding-top: 15px;}
   .sidenav a {font-size: 18px;}

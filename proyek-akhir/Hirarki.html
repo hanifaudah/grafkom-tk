@@ -185,17 +185,23 @@
           <div class="input-light">
                 <!-- Camera controls -->
                 <h2>Camera Position</h2>
-                <div>
-                    X<br />
-                    <input type="range" min="-100" max="100" value="0" class="slider" id="cameraPositionX">
+                <div id="cam-btns">
+                    <button id="0">Overview</button>
+                    <button id="1">Pig POV</button>
                 </div>
-                <div>
-                    Y<br />
-                    <input type="range" min="-50" max="50" value="0" class="slider" id="cameraPositionY">
-                </div>
-                <div>
-                    Z<br />
-                    <input type="range" min="-50" max="100" value="0" class="slider" id="cameraPositionZ">
+                <div id="cam-controls">
+                    <div>
+                        X<br />
+                        <input type="range" min="-100" max="100" value="0" class="slider" id="cameraPositionX">
+                    </div>
+                    <div>
+                        Y<br />
+                        <input type="range" min="-50" max="50" value="20" class="slider" id="cameraPositionY">
+                    </div>
+                    <div>
+                        Z<br />
+                        <input type="range" min="-200" max="100" value="-100" class="slider" id="cameraPositionZ">
+                    </div>
                 </div>
                 <!-- Light controls -->
                 <h2>Point light</h2>
@@ -209,7 +215,7 @@
                 </div>
                 <div>
                     Z<br />
-                    <input type="range" min="-300" max="-100" value="-200" class="slider" id="lightPositionZ">
+                    <input type="range" min="-300" max="100" value="-200" class="slider" id="lightPositionZ">
                 </div>
                 <div>
                     R: <br/>  <input type="text" id="pointR" value="0.5" />

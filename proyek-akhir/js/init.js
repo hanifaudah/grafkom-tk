@@ -1,6 +1,24 @@
 import { createFrameBufferObject } from "./util.js"
 
-export function initInputs() {
+function renderCameraInputs(state) {
+    const $camControls = $("#cam-controls")
+    if (state.pov == 0) $camControls.show()
+    else $camControls.hide()
+
+    $("#cam-btns button").removeClass("active")
+    $(`#cam-btns #${state.pov}`).addClass("active")
+}
+
+export function initInputs(state) {
+  renderCameraInputs(state)
+  $("#cam-btns #0").click(function () {
+    state.pov = 0;
+    renderCameraInputs(state)
+  })
+  $("#cam-btns #1").click(() => {
+      state.pov = 1;
+      renderCameraInputs(state)
+  })
   document.getElementById("animation").checked = true;
   document.getElementById("lighting").checked = true;
   document.getElementById("texture").checked = true;

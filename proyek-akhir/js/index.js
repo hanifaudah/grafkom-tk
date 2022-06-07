@@ -13,6 +13,7 @@ import { state as creeperState } from "./hirarki/creeper.js"
 
 
 let state = {
+    pov: 0,
     gl: undefined,
     shaderProgram: undefined,
     shadowMapShaderProgram: undefined,
@@ -89,10 +90,14 @@ function drawScene() {
     state.gl.clear(state.gl.COLOR_BUFFER_BIT | state.gl.DEPTH_BUFFER_BIT);
     state.pMatrix = mat4.create();
     lookAt(state, state.lookAtMatrix,
-		  0.0, 0.0, 0.0,
+		  0.0, 3.0, 0.0,
 		  0.0, 0.0, -10.0,
 		  0.0, 1.0, 0.0);
-    mat4.translate(state.lookAtMatrix, [document.getElementById("cameraPositionX").value / -10.0, document.getElementById("cameraPositionY").value / 10.0, document.getElementById("cameraPositionZ").value / 10.0])
+
+    // Camera Movement
+    let cameraTranslation = [document.getElementById("cameraPositionX").value / -10.0, document.getElementById("cameraPositionY").value / -10.0, document.getElementById("cameraPositionZ").value / 10.0]
+    console.log(state.pigHeadNode)
+    mat4.translate(state.lookAtMatrix, cameraTranslation)
     mat4.perspective(45, state.gl.viewportWidth / state.gl.viewportHeight, 0.1, 100.0, state.pMatrix);
     mat4.multiply(state.pMatrix, state.lookAtMatrix);
     
@@ -162,7 +167,7 @@ function webGLStart() {
     state = { ...state, ...initShaders(state)}
     initBuffers(state);
     initObjectTree(state);
-    initInputs();
+    initInputs(state);
     initTexture(state);
     state.gl.clearColor(0.0, 0.0, 0.0, 1.0);
     state.gl.enable(state.gl.DEPTH_TEST);
@@ -170,6 +175,10 @@ function webGLStart() {
     tick();
 }
 
+const openSidebar = () => document.getElementById("mySidenav").style.width = "250px"
+const closeSidebar = () => document.getElementById("mySidenav").style.width = "0"
+$("#openbtn").click(openSidebar)
+$("#closebtn").click(closeSidebar)
+
 webGLStart()
-$("#openbtn").click(() => document.getElementById("mySidenav").style.width = "250px")
-$("#closebtn").click(() => document.getElementById("mySidenav").style.width = "0")
+openSidebar()
