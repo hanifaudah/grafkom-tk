@@ -1,6 +1,6 @@
 import { initInputs, initTexture, initShaders, initBuffers, initializeAtrributes } from "./init.js"
 import { Vector3, lookAt } from "./util.js"
-import { drawShadowMap, traverse, initObjectTree, animate } from "./hirarki.js"
+import { drawShadowMap, traverse, initObjectTree, animate } from "./hirarki/index.js"
 
 let state = {
     gl: undefined,
