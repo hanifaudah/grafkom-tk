@@ -34,7 +34,9 @@ Semua node pada object melalui traversal, kemudian di render pada tiap tahapan t
   - Muhammad Hanif Anggawi: 
     - Texturing pig
     - Research cara menggunakan multiple lightsource dalam satu scene
-  - Mushaffa Huda: -
+  - Mushaffa Huda:
+    - Membuat basis Hirarki untuk model steve
+    - Mencoba menambahkan texture untuk model
 - 08/06/2022
   - Hanif Arkan Audah:
     - Merapikan environment
@@ -44,7 +46,10 @@ Semua node pada object melalui traversal, kemudian di render pada tiap tahapan t
     - Membuat mode shading dan wireframe
   - Muhammad Hanif Anggawi
     - Implementasi direct light, point light, spot light
-  - Mushaffa Huda: -
+  - Mushaffa Huda:
+    - Memberikan 
+    - Refactor dan Merapihkan codebase
+    - Merapihkan Laporan
 
 # Mencantumkan sumber/referensi
 - https://learnopengl.com/Lighting/Multiple-lights

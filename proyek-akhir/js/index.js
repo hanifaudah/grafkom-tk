@@ -70,15 +70,15 @@ function initGL(canvas) {
 }
 
 function drawScene() {
-	state.lookAtMatrix = mat4.create();
-	state.gl.useProgram(state.shaderProgram);
+    state.lookAtMatrix = mat4.create();
+    state.gl.useProgram(state.shaderProgram);
     state.gl.viewport(0, 0, state.gl.viewportWidth, state.gl.viewportHeight);
     state.gl.clear(state.gl.COLOR_BUFFER_BIT | state.gl.DEPTH_BUFFER_BIT);
     state.pMatrix = mat4.create();
     lookAt(state, state.lookAtMatrix,
-		  0.0, 3.0, 0.0,
-		  0.0, 0.0, -10.0,
-		  0.0, 1.0, 0.0);
+        0.0, 3.0, 0.0,
+        0.0, 0.0, -10.0,
+        0.0, 1.0, 0.0);
 
     // Camera Movement
     let cameraTranslation
@@ -98,10 +98,10 @@ function drawScene() {
     mat4.translate(state.lookAtMatrix, cameraTranslation)
     mat4.perspective(45, state.gl.viewportWidth / state.gl.viewportHeight, 0.1, 100.0, state.pMatrix);
     mat4.multiply(state.pMatrix, state.lookAtMatrix);
-    
+
     state.gl.uniform1i(state.shaderProgram.useLightingUniform, document.getElementById("lighting").checked);
-	state.gl.uniform1i(state.shaderProgram.useTextureUniform, document.getElementById("texture").checked);
-	
+    state.gl.uniform1i(state.shaderProgram.useTextureUniform, document.getElementById("texture").checked);
+
     state.gl.uniform3f(
         state.shaderProgram.ambientColorUniform,
         parseFloat(document.getElementById("ambientR").value),
@@ -136,13 +136,13 @@ function drawScene() {
         state.shaderProgram.directLightingColorUniform,
         0.005, 0.005, 0.005
     );
-    
+
     // Spot Light
     state.gl.uniform1f(state.shaderProgram.uInnerLimit, 0)
     state.gl.uniform1f(state.shaderProgram.uInnerLimit, 90)
 
     state.gl.uniform3f(
-        state.shaderProgram.uSpotLightDirectionUniform, 
+        state.shaderProgram.uSpotLightDirectionUniform,
         parseFloat(document.getElementById("spotDirX").value),
         parseFloat(document.getElementById("spotDirY").value),
         parseFloat(document.getElementById("spotDirZ").value)
@@ -160,32 +160,31 @@ function drawScene() {
         state.shaderProgram.spotLightingColorUniform,
         0.6, 0.6, 0.6
     );
-    
+
     state.gl.activeTexture(state.gl.TEXTURE31);
     state.gl.bindTexture(state.gl.TEXTURE_CUBE_MAP, state.shadowFrameBuffer.depthBuffer);
     state.gl.uniform1i(state.shaderProgram.shadowMapUniform, 31);
-    
+
     state.gl.uniform1f(state.shaderProgram.uFarPlaneUniform, 100.0);
-    
+
     mat4.identity(state.mvMatrix);
     traverse(state, state.lightSourceNode, false);
     traverse(state, state.roomNode, false);
-    
+
     mat4.translate(state.mvMatrix, [0, 0, 0]);
-    // traverse(state, state.baseArmNode, false);
     traverse(state, state.basePigNode, false);
     traverse(state, state.baseCreeperNode, false);
     traverse(state, state.baseSteveNode, false);
     traverse(state, state.basePistonNode, false);
     traverse(state, state.baseChestNode, false);
-    
+
     // ADD OBJECT HERE: add traverse
 }
 
 function tick() {
     requestAnimationFrame(tick);
-    for(var i = 0; i < 6; i++) {
-		drawShadowMap(state, i);
+    for (var i = 0; i < 6; i++) {
+        drawShadowMap(state, i);
     }
     drawScene();
     animate(state);
@@ -199,14 +198,14 @@ function webGLStart() {
     state.cameraMaterial = document.getElementById("camera-material").value;
     state.roomMaterial = document.getElementById("room-material").value;
     initGL(canvas);
-    state = { ...state, ...initShaders(state)}
+    state = { ...state, ...initShaders(state) }
     initBuffers(state);
     initObjectTree(state);
     initInputs(state);
     initTexture(state);
     state.gl.clearColor(0.0, 0.0, 0.0, 1.0);
     state.gl.enable(state.gl.DEPTH_TEST);
-    initializeAtrributes(state, )
+    initializeAtrributes(state,)
     tick();
 }
 

@@ -1,6 +1,3 @@
-// import{ mvPushMatrix, mvPopMatrix } from "../util.js"
-// import{ setMatrixUniforms, setupMaterial, setupToDrawCubeInsides, chooseTexture } from "./utils.js"
-
 function drawRoom(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
@@ -14,7 +11,7 @@ function drawRoom(state, shadow) {
   mvPopMatrix(state, shadow);
 }
 
- function assembleRoom(state) {
-  state.roomNode = {"draw" : drawRoom, "matrix" : mat4.identity(mat4.create())};
+function assembleRoom(state) {
+  state.roomNode = { "draw": drawRoom, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(state.roomNode.matrix, [0, 15, 0]);
 }
