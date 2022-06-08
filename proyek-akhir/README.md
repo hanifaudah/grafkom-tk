@@ -4,7 +4,7 @@
 (1806186572) Mushaffa Huda
 
 # Penjelasan cara penggunaan/menjalankan program
-Jalankan hirarki.html menggunakan Live Server
+Jalankan `Hirarki.html` menggunakan Live Server
 
 # Proses pembentukan objek
 
