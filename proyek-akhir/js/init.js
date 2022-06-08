@@ -326,6 +326,18 @@ export function initTexture(state) {
        configureTexture(image18, gl.TEXTURE18, state);
     }
     image18.src = "img/creeperHead.png"
+
+    var image19 = new Image();
+    image19.onload = function() {
+       configureTexture(image19, gl.TEXTURE19, state);
+    }
+    image19.src = "img/creeperBody.png"
+
+    var image20 = new Image();
+    image20.onload = function() {
+       configureTexture(image20, gl.TEXTURE20, state);
+    }
+    image20.src = "img/creeperLeg.png"
 }
 
 function configureTexture(image, textureno, state) {
