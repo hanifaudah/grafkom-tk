@@ -56,7 +56,7 @@ function drawHead(state, shadow) {
   //draw
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
-  chooseTexture(state, 13, shadow);
+  chooseTexture(state, 18, shadow);
   setupMaterial(state, state.armMaterial, shadow);
   state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);

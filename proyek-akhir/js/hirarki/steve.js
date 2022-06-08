@@ -31,20 +31,56 @@ function drawSteveBase(state, shadow) {
   //draw
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
-  chooseTexture(state, 2, shadow);
+  chooseTexture(state, 10, shadow);
   setupMaterial(state, state.armMaterial, shadow);
   state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 
-function drawLeg(state, shadow) {
+function drawRightLeg(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
   mat4.scale(state.mvMatrix, [0.55, 2, 0.5]);
   //draw
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
-  chooseTexture(state, 2, shadow);
+  chooseTexture(state, 11, shadow);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  mvPopMatrix(state, shadow);
+}
+
+function drawLeftLeg(state, shadow) {
+  mvPushMatrix(state);
+  //item specific modifications
+  mat4.scale(state.mvMatrix, [0.55, 2, 0.5]);
+  //draw
+  setupToDrawCube(state, shadow);
+  setMatrixUniforms(state, shadow);
+  chooseTexture(state, 12, shadow);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  mvPopMatrix(state, shadow);
+}
+
+function drawRightArm(state, shadow) {
+  mvPushMatrix(state);
+  //item specific modifications
+  mat4.scale(state.mvMatrix, [0.55, 2, 0.5]);
+  //draw
+  setupToDrawCube(state, shadow);
+  setMatrixUniforms(state, shadow);
+  chooseTexture(state, 13, shadow);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  mvPopMatrix(state, shadow);
+}
+
+function drawLeftArm(state, shadow) {
+  mvPushMatrix(state);
+  //item specific modifications
+  mat4.scale(state.mvMatrix, [0.55, 2, 0.5]);
+  //draw
+  setupToDrawCube(state, shadow);
+  setMatrixUniforms(state, shadow);
+  chooseTexture(state, 14, shadow);
   state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
@@ -75,23 +111,23 @@ export function assemble(state) {
   mat4.translate(state.headSteveNode.matrix, [0, 3, 0]);
   mat4.rotate(state.headSteveNode.matrix, state.headSteveAngle, [0.0, 1.0, 0.0]);
   
-  frontLeftLegNode = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
+  frontLeftLegNode = {"draw" : drawLeftLeg, "matrix" : mat4.identity(mat4.create())};
   mat4.translate(frontLeftLegNode.matrix, [-0.55, -2, 0]);
   mat4.rotate(frontLeftLegNode.matrix, state.frontLeftLegSteveAngle, [1, 0.0, 0]);
   mat4.translate(frontLeftLegNode.matrix, [0.0, -2.0, 0.0]);
 
-  frontRightLegNode = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
+  frontRightLegNode = {"draw" : drawRightLeg, "matrix" : mat4.identity(mat4.create())};
   mat4.translate(frontRightLegNode.matrix, [0.55, -2, 0]);
   mat4.rotate(frontRightLegNode.matrix, state.frontRightLegSteveAngle, [1, 0.0, 0]);
   mat4.translate(frontRightLegNode.matrix, [0.0, -2.0, 0.0]);
 
-  leftArm = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
+  leftArm = {"draw" : drawLeftArm, "matrix" : mat4.identity(mat4.create())};
   mat4.translate(leftArm.matrix, [-1.55, 2, 0]);
   mat4.rotate(leftArm.matrix, state.leftArmSteveAngle, [1.0, 0.0, 0]);
   mat4.rotate(leftArm.matrix, -0.2, [0, 0.0, 1]);
   mat4.translate(leftArm.matrix, [0.0, -2.0, 0.0]);
 
-  rightArm = {"draw" : drawLeg, "matrix" : mat4.identity(mat4.create())};
+  rightArm = {"draw" : drawRightArm, "matrix" : mat4.identity(mat4.create())};
   mat4.translate(rightArm.matrix, [1.55, 2, 0]);
   mat4.rotate(rightArm.matrix, state.rightArmSteveAngle, [1.0, 0.0, 0]);
   mat4.rotate(rightArm.matrix, 0.2, [0, 0.0, 1]);

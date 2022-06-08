@@ -254,43 +254,78 @@ export function initTexture(state) {
     }
     image8.src = "img/glass.jpg"
 
-    // STEVE
+    // STEVE (9-14)
 
+    // Steve Head
     var image9 = new Image();
     image9.onload = function() {
        configureTexture(image9, gl.TEXTURE9, state);
     }
     image9.src = "img/steveHead.png"
-
-    // PIG
-
-    // Pig Head
+    
     var image10 = new Image();
     image10.onload = function() {
        configureTexture(image10, gl.TEXTURE10, state);
     }
-    image10.src = "img/pigHead.png"
+    image10.src = "img/steveBody.png"
 
-    // Pig Body
+    // steve right leg
     var image11 = new Image();
     image11.onload = function() {
        configureTexture(image11, gl.TEXTURE11, state);
     }
-    image11.src = "img/pigBody.png"
+    image11.src = "img/steveRightLeg.png"
 
-    // Pig Leg
+    // steve left leg
     var image12 = new Image();
     image12.onload = function() {
        configureTexture(image12, gl.TEXTURE12, state);
     }
-    image12.src = "img/pigLeg.png"
+    image12.src = "img/steveLeftLeg.png"
 
-    // Creeper head
+    // steve right Arm
     var image13 = new Image();
     image13.onload = function() {
        configureTexture(image13, gl.TEXTURE13, state);
     }
-    image13.src = "img/creeperHead.png"
+    image13.src = "img/steveRightArm.png"
+
+    // steve left Arm
+    var image14 = new Image();
+    image14.onload = function() {
+       configureTexture(image14, gl.TEXTURE14, state);
+    }
+    image14.src = "img/steveLeftArm.png"
+
+    // PIG (15-17)
+
+    // Pig Head
+    var image15 = new Image();
+    image15.onload = function() {
+       configureTexture(image15, gl.TEXTURE15, state);
+    }
+    image15.src = "img/pigHead.png"
+
+    // Pig Body
+    var image16 = new Image();
+    image16.onload = function() {
+       configureTexture(image16, gl.TEXTURE16, state);
+    }
+    image16.src = "img/pigBody.png"
+
+    // Pig Leg
+    var image17 = new Image();
+    image17.onload = function() {
+       configureTexture(image17, gl.TEXTURE17, state);
+    }
+    image17.src = "img/pigLeg.png"
+
+    // Creeper head (18-20)
+    var image18 = new Image();
+    image18.onload = function() {
+       configureTexture(image18, gl.TEXTURE18, state);
+    }
+    image18.src = "img/creeperHead.png"
 }
 
 function configureTexture(image, textureno, state) {
