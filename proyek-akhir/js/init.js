@@ -212,47 +212,56 @@ function renderCameraInputs(state) {
 
  function initTexture(state) {
     const { gl } = state
+    const images = []
+
     var image0 = new Image();
     image0.onload = function() {
        configureTexture(image0, gl.TEXTURE0, state);
     }
     image0.src = "img/arm_texture2.jpg"
+    images.push(image0)
     
     var image1 = new Image();
     image1.onload = function() {
        configureTexture(image1, gl.TEXTURE1, state);
     }
     image1.src = "img/bg.png"
+    images.push(image1)
     
     var image2 = new Image();
     image2.onload = function() {
        configureTexture(image2, gl.TEXTURE2, state);
     }
     image2.src = "img/blue.jpg"
+    images.push(image2)
     
     var image3 = new Image();
     image3.onload = function() {
        configureTexture(image3, gl.TEXTURE3, state);
     }
     image3.src = "img/deep_blue.jpg"
+    images.push(image3)
     
     var image6 = new Image();
     image6.onload = function() {
        configureTexture(image6, gl.TEXTURE6, state);
     }
     image6.src = "img/black.jpg"
+    images.push(image6)
     
     var image7 = new Image();
     image7.onload = function() {
        configureTexture(image7, gl.TEXTURE7, state);
     }
     image7.src = "img/red.jpg"
+    images.push(image7)
     
     var image8 = new Image();
     image8.onload = function() {
        configureTexture(image8, gl.TEXTURE8, state);
     }
     image8.src = "img/glass.jpg"
+    images.push(image8)
 
     // STEVE (9-14)
 
@@ -262,12 +271,14 @@ function renderCameraInputs(state) {
        configureTexture(image9, gl.TEXTURE9, state);
     }
     image9.src = "img/steveHead.png"
+    images.push(image9)
     
     var image10 = new Image();
     image10.onload = function() {
        configureTexture(image10, gl.TEXTURE10, state);
     }
     image10.src = "img/steveBody.png"
+    images.push(image10)
 
     // steve right leg
     var image11 = new Image();
@@ -275,6 +286,7 @@ function renderCameraInputs(state) {
        configureTexture(image11, gl.TEXTURE11, state);
     }
     image11.src = "img/steveRightLeg.png"
+    images.push(image11)
 
     // steve left leg
     var image12 = new Image();
@@ -282,6 +294,7 @@ function renderCameraInputs(state) {
        configureTexture(image12, gl.TEXTURE12, state);
     }
     image12.src = "img/steveLeftLeg.png"
+    images.push(image12)
 
     // steve right Arm
     var image13 = new Image();
@@ -289,6 +302,7 @@ function renderCameraInputs(state) {
        configureTexture(image13, gl.TEXTURE13, state);
     }
     image13.src = "img/steveRightArm.png"
+    images.push(image13)
 
     // steve left Arm
     var image14 = new Image();
@@ -296,6 +310,7 @@ function renderCameraInputs(state) {
        configureTexture(image14, gl.TEXTURE14, state);
     }
     image14.src = "img/steveLeftArm.png"
+    images.push(image14)
 
     // PIG (15-17)
 
@@ -305,6 +320,7 @@ function renderCameraInputs(state) {
        configureTexture(image15, gl.TEXTURE15, state);
     }
     image15.src = "img/pigHead.png"
+    images.push(image15)
 
     // Pig Body
     var image16 = new Image();
@@ -312,6 +328,7 @@ function renderCameraInputs(state) {
        configureTexture(image16, gl.TEXTURE16, state);
     }
     image16.src = "img/pigBody.png"
+    images.push(image16)
 
     // Pig Leg
     var image17 = new Image();
@@ -319,6 +336,7 @@ function renderCameraInputs(state) {
        configureTexture(image17, gl.TEXTURE17, state);
     }
     image17.src = "img/pigLeg.png"
+    images.push(image17)
 
     // Creeper head (18-20)
     var image18 = new Image();
@@ -326,18 +344,21 @@ function renderCameraInputs(state) {
        configureTexture(image18, gl.TEXTURE18, state);
     }
     image18.src = "img/creeperHead.png"
+    images.push(image18)
 
     var image19 = new Image();
     image19.onload = function() {
        configureTexture(image19, gl.TEXTURE19, state);
     }
     image19.src = "img/creeperBody.png"
+    images.push(image19)
 
     var image20 = new Image();
     image20.onload = function() {
        configureTexture(image20, gl.TEXTURE20, state);
     }
     image20.src = "img/creeperLeg.png"
+    images.push(image20)
 
     // Piston
     var image21 = new Image();
@@ -345,18 +366,21 @@ function renderCameraInputs(state) {
        configureTexture(image21, gl.TEXTURE21, state);
     }
     image21.src = "img/pistonBase.png"
+    images.push(image21)
 
     var image22 = new Image();
     image22.onload = function() {
        configureTexture(image22, gl.TEXTURE22, state);
     }
     image22.src = "img/pistonHead.png"
+    images.push(image22)
 
     var image23 = new Image();
     image23.onload = function() {
        configureTexture(image23, gl.TEXTURE23, state);
     }
     image23.src = "img/pistonNeck.png"
+    images.push(image23)
 
     // Chest
     var image24 = new Image();
@@ -364,12 +388,16 @@ function renderCameraInputs(state) {
        configureTexture(image24, gl.TEXTURE24, state);
     }
     image24.src = "img/chestBase.png"
+    images.push(image24)
 
     var image25 = new Image();
     image25.onload = function() {
        configureTexture(image25, gl.TEXTURE25, state);
     }
     image25.src = "img/chestNeck.png"
+    images.push(image25)
+
+    images.forEach(img => img.crossOrigin = "anonymous")
 }
 
 function configureTexture(image, textureno, state) {
