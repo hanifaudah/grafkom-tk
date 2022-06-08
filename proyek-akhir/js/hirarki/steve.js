@@ -1,7 +1,4 @@
-// import{ mvPushMatrix, mvPopMatrix, degToRad } from "../util.js"
-// import{ setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture } from "./utils.js"
-
- const steveState = {
+const steveState = {
   baseSteveNode: undefined,
   headSteveNode: undefined,
   armMaterial: undefined,
@@ -21,7 +18,7 @@
   rightArmSteveAngle: 4,
   steveX: 0,
   steveZ: 0,
-  steveAngle: degToRad(360*0)
+  steveAngle: degToRad(360 * 0)
 }
 
 function drawSteveBase(state, shadow) {
@@ -98,36 +95,36 @@ function drawSteveHead(state, shadow) {
   mvPopMatrix(state, shadow);
 }
 
- function assembleSteve(state) {
+function assembleSteve(state) {
   var frontLeftLegNode;
   var frontRightLegNode;
   var leftArm
   var rightArm
-  state.baseSteveNode = {"draw" : drawSteveBase, "matrix" : mat4.identity(mat4.create())};
+  state.baseSteveNode = { "draw": drawSteveBase, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(state.baseSteveNode.matrix, [state.steveX, 1, state.steveZ]);
   mat4.rotate(state.baseSteveNode.matrix, state.baseSteveAngle, [0.0, 1.0, 0.0]);
 
-  state.headSteveNode = {"draw" : drawSteveHead, "matrix" : mat4.identity(mat4.create())};
+  state.headSteveNode = { "draw": drawSteveHead, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(state.headSteveNode.matrix, [0, 3, 0]);
   mat4.rotate(state.headSteveNode.matrix, state.headSteveAngle, [0.0, 1.0, 0.0]);
-  
-  frontLeftLegNode = {"draw" : drawLeftLeg, "matrix" : mat4.identity(mat4.create())};
+
+  frontLeftLegNode = { "draw": drawLeftLeg, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(frontLeftLegNode.matrix, [-0.55, -2, 0]);
   mat4.rotate(frontLeftLegNode.matrix, state.frontLeftLegSteveAngle, [1, 0.0, 0]);
   mat4.translate(frontLeftLegNode.matrix, [0.0, -2.0, 0.0]);
 
-  frontRightLegNode = {"draw" : drawRightLeg, "matrix" : mat4.identity(mat4.create())};
+  frontRightLegNode = { "draw": drawRightLeg, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(frontRightLegNode.matrix, [0.55, -2, 0]);
   mat4.rotate(frontRightLegNode.matrix, state.frontRightLegSteveAngle, [1, 0.0, 0]);
   mat4.translate(frontRightLegNode.matrix, [0.0, -2.0, 0.0]);
 
-  leftArm = {"draw" : drawLeftArm, "matrix" : mat4.identity(mat4.create())};
+  leftArm = { "draw": drawLeftArm, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(leftArm.matrix, [-1.55, 2, 0]);
   mat4.rotate(leftArm.matrix, state.leftArmSteveAngle, [1.0, 0.0, 0]);
   mat4.rotate(leftArm.matrix, -0.2, [0, 0.0, 1]);
   mat4.translate(leftArm.matrix, [0.0, -2.0, 0.0]);
 
-  rightArm = {"draw" : drawRightArm, "matrix" : mat4.identity(mat4.create())};
+  rightArm = { "draw": drawRightArm, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(rightArm.matrix, [1.55, 2, 0]);
   mat4.rotate(rightArm.matrix, state.rightArmSteveAngle, [1.0, 0.0, 0]);
   mat4.rotate(rightArm.matrix, 0.2, [0, 0.0, 1]);
@@ -140,8 +137,8 @@ function drawSteveHead(state, shadow) {
   leftArm.sibling = rightArm
 }
 
- function handleSteveAnimation(state) {
-  var update = (0.05 * Math.PI * 10/ 180);
+function handleSteveAnimation(state) {
+  var update = (0.05 * Math.PI * 10 / 180);
   state.baseSteveAngle = degToRad(state.steveAngle) - degToRad(90)
 
   state.frontRightLegSteveAngle += state.frontRightLegSteveDirection * 0.1;

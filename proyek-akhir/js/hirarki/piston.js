@@ -1,7 +1,4 @@
-// import{ mvPushMatrix, mvPopMatrix } from "../util.js"
-// import{ setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture } from "./utils.js"
-
- const pistonState = {
+const pistonState = {
   basePistonNode: undefined,
   armMaterial: undefined,
 
@@ -18,7 +15,7 @@
 function drawPistonBase(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
-  mat4.scale(state.mvMatrix, [2, 3/4*2, 2]);
+  mat4.scale(state.mvMatrix, [2, 3 / 4 * 2, 2]);
   //draw
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
@@ -31,7 +28,7 @@ function drawPistonBase(state, shadow) {
 function drawPistonNeck(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
-  mat4.scale(state.mvMatrix, [1/4*2, 1*2 , 1/4*2]);
+  mat4.scale(state.mvMatrix, [1 / 4 * 2, 1 * 2, 1 / 4 * 2]);
   //draw
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
@@ -43,7 +40,7 @@ function drawPistonNeck(state, shadow) {
 function drawPistonHead(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
-  mat4.scale(state.mvMatrix, [1*2, 1/4*2 ,1*2]);
+  mat4.scale(state.mvMatrix, [1 * 2, 1 / 4 * 2, 1 * 2]);
   //draw
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
@@ -53,18 +50,17 @@ function drawPistonHead(state, shadow) {
   mvPopMatrix(state, shadow);
 }
 
- function assemblePiston(state) {
+function assemblePiston(state) {
   var neckPistonNode
   var headPistonNode
-  
-  state.basePistonNode = {"draw" : drawPistonBase, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(state.basePistonNode.matrix, [-3, -3, 0]);
-  // mat4.rotate(state.basePistonNode.matrix, state.basePistonAngle, [0.0, 1.0, 0.0]);
 
-  neckPistonNode = {"draw" : drawPistonNeck, "matrix" : mat4.identity(mat4.create())};
+  state.basePistonNode = { "draw": drawPistonBase, "matrix": mat4.identity(mat4.create()) };
+  mat4.translate(state.basePistonNode.matrix, [-3, -3, 0]);
+
+  neckPistonNode = { "draw": drawPistonNeck, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(neckPistonNode.matrix, [0, state.neckPistonTranslate, 0]);
 
-  headPistonNode = {"draw" : drawPistonHead, "matrix" : mat4.identity(mat4.create())};
+  headPistonNode = { "draw": drawPistonHead, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(headPistonNode.matrix, [0, 2, 0]);
   mat4.rotate(headPistonNode.matrix, state.headPistonAngle, [0.0, 1.0, 0.0]);
 
@@ -72,13 +68,12 @@ function drawPistonHead(state, shadow) {
   neckPistonNode.child = headPistonNode
 }
 
- function handlePistonAnimation(state) {
-  var update = (0.05 * Math.PI * 10/ 180);
-      
+function handlePistonAnimation(state) {
+  var update = (0.05 * Math.PI * 10 / 180);
+
   //ARM
-  state.basePistonAngle = (state.basePistonAngle + update)%(2*Math.PI);
-  // document.getElementById("baseArmRotationSlider").value = state.basePistonAngle * 180 / (Math.PI);
-  
+  state.basePistonAngle = (state.basePistonAngle + update) % (2 * Math.PI);
+
   state.neckPistonTranslate += state.neckPistonDirection * 0.1;
   if (state.neckPistonTranslate >= 3 || state.neckPistonTranslate <= 0) state.neckPistonDirection *= -1
 }

@@ -1,7 +1,4 @@
-// import{ mvPushMatrix, mvPopMatrix, degToRad } from "../util.js"
-// import{ setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture } from "./utils.js"
-
- const creeperState = {
+const creeperState = {
   baseCreeperNode: undefined,
   armMaterial: undefined,
 
@@ -21,7 +18,7 @@
   noseAngle: 0,
   creeperX: 0,
   creeperZ: 0,
-  creeperAngle: degToRad(360*240*3)
+  creeperAngle: degToRad(360 * 240 * 3)
 }
 
 function drawCreeperBase(state, shadow) {
@@ -62,37 +59,37 @@ function drawCreeperHead(state, shadow) {
   mvPopMatrix(state, shadow);
 }
 
- function assembleCreeper(state) {
+function assembleCreeper(state) {
   var frontLeftLegNode;
   var frontRightLegNode;
   var backLeftLegNode;
   var backRightLegNode;
   var headNode;
-  
-  state.baseCreeperNode = {"draw" : drawCreeperBase, "matrix" : mat4.identity(mat4.create())};
+
+  state.baseCreeperNode = { "draw": drawCreeperBase, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(state.baseCreeperNode.matrix, [state.creeperX, -2, state.creeperZ]);
   mat4.rotate(state.baseCreeperNode.matrix, state.baseCreeperAngle, [0.0, 1.0, 0.0]);
 
-  headNode = {"draw" : drawCreeperHead, "matrix" : mat4.identity(mat4.create())};
+  headNode = { "draw": drawCreeperHead, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(headNode.matrix, [0, 2, 0]);
   mat4.rotate(headNode.matrix, state.headAngle, [0.0, 1.0, 0.0]);
-  
-  frontLeftLegNode = {"draw" : drawCreeperLeg, "matrix" : mat4.identity(mat4.create())};
+
+  frontLeftLegNode = { "draw": drawCreeperLeg, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(frontLeftLegNode.matrix, [-0.5, -0.5, -0.8]);
   mat4.rotate(frontLeftLegNode.matrix, state.frontLeftLegCreeperAngle, [1, 0.0, 0]);
   mat4.translate(frontLeftLegNode.matrix, [0.0, -2.0, 0.0]);
 
-  frontRightLegNode = {"draw" : drawCreeperLeg, "matrix" : mat4.identity(mat4.create())};
+  frontRightLegNode = { "draw": drawCreeperLeg, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(frontRightLegNode.matrix, [0.5, -0.5, -0.8]);
   mat4.rotate(frontRightLegNode.matrix, state.frontRightLegCreeperAngle, [1, 0.0, 0]);
   mat4.translate(frontRightLegNode.matrix, [0.0, -2.0, 0.0]);
 
-  backLeftLegNode = {"draw" : drawCreeperLeg, "matrix" : mat4.identity(mat4.create())};
+  backLeftLegNode = { "draw": drawCreeperLeg, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(backLeftLegNode.matrix, [-0.5, -0.5, 0.8]);
   mat4.rotate(backLeftLegNode.matrix, state.backLeftLegCreeperAngle, [1, 0.0, 0]);
   mat4.translate(backLeftLegNode.matrix, [0.0, -2.0, 0.0]);
 
-  backRightLegNode = {"draw" : drawCreeperLeg, "matrix" : mat4.identity(mat4.create())};
+  backRightLegNode = { "draw": drawCreeperLeg, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(backRightLegNode.matrix, [0.5, -0.5, 0.8]);
   mat4.rotate(backRightLegNode.matrix, state.backRightLegCreeperAngle, [1, 0.0, 0]);
   mat4.translate(backRightLegNode.matrix, [0.0, -2.0, 0.0]);
@@ -104,11 +101,10 @@ function drawCreeperHead(state, shadow) {
   backLeftLegNode.sibling = headNode
 }
 
- function handleCreeperAnimation(state) {
-  var update = (0.05 * Math.PI * 10/ 180);
-      
+function handleCreeperAnimation(state) {
+  var update = (0.05 * Math.PI * 10 / 180);
+
   state.baseCreeperAngle = degToRad(state.creeperAngle) - degToRad(90)
-  // document.getElementById("baseArmRotationSlider").value = state.baseCreeperAngle * 180 / (Math.PI);
 
   // revolution
   const radius = 10;

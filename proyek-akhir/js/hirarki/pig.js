@@ -1,7 +1,4 @@
-// import{ mvPushMatrix, mvPopMatrix, degToRad } from "../util.js"
-// import{ setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture } from "./utils.js"
-
- const pigState = {
+const pigState = {
   basePigNode: undefined,
   headPigNode: undefined,
   armMaterial: undefined,
@@ -22,7 +19,7 @@
   nosePigAngle: 0,
   pigX: 0,
   pigZ: 0,
-  pigAngle: degToRad(360*120*3)
+  pigAngle: degToRad(360 * 120 * 3)
 }
 
 function drawPigBase(state, shadow) {
@@ -76,41 +73,41 @@ function drawNose(state, shadow) {
   mvPopMatrix(state, shadow);
 }
 
- function assemblePig(state) {
+function assemblePig(state) {
   var frontLeftLegNode;
   var frontRightLegNode;
   var backLeftLegNode;
   var backRightLegNode;
   var noseNode
-  
-  state.basePigNode = {"draw" : drawPigBase, "matrix" : mat4.identity(mat4.create())};
+
+  state.basePigNode = { "draw": drawPigBase, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(state.basePigNode.matrix, [state.pigX, -3.1, state.pigZ]);
   mat4.rotate(state.basePigNode.matrix, state.basePigAngle, [0.0, 1.0, 0.0]);
 
-  state.headPigNode = {"draw" : drawPigHead, "matrix" : mat4.identity(mat4.create())};
+  state.headPigNode = { "draw": drawPigHead, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(state.headPigNode.matrix, [0, 0.5, -2.5]);
   mat4.rotate(state.headPigNode.matrix, state.headPigAngle, [0.0, 1.0, 0.0]);
 
-  noseNode = {"draw" : drawNose, "matrix" : mat4.identity(mat4.create())};
+  noseNode = { "draw": drawNose, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(noseNode.matrix, [0, -0.2, -0.8]);
   mat4.rotate(noseNode.matrix, state.nosePigAngle, [0.0, 1.0, 0.0]);
-  
-  frontLeftLegNode = {"draw" : drawPigLeg, "matrix" : mat4.identity(mat4.create())};
+
+  frontLeftLegNode = { "draw": drawPigLeg, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(frontLeftLegNode.matrix, [-0.5, 0.5, -1.4]);
   mat4.rotate(frontLeftLegNode.matrix, state.frontLeftLegPigAngle, [1, 0.0, 0]);
   mat4.translate(frontLeftLegNode.matrix, [0.0, -2.0, 0.0]);
 
-  frontRightLegNode = {"draw" : drawPigLeg, "matrix" : mat4.identity(mat4.create())};
+  frontRightLegNode = { "draw": drawPigLeg, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(frontRightLegNode.matrix, [0.5, 0.5, -1.4]);
   mat4.rotate(frontRightLegNode.matrix, state.frontRightLegPigAngle, [1, 0.0, 0]);
   mat4.translate(frontRightLegNode.matrix, [0.0, -2.0, 0.0]);
 
-  backLeftLegNode = {"draw" : drawPigLeg, "matrix" : mat4.identity(mat4.create())};
+  backLeftLegNode = { "draw": drawPigLeg, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(backLeftLegNode.matrix, [-0.5, 0.5, 1.5]);
   mat4.rotate(backLeftLegNode.matrix, state.backLeftLegPigAngle, [1, 0.0, 0]);
   mat4.translate(backLeftLegNode.matrix, [0.0, -2.0, 0.0]);
 
-  backRightLegNode = {"draw" : drawPigLeg, "matrix" : mat4.identity(mat4.create())};
+  backRightLegNode = { "draw": drawPigLeg, "matrix": mat4.identity(mat4.create()) };
   mat4.translate(backRightLegNode.matrix, [0.5, 0.5, 1.5]);
   mat4.rotate(backRightLegNode.matrix, state.backRightLegPigAngle, [1, 0.0, 0]);
   mat4.translate(backRightLegNode.matrix, [0.0, -2.0, 0.0]);
@@ -122,12 +119,11 @@ function drawNose(state, shadow) {
   backLeftLegNode.sibling = state.headPigNode
 }
 
- function handlePigAnimation(state) {
-  var update = (0.05 * Math.PI * 10/ 180);
-      
+function handlePigAnimation(state) {
+  var update = (0.05 * Math.PI * 10 / 180);
+
   //ARM
   state.basePigAngle = degToRad(state.pigAngle) - degToRad(90)
-  // document.getElementById("baseArmRotationSlider").value = state.basePigAngle * 180 / (Math.PI);
 
   // revolution
   const radius = 10;
