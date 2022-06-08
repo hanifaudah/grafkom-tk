@@ -1,5 +1,3 @@
-// import{ createFrameBufferObject } from "./util.js"
-
 function renderCameraInputs(state) {
     const $camControls = $("#cam-controls")
     if (state.pov == 0) $camControls.show()
@@ -53,13 +51,6 @@ function initInputs(state) {
         renderCameraInputs(state)
     })
 
-    $('#spotDirX').change(function (e) { console.log(e.target.id, e.target.value) })
-    $('#spotDirY').change(function (e) { console.log(e.target.id, e.target.value) })
-    $('#spotDirZ').change(function (e) { console.log(e.target.id, e.target.value) })
-    $('#spotPosX').change(function (e) { console.log(e.target.id, e.target.value) })
-    $('#spotPosY').change(function (e) { console.log(e.target.id, e.target.value) })
-    $('#spotPosZ').change(function (e) { console.log(e.target.id, e.target.value) })
-
     document.getElementById("animation").checked = true;
     document.getElementById("lighting").checked = true;
     document.getElementById("texture").checked = true;
@@ -79,8 +70,6 @@ function initInputs(state) {
         <input type="range" min="0" max="360" value="0" class="slider" id=${k2} disabled>
         </div>`))
         })
-        // $body.prop("outerHTML")
-        // k1
         const $item = $(`  <div class="accordion-item">
     <h2 class="accordion-header" id="panelsStayOpen-heading${k1}">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse${k1}" aria-expanded="false" aria-controls="panelsStayOpen-collapse${k1}">
@@ -163,6 +152,8 @@ function initTexture(state) {
     }
     image8.src = "img/glass.jpg"
     images.push(image8)
+
+    // STEVE (9-14)
 
     // Steve Head
     var image9 = new Image();
@@ -341,6 +332,7 @@ function initShaders(state) {
     shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
     shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
 
+    // shaderProgram.uWorldUniform = gl.getUniformLocation(shaderProgram, "uWorld");
     shaderProgram.uInnerLimit = gl.getUniformLocation(shaderProgram, "uInnerLimit");
     shaderProgram.uOuterLimit = gl.getUniformLocation(shaderProgram, "uOuterLimit");
 
