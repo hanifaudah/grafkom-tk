@@ -1,12 +1,13 @@
 <html>
-    <head>
-        <title>Sample Hierarchical Modelling with lighting, texture and shadow</title>
-        <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 
-        <script type="text/javascript" src="js/packages/glMatrix-0.9.5.min.js"></script>
-        <script type="text/javascript" src="js/webgl-utils.js"></script>
+<head>
+  <title>Sample Hierarchical Modelling with lighting, texture and shadow</title>
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 
-        <script id="vs-shadowmap" type="x-shader/x-vertex">#version 300 es
+  <script type="text/javascript" src="js/packages/glMatrix-0.9.5.min.js"></script>
+  <script type="text/javascript" src="js/webgl-utils.js"></script>
+
+  <script id="vs-shadowmap" type="x-shader/x-vertex">#version 300 es
  
 			uniform mat4 uMVMatrix;
 			uniform mat4 uPMatrix;
@@ -21,7 +22,7 @@
 			}
 		</script>
 
-		<script id="fs-shadowmap" type="x-shader/x-fragment">#version 300 es
+  <script id="fs-shadowmap" type="x-shader/x-fragment">#version 300 es
  
 			precision mediump int;
 			precision mediump float;
@@ -44,8 +45,8 @@
 			  
 			}
 		</script>
-        
-        <script id="vs" type="x-shader/x-vertex">#version 300 es
+
+  <script id="vs" type="x-shader/x-vertex">#version 300 es
  
             in vec3 aVertexPosition;
             in vec3 aVertexNormal;
@@ -66,271 +67,298 @@
                 fTexCoord = vTexCoord;
                 vTransformedNormal = uNMatrix * aVertexNormal;
             }
-        </script>
-         
-        <script id="fs" type="x-shader/x-fragment">#version 300 es
-            
-            precision mediump float;
-            
-            in vec2 fTexCoord;
-            in vec3 vTransformedNormal;
-            in vec4 vPosition;
-			in vec4 vVertexRelativeToLight;
-			
-            out vec4 fragColor;
+  </script>
 
-            uniform vec3 uMaterialAmbientColor;
-            uniform vec3 uMaterialDiffuseColor;
-            uniform vec3 uMaterialSpecularColor;
-            uniform float uMaterialShininess;
-            uniform float uFarPlane;
-            
-            uniform vec3 uAmbientColor;
-            
-            uniform vec3 uPointLightingLocation;
-            uniform vec3 uPointLightingSpecularColor;
-            uniform vec3 uPointLightingDiffuseColor;
-            
-            uniform bool uUseLighting;
-            uniform bool uUseMaterial;
-            uniform bool uUseTexture;
-            
-            uniform sampler2D thetexture;
-            uniform samplerCube shadowmap;
-            
-			bool in_shadow(void) {
-				vec3 fragToLight = vPosition.xyz - uPointLightingLocation; 
-				float closestDepth = texture(shadowmap, fragToLight).x;
-				closestDepth *= uFarPlane;
-				float currentDepth = length(fragToLight);
-				// now test for shadows
-				float bias = 0.3; 
-				return (currentDepth -  bias > closestDepth);
-			}
+  <script id="fs" type="x-shader/x-fragment">#version 300 es
+          
+          precision mediump float;
+          
+          in vec2 fTexCoord;
+          in vec3 vTransformedNormal;
+          in vec4 vPosition;
+          in vec4 vVertexRelativeToLight;
+    
+          out vec4 fragColor;        
+          
+          uniform vec3 uMaterialAmbientColor;
+          uniform vec3 uMaterialDiffuseColor;
+          uniform vec3 uMaterialSpecularColor;
+          uniform vec3 uMaterialDirlightColor;
+          uniform float uMaterialShininess;
+          uniform float uFarPlane;
+          
+          uniform vec3 uAmbientColor;
+          
+          uniform vec3 uPointLightingLocation;
+          uniform vec3 uPointLightingSpecularColor;
+          uniform vec3 uPointLightingDiffuseColor;
+          
+          // Dirlight
+          uniform vec3 uDirectLightingLocation;
+          uniform vec3 uDirectLightingColor;
+          
+          uniform bool uUseLighting;
+          uniform bool uUseMaterial;
+          uniform bool uUseTexture;
+          
+          uniform sampler2D thetexture;
+          uniform samplerCube shadowmap;
+          
+          bool in_shadow(void) {
+            vec3 fragToLight = vPosition.xyz - uPointLightingLocation; 
+            float closestDepth = texture(shadowmap, fragToLight).x;
+            closestDepth *= uFarPlane;
+            float currentDepth = length(fragToLight);
+            // now test for shadows
+            float bias = 0.3; 
+            return (currentDepth -  bias > closestDepth);
+          }
 
-            void main(void) {
-				
-                vec3 materialAmbientColor = vec3(1.0, 1.0, 1.0);
-                vec3 materialDiffuseColor = vec3(1.0, 1.0, 1.0);
-                vec3 materialSpecularColor = vec3(1.0, 1.0, 1.0);
-                if(uUseMaterial) {
-					materialAmbientColor = uMaterialAmbientColor;
-					materialDiffuseColor = uMaterialDiffuseColor;
-					materialSpecularColor = uMaterialSpecularColor;
-				}
+          void main(void) {
+      
+              vec3 materialAmbientColor = vec3(1.0, 1.0, 1.0);
+              vec3 materialDiffuseColor = vec3(1.0, 1.0, 1.0);
+              vec3 materialSpecularColor = vec3(1.0, 1.0, 1.0);
+              vec3 dirlightColor = vec3(1.0, 1.0, 1.0);
+              if(uUseMaterial) {
+                materialAmbientColor = uMaterialAmbientColor;
+                materialDiffuseColor = uMaterialDiffuseColor;
+                materialSpecularColor = uMaterialSpecularColor;
+                dirlightColor = uMaterialDirlightColor;
+              }
+              
+              float alpha = 1.0;
+              
+              if(uUseTexture) {
+                vec4 textureColor = texture(thetexture, vec2(fTexCoord.s, fTexCoord.t));
+                materialAmbientColor = materialAmbientColor * textureColor.rgb;
+                materialDiffuseColor = materialDiffuseColor * textureColor.rgb;
+                alpha = textureColor.a;
+              }
+              
+              vec3 ambientLightWeighting = uAmbientColor;
+              
+              if(uUseLighting) {
+        
+                vec3 lightDirection = normalize(uPointLightingLocation - vPosition.xyz);
+                vec3 normal = normalize(vTransformedNormal);
                 
-                float alpha = 1.0;
+                vec3 specularLightWeighting = vec3(0.0, 0.0, 0.0);
+                vec3 eyeDirection = normalize(-vPosition.xyz);
+                vec3 reflectionDirection = reflect(-lightDirection, normal);
                 
-                if(uUseTexture) {
-					vec4 textureColor = texture(thetexture, vec2(fTexCoord.s, fTexCoord.t));
-					materialAmbientColor = materialAmbientColor * textureColor.rgb;
-					materialDiffuseColor = materialDiffuseColor * textureColor.rgb;
-					alpha = textureColor.a;
-				}
+                float specularLightBrightness = pow(max(dot(reflectionDirection, eyeDirection), 0.0), uMaterialShininess);
+                specularLightWeighting = uPointLightingSpecularColor * specularLightBrightness;
                 
-                vec3 ambientLightWeighting = uAmbientColor;
-                
-                
-                if(uUseLighting) {
-					
-					vec3 lightDirection = normalize(uPointLightingLocation - vPosition.xyz);
-					vec3 normal = normalize(vTransformedNormal);
-					
-					vec3 specularLightWeighting = vec3(0.0, 0.0, 0.0);
-					vec3 eyeDirection = normalize(-vPosition.xyz);
-					vec3 reflectionDirection = reflect(-lightDirection, normal);
-					
-					float specularLightBrightness = pow(max(dot(reflectionDirection, eyeDirection), 0.0), uMaterialShininess);
-					specularLightWeighting = uPointLightingSpecularColor * specularLightBrightness;
-					
-					float diffuseLightBrightness = max(dot(normal, lightDirection), 0.0);
-					vec3 diffuseLightWeighting = uPointLightingDiffuseColor * diffuseLightBrightness;
-					
-					if(in_shadow()) {
-						diffuseLightWeighting = vec3(0.0, 0.0, 0.0);
-						specularLightWeighting = vec3(0.0, 0.0, 0.0);
-					}
-					
-					fragColor = vec4(materialAmbientColor * ambientLightWeighting
-					  + materialDiffuseColor * diffuseLightWeighting
-					  + materialSpecularColor * specularLightWeighting,
-					  alpha);
-				} else {
-					fragColor = vec4(materialAmbientColor  * ambientLightWeighting, alpha);
-				}
-				
-            }
+                float diffuseLightBrightness = max(dot(normal, lightDirection), 0.0);
+                vec3 diffuseLightWeighting = uPointLightingDiffuseColor * diffuseLightBrightness;
+
+                float directLightBrightness = dot(normal, uDirectLightingLocation);
+                vec3 directLightWeighting = uDirectLightingColor * directLightBrightness;
+
+        
+                if(in_shadow()) {
+                  diffuseLightWeighting = vec3(0.0, 0.0, 0.0);
+                  specularLightWeighting = vec3(0.0, 0.0, 0.0);
+                }
+        
+                fragColor = vec4(materialAmbientColor * ambientLightWeighting
+                  + materialDiffuseColor * diffuseLightWeighting
+                  + materialSpecularColor * specularLightWeighting
+                  + dirlightColor * directLightWeighting,
+                  alpha);
+              } else {
+                fragColor = vec4(materialAmbientColor  * ambientLightWeighting, alpha);
+              }
+          }
         </script>
+
+  <script type="module" src="js/index.js"></script>
+
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/w3.css">
+  <link rel="stylesheet" href="css/ws2.css">
+
+  <script src="js/packages/jquery.min.js" defer></script>
+  <script src="js/packages/bootstrap.min.js" defer></script>
+  <script src="js/packages/m4.js"></script>
+
+  <script type="text/javascript" src="js/util.js" defer></script>
+  <script type="text/javascript" src="js/init.js" defer></script>
+  <script type="text/javascript" src="js/hirarki/arm.js" defer></script>
+  <script type="text/javascript" src="js/hirarki/camera.js" defer></script>
+  <script type="text/javascript" src="js/hirarki/chest.js" defer></script>
+  <script type="text/javascript" src="js/hirarki/creeper.js" defer></script>
+  <script type="text/javascript" src="js/hirarki/index.js" defer></script>
+  <script type="text/javascript" src="js/hirarki/lightSource.js" defer></script>
+  <script type="text/javascript" src="js/hirarki/pig.js" defer></script>
+  <script type="text/javascript" src="js/hirarki/piston.js" defer></script>
+  <script type="text/javascript" src="js/hirarki/room.js" defer></script>
+  <script type="text/javascript" src="js/hirarki/steve.js" defer></script>
+  <script type="text/javascript" src="js/hirarki/utils.js" defer></script>
+  <script type="text/javascript" src="js/index.js" defer></script>
   
-        <script src="js/packages/jquery.min.js" defer></script>
-        <script src="js/packages/bootstrap.min.js" defer></script>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/w3.css">
+  <link rel="stylesheet" href="css/ws2.css">
 
-        <script type="text/javascript" src="js/util.js" defer></script>
-        <script type="text/javascript" src="js/init.js" defer></script>
-        <script type="text/javascript" src="js/hirarki/arm.js" defer></script>
-        <script type="text/javascript" src="js/hirarki/camera.js" defer></script>
-        <script type="text/javascript" src="js/hirarki/chest.js" defer></script>
-        <script type="text/javascript" src="js/hirarki/creeper.js" defer></script>
-        <script type="text/javascript" src="js/hirarki/index.js" defer></script>
-        <script type="text/javascript" src="js/hirarki/lightSource.js" defer></script>
-        <script type="text/javascript" src="js/hirarki/pig.js" defer></script>
-        <script type="text/javascript" src="js/hirarki/piston.js" defer></script>
-        <script type="text/javascript" src="js/hirarki/room.js" defer></script>
-        <script type="text/javascript" src="js/hirarki/steve.js" defer></script>
-        <script type="text/javascript" src="js/hirarki/utils.js" defer></script>
-        <script type="text/javascript" src="js/index.js" defer></script>
-        
-        <link rel="stylesheet" href="css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/w3.css">
-        <link rel="stylesheet" href="css/ws2.css">
-        
+</head>
 
+<body class="w3-black">
 
-    </head>
+  <span id="openbtn" style="font-size:30px;cursor:pointer">&#9776; Menu</span>
+  <div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" id="closebtn">&times;</a>
 
-    <body class="w3-black">
+    <input type="checkbox" id="animation" checked /> Use animation<br />
+    <input type="checkbox" id="lighting" checked /> Use lighting<br />
+    <input type="checkbox" id="texture" checked /> Use texture<br />
 
-        <span id="openbtn" style="font-size:30px;cursor:pointer">&#9776; Menu</span>
-        <div id="mySidenav" class="sidenav">
-          <a href="javascript:void(0)" id="closebtn">&times;</a>
+    <div id="shading-switch">
+      <label>Shading</label>
+      <label class="switch">
+        <input type="checkbox" id="shading">
+        <span class="slider round"></span>
+      </label>
+      <label>Wireframe</label>
+    </div>
 
-          <input type="checkbox" id="animation" checked /> Use animation<br/>
-          <input type="checkbox" id="lighting" checked /> Use lighting<br/>
-          <input type="checkbox" id="texture" checked /> Use texture<br/>
-
-          <div id="shading-switch">
-            <label>Shading</label>
-            <label class="switch">
-              <input type="checkbox" id="shading">
-              <span class="slider round"></span>
-            </label>
-            <label>Wireframe</label>
-          </div>
-
-            <div class="accordion" id="objectSliders" style="color: black;">
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                        Camera Position
-                    </button>
-                  </h2>
-                  <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
-                    <div class="accordion-body">
-                        <div id="cam-btns">
-                            <button id="0">Overview</button>
-                            <button id="1">Pig POV</button>
-                        </div>
-                        <div id="cam-controls">
-                            <div>
-                                X<br />
-                                <input type="range" min="-100" max="100" value="0" class="slider" id="cameraPositionX">
-                            </div>
-                            <div>
-                                Y<br />
-                                <input type="range" min="-50" max="400" value="20" class="slider" id="cameraPositionY">
-                            </div>
-                            <div>
-                                Z<br />
-                                <input type="range" min="-300" max="100" value="-300" class="slider" id="cameraPositionZ">
-                            </div>
-                        </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
-                        Point light
-                    </button>
-                  </h2>
-                  <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
-                    <div class="accordion-body">
-                        <div>
-                            X<br />
-                            <input type="range" min="-100" max="100" value="0" class="slider" id="lightPositionX">
-                        </div>
-                        <div>
-                            Y<br />
-                            <input type="range" min="-50" max="50" value="0" class="slider" id="lightPositionY">
-                        </div>
-                        <div>
-                            Z<br />
-                            <input type="range" min="-300" max="100" value="-200" class="slider" id="lightPositionZ">
-                        </div>
-                        <div>
-                            R: <br/>  <input type="text" id="pointR" value="0.5" />
-                        </div>
-                        <div>
-                            G: <br/>  <input type="text" id="pointG" value="0.5" />
-                        </div>
-                        <div>
-                            B:  <br/> <input type="text" id="pointB" value="0.5" />
-                        </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="panelsStayOpen-headingThree">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
-                        Ambient light
-                    </button>
-                  </h2>
-                  <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree">
-                    <div class="accordion-body">
-                        <div>
-                            R: <br/>  <input type="text" id="ambientR" value="0.8" />
-                        </div>
-                        <div>
-                            G:  <br/> <input type="text" id="ambientG" value="0.8" />
-                        </div>
-                        <div>
-                            B:  <br/> <input type="text" id="ambientB" value="0.8" />
-                        </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="panelsStayOpen-heading4">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse4" aria-expanded="false" aria-controls="panelsStayOpen-collapse4">
-                      Materials
-                    </button>
-                  </h2>
-                  <div id="panelsStayOpen-collapse4" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading4">
-                    <div class="accordion-body">
-                        <h2>Arm Material</h2>
-                        <div>
-                             <select class="form-control form-control-sm" id="arm-material">
-                               <option value="none">None</option>
-                               <option value="brass">Brass</option>
-                               <option value="chrome">Chrome</option>
-                               <option value="bronze">Bronze</option>
-                             </select>
-                         </div>
-                        <h2>Camera Material</h2>
-                        <div>
-                             <select class="form-control form-control-sm" id="camera-material">
-                               <option value="none">None</option>
-                               <option value="brass">Brass</option>
-                               <option value="chrome">Chrome</option>
-                               <option value="bronze">Bronze</option>
-                             </select>
-                         </div>
-                        <h2>Room Material</h2>
-                        <div>
-                             <select class="form-control form-control-sm" id="room-material">
-                               <option value="none">None</option>
-                               <option value="brass">Brass</option>
-                               <option value="chrome">Chrome</option>
-                               <option value="bronze">Bronze</option>
-                             </select>
-                         </div>
-                    </div>
-                  </div>
-                </div>
+    <div class="accordion" id="objectSliders" style="color: black;">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+            aria-controls="panelsStayOpen-collapseOne">
+            Camera Position
+          </button>
+        </h2>
+        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse"
+          aria-labelledby="panelsStayOpen-headingOne">
+          <div class="accordion-body">
+            <div id="cam-btns">
+              <button id="0">Overview</button>
+              <button id="1">Pig POV</button>
+            </div>
+            <div id="cam-controls">
+              <div>
+                X<br />
+                <input type="range" min="-100" max="100" value="0" class="slider" id="cameraPositionX">
               </div>
+              <div>
+                Y<br />
+                <input type="range" min="-50" max="400" value="20" class="slider" id="cameraPositionY">
+              </div>
+              <div>
+                Z<br />
+                <input type="range" min="-300" max="100" value="-300" class="slider" id="cameraPositionZ">
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-            <canvas id="canvas" style="border: none;" width="1024" height="768"></canvas>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+            aria-controls="panelsStayOpen-collapseTwo">
+            Point light
+          </button>
+        </h2>
+        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse"
+          aria-labelledby="panelsStayOpen-headingTwo">
+          <div class="accordion-body">
+            <div>
+              X<br />
+              <input type="range" min="-100" max="100" value="0" class="slider" id="lightPositionX">
+            </div>
+            <div>
+              Y<br />
+              <input type="range" min="-50" max="50" value="0" class="slider" id="lightPositionY">
+            </div>
+            <div>
+              Z<br />
+              <input type="range" min="-300" max="100" value="-200" class="slider" id="lightPositionZ">
+            </div>
+            <div>
+              R: <br /> <input type="text" id="pointR" value="0.5" />
+            </div>
+            <div>
+              G: <br /> <input type="text" id="pointG" value="0.5" />
+            </div>
+            <div>
+              B: <br /> <input type="text" id="pointB" value="0.5" />
+            </div>
+          </div>
         </div>
-    </body>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+            aria-controls="panelsStayOpen-collapseThree">
+            Ambient light
+          </button>
+        </h2>
+        <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse"
+          aria-labelledby="panelsStayOpen-headingThree">
+          <div class="accordion-body">
+            <div>
+              R: <br /> <input type="text" id="ambientR" value="0.8" />
+            </div>
+            <div>
+              G: <br /> <input type="text" id="ambientG" value="0.8" />
+            </div>
+            <div>
+              B: <br /> <input type="text" id="ambientB" value="0.8" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="panelsStayOpen-heading4">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#panelsStayOpen-collapse4" aria-expanded="false" aria-controls="panelsStayOpen-collapse4">
+            Materials
+          </button>
+        </h2>
+        <div id="panelsStayOpen-collapse4" class="accordion-collapse collapse"
+          aria-labelledby="panelsStayOpen-heading4">
+          <div class="accordion-body">
+            <h2>Arm Material</h2>
+            <div>
+              <select class="form-control form-control-sm" id="arm-material">
+                <option value="none">None</option>
+                <option value="brass">Brass</option>
+                <option value="chrome">Chrome</option>
+                <option value="bronze">Bronze</option>
+              </select>
+            </div>
+            <h2>Camera Material</h2>
+            <div>
+              <select class="form-control form-control-sm" id="camera-material">
+                <option value="none">None</option>
+                <option value="brass">Brass</option>
+                <option value="chrome">Chrome</option>
+                <option value="bronze">Bronze</option>
+              </select>
+            </div>
+            <h2>Room Material</h2>
+            <div>
+              <select class="form-control form-control-sm" id="room-material">
+                <option value="none">None</option>
+                <option value="brass">Brass</option>
+                <option value="chrome">Chrome</option>
+                <option value="bronze">Bronze</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <canvas id="canvas" style="border: none;" width="1024" height="768"></canvas>
+  </div>
+</body>
+
 </html>
