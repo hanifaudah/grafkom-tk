@@ -338,6 +338,25 @@ export function initTexture(state) {
        configureTexture(image20, gl.TEXTURE20, state);
     }
     image20.src = "img/creeperLeg.png"
+
+    // Piston
+    var image21 = new Image();
+    image21.onload = function() {
+       configureTexture(image21, gl.TEXTURE21, state);
+    }
+    image21.src = "img/pistonBase.png"
+
+    var image22 = new Image();
+    image22.onload = function() {
+       configureTexture(image22, gl.TEXTURE22, state);
+    }
+    image22.src = "img/pistonHead.png"
+
+    var image23 = new Image();
+    image23.onload = function() {
+       configureTexture(image23, gl.TEXTURE23, state);
+    }
+    image23.src = "img/pistonNeck.png"
 }
 
 function configureTexture(image, textureno, state) {
