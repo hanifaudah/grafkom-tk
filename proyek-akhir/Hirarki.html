@@ -54,18 +54,29 @@
             uniform mat4 uMVMatrix;
             uniform mat4 uPMatrix;
             uniform mat3 uNMatrix;
+
+            // uniform mat4 uWorld;
+            uniform vec3 uSpotLightWorldPosition;
             
             in  vec2 vTexCoord;
 
             out vec2 fTexCoord;
             out vec3 vTransformedNormal;
             out vec4 vPosition;
+
+            // Spotlight
+            out vec3 vSurfaceToSpotLight;
+            out vec3 vSurfaceToView;
             
             void main(void) {
                 vPosition = uMVMatrix * vec4(aVertexPosition, 1.0);
                 gl_Position = uPMatrix * vPosition;
                 fTexCoord = vTexCoord;
                 vTransformedNormal = uNMatrix * aVertexNormal;
+
+                vec3 surfaceWorldPosition = (uMVMatrix * vec4(aVertexPosition, 1.0)).xyz;
+                vSurfaceToSpotLight = uSpotLightWorldPosition - surfaceWorldPosition;
+                vSurfaceToView = vec3(uMVMatrix) - surfaceWorldPosition;
             }
   </script>
 
@@ -77,6 +88,10 @@
           in vec3 vTransformedNormal;
           in vec4 vPosition;
           in vec4 vVertexRelativeToLight;
+
+          // Spotlight
+          in vec3 vSurfaceToSpotLight;
+          in vec3 vSurfaceToView;
     
           out vec4 fragColor;        
           
@@ -84,6 +99,7 @@
           uniform vec3 uMaterialDiffuseColor;
           uniform vec3 uMaterialSpecularColor;
           uniform vec3 uMaterialDirlightColor;
+          uniform vec3 uMaterialSpotlightColor;
           uniform float uMaterialShininess;
           uniform float uFarPlane;
           
@@ -96,6 +112,12 @@
           // Dirlight
           uniform vec3 uDirectLightingLocation;
           uniform vec3 uDirectLightingColor;
+
+          // Spotlight
+          uniform vec3 uSpotLightDirection;
+          uniform vec3 uSpotLightingColor;
+          uniform float uInnerLimit;
+          uniform float uOuterLimit;
           
           uniform bool uUseLighting;
           uniform bool uUseMaterial;
@@ -120,11 +142,13 @@
               vec3 materialDiffuseColor = vec3(1.0, 1.0, 1.0);
               vec3 materialSpecularColor = vec3(1.0, 1.0, 1.0);
               vec3 dirlightColor = vec3(1.0, 1.0, 1.0);
+              vec3 spotlightColor = vec3(1.0, 1.0, 1.0);
               if(uUseMaterial) {
                 materialAmbientColor = uMaterialAmbientColor;
                 materialDiffuseColor = uMaterialDiffuseColor;
                 materialSpecularColor = uMaterialSpecularColor;
                 dirlightColor = uMaterialDirlightColor;
+                spotlightColor = uMaterialSpotlightColor;
               }
               
               float alpha = 1.0;
@@ -153,10 +177,18 @@
                 float diffuseLightBrightness = max(dot(normal, lightDirection), 0.0);
                 vec3 diffuseLightWeighting = uPointLightingDiffuseColor * diffuseLightBrightness;
 
+                // Direct Light
                 float directLightBrightness = dot(normal, uDirectLightingLocation);
                 vec3 directLightWeighting = uDirectLightingColor * directLightBrightness;
+                
+                // Spot Light
+                vec3 surfaceToSpotlightDirection = normalize(vSurfaceToSpotLight);
+                vec3 surfaceToViewDirection = normalize(vSurfaceToView);
+                vec3 halfVector = normalize(surfaceToSpotlightDirection + surfaceToViewDirection);
+                float dotFromDirection = dot(surfaceToSpotlightDirection, -uSpotLightDirection);
+                float spotLightBrightness = smoothstep(uOuterLimit, uInnerLimit, dotFromDirection);
+                vec3 spotLightWeighting = uSpotLightingColor * spotLightBrightness;
 
-        
                 if(in_shadow()) {
                   diffuseLightWeighting = vec3(0.0, 0.0, 0.0);
                   specularLightWeighting = vec3(0.0, 0.0, 0.0);
@@ -165,8 +197,9 @@
                 fragColor = vec4(materialAmbientColor * ambientLightWeighting
                   + materialDiffuseColor * diffuseLightWeighting
                   + materialSpecularColor * specularLightWeighting
-                  + dirlightColor * directLightWeighting,
-                  alpha);
+                  + dirlightColor * directLightWeighting
+                  + spotlightColor * spotLightWeighting
+                  ,alpha);
               } else {
                 fragColor = vec4(materialAmbientColor  * ambientLightWeighting, alpha);
               }
@@ -257,6 +290,62 @@
         </div>
       </div>
       <div class="accordion-item">
+        <h2 class="accordion-header" id="panelsStayOpen-headingSpotPos">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#panelsStayOpen-collapseSpotPos" aria-expanded="true"
+            aria-controls="panelsStayOpen-collapseSpotPos">
+            Spotlight Position
+          </button>
+        </h2>
+        <div id="panelsStayOpen-collapseSpotPos" class="accordion-collapse collapse"
+          aria-labelledby="panelsStayOpen-headingSpotPos">
+          <div class="accordion-body">
+            <div id="spotlight-position">
+              <div>
+                X<br />
+                <input type="range" min="-100" max="100" value="0" class="slider" id="spotPosX">
+              </div>
+              <div>
+                Y<br />
+                <input type="range" min="-50" max="400" value="0" class="slider" id="spotPosY">
+              </div>
+              <div>
+                Z<br />
+                <input type="range" min="-300" max="100" value="0" class="slider" id="spotPosZ">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="panelsStayOpen-headingSpotDir">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#panelsStayOpen-collapseSpotDir" aria-expanded="true"
+            aria-controls="panelsStayOpen-collapseSpotDir">
+            Spotlight Direction
+          </button>
+        </h2>
+        <div id="panelsStayOpen-collapseSpotDir" class="accordion-collapse collapse"
+          aria-labelledby="panelsStayOpen-headingSpotDir">
+          <div class="accordion-body">
+            <div id="spotlight-direction">
+              <div>
+                X<br />
+                <input type="range" min="-100" max="100" value="0" class="slider" id="spotDirX">
+              </div>
+              <div>
+                Y<br />
+                <input type="range" min="-50" max="400" value="20" class="slider" id="spotDirY">
+              </div>
+              <div>
+                Z<br />
+                <input type="range" min="-300" max="100" value="0" class="slider" id="spotDirZ">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
         <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
             data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
@@ -303,13 +392,13 @@
           aria-labelledby="panelsStayOpen-headingThree">
           <div class="accordion-body">
             <div>
-              R: <br /> <input type="text" id="ambientR" value="0.8" />
+              R: <br /> <input type="text" id="ambientR" value="0.5" />
             </div>
             <div>
-              G: <br /> <input type="text" id="ambientG" value="0.8" />
+              G: <br /> <input type="text" id="ambientG" value="0.5" />
             </div>
             <div>
-              B: <br /> <input type="text" id="ambientB" value="0.8" />
+              B: <br /> <input type="text" id="ambientB" value="0.5" />
             </div>
           </div>
         </div>

@@ -33,7 +33,7 @@ Semua node pada object melalui traversal, kemudian di render pada tiap tahapan t
     - Membuat input interaktif untuk masing-masing object hirarki
   - Muhammad Hanif Anggawi: 
     - Texturing pig
-    - Lighting
+    - Research cara menggunakan multiple lightsource dalam satu scene
   - Mushaffa Huda: -
 - 08/06/2022
   - Hanif Arkan Audah:
@@ -47,3 +47,4 @@ Semua node pada object melalui traversal, kemudian di render pada tiap tahapan t
   - Mushaffa Huda: -
 
 # Mencantumkan sumber/referensi
+- https://learnopengl.com/Lighting/Multiple-lights

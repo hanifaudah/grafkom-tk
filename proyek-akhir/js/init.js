@@ -52,6 +52,14 @@ function renderCameraInputs(state) {
       state.pov = 1;
       renderCameraInputs(state)
   })
+
+  $('#spotDirX').change(function (e) { console.log(e.target.id, e.target.value) })
+  $('#spotDirY').change(function (e) { console.log(e.target.id, e.target.value) })
+  $('#spotDirZ').change(function (e) { console.log(e.target.id, e.target.value) })
+  $('#spotPosX').change(function (e) { console.log(e.target.id, e.target.value) })
+  $('#spotPosY').change(function (e) { console.log(e.target.id, e.target.value) })
+  $('#spotPosZ').change(function (e) { console.log(e.target.id, e.target.value) })
+
   document.getElementById("animation").checked = true;
   document.getElementById("lighting").checked = true;
   document.getElementById("texture").checked = true;
@@ -427,8 +435,9 @@ function configureTexture(image, textureno, state) {
     gl.attachShader(shaderProgram, vertexShader);
     gl.attachShader(shaderProgram, fragmentShader);
     gl.linkProgram(shaderProgram);
+    if (!gl) alert("WebGL 2.0 isn't available");
     if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-        alert("Could not initialise shaders");
+        alert(gl.getProgramParameter(shaderProgram, gl.LINK_STATUS));
     }
     gl.useProgram(shaderProgram);
     shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
@@ -441,18 +450,26 @@ function configureTexture(image, textureno, state) {
     shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
     shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
 
+    // shaderProgram.uWorldUniform = gl.getUniformLocation(shaderProgram, "uWorld");
+    shaderProgram.uInnerLimit = gl.getUniformLocation(shaderProgram, "uInnerLimit");
+    shaderProgram.uOuterLimit = gl.getUniformLocation(shaderProgram, "uOuterLimit");
+    
+    shaderProgram.uSpotLightDirectionUniform = gl.getUniformLocation(shaderProgram, "uSpotLightDirection");
+
     shaderProgram.useLightingUniform = gl.getUniformLocation(shaderProgram, "uUseLighting");
     shaderProgram.useMaterialUniform = gl.getUniformLocation(shaderProgram, "uUseMaterial");
     shaderProgram.useTextureUniform = gl.getUniformLocation(shaderProgram, "uUseTexture");
 
     shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram, "uAmbientColor");
 
+    shaderProgram.spotLightingLocationUniform = gl.getUniformLocation(shaderProgram, "uSpotLightWorldPosition")
     shaderProgram.pointLightingLocationUniform = gl.getUniformLocation(shaderProgram, "uPointLightingLocation");
     shaderProgram.directLightingLocationUniform = gl.getUniformLocation(shaderProgram, "uDirectLightingLocation");
 
     shaderProgram.pointLightingSpecularColorUniform = gl.getUniformLocation(shaderProgram, "uPointLightingSpecularColor");
     shaderProgram.pointLightingDiffuseColorUniform = gl.getUniformLocation(shaderProgram, "uPointLightingDiffuseColor");
     shaderProgram.directLightingColorUniform = gl.getUniformLocation(shaderProgram, "uDirectLightingColor");
+    shaderProgram.spotLightingColorUniform = gl.getUniformLocation(shaderProgram, "uSpotLightingColor");
     shaderProgram.uMaterialDirlightColor = gl.getUniformLocation(shaderProgram, "uMaterialDirlightColor");
     shaderProgram.uMaterialAmbientColorUniform = gl.getUniformLocation(shaderProgram, "uMaterialAmbientColor");
     shaderProgram.uMaterialDiffuseColorUniform = gl.getUniformLocation(shaderProgram, "uMaterialDiffuseColor");
@@ -469,7 +486,7 @@ function configureTexture(image, textureno, state) {
     gl.attachShader(shadowMapShaderProgram, shadowMapFragmentShader);
     gl.linkProgram(shadowMapShaderProgram);
     if (!gl.getProgramParameter(shadowMapShaderProgram, gl.LINK_STATUS)) {
-        alert("Could not initialise shaders");
+        alert("Could not initialise shadow map shaders");
     }
     gl.useProgram(shadowMapShaderProgram);
     shadowMapShaderProgram.mvMatrixUniform = gl.getUniformLocation(shadowMapShaderProgram, "uMVMatrix");

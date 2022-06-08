@@ -126,6 +126,8 @@ function drawScene() {
         parseFloat(document.getElementById("pointG").value),
         parseFloat(document.getElementById("pointB").value)
     );
+
+    // Direct Light
     state.gl.uniform3f(
         state.shaderProgram.directLightingLocationUniform,
         0, 20, 0
@@ -133,6 +135,30 @@ function drawScene() {
     state.gl.uniform3f(
         state.shaderProgram.directLightingColorUniform,
         0.005, 0.005, 0.005
+    );
+    
+    // Spot Light
+    state.gl.uniform1f(state.shaderProgram.uInnerLimit, 0)
+    state.gl.uniform1f(state.shaderProgram.uInnerLimit, 90)
+
+    state.gl.uniform3f(
+        state.shaderProgram.uSpotLightDirectionUniform, 
+        parseFloat(document.getElementById("spotDirX").value),
+        parseFloat(document.getElementById("spotDirY").value),
+        parseFloat(document.getElementById("spotDirZ").value)
+        // 10, 30, 10
+    );
+
+    state.gl.uniform3f(
+        state.shaderProgram.spotLightingLocationUniform,
+        parseFloat(document.getElementById("spotPosX").value),
+        parseFloat(document.getElementById("spotPosY").value),
+        parseFloat(document.getElementById("spotPosZ").value)
+        // -60, 30, 0
+    );
+    state.gl.uniform3f(
+        state.shaderProgram.spotLightingColorUniform,
+        0.6, 0.6, 0.6
     );
     
     state.gl.activeTexture(state.gl.TEXTURE31);
