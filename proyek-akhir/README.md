@@ -18,6 +18,8 @@ Tambahkan object tree pada `js/hirarki/[objectName].js` dengan langkah-langkah b
 Semua node pada object melalui traversal, kemudian di render pada tiap tahapan traversal tersebut. Traversal rendering dilanjutkan ke child dan sibling dari node tersebut.
 
 # Fasilitas-fasilitas WebGL yang digunakan
+- Fungsi - fungsi operasi vektor & matrix seperti normalize, dot product, smoothstep
+- Draw mode Triangles mode texture shaded, dan draw mode Line Strip untuk mode wireframe
 
 # Algoritma-algoritma (khusus) yang digunakan
 - Pembentukan object menggunakan algoritma tree traversal
@@ -46,6 +48,7 @@ Semua node pada object melalui traversal, kemudian di render pada tiap tahapan t
     - Membuat mode shading dan wireframe
   - Muhammad Hanif Anggawi
     - Implementasi direct light, point light, spot light
+    - Menambahkan slider UI untuk interaksi spotlight
   - Mushaffa Huda:
     - Memberikan 
     - Refactor dan Merapihkan codebase
