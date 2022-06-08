@@ -56,6 +56,12 @@ export function initInputs(state) {
   document.getElementById("lighting").checked = true;
   document.getElementById("texture").checked = true;
 
+  // shading toggle
+  $("#shading").change(function () {
+      if ($(this).is(":checked")) state.drawMode = state.gl.LINE_STRIP
+      else state.drawMode = state.gl.TRIANGLES
+  })
+
   // render sliders
   Object.keys(controls).forEach(k1 => {
     const $body = $('<div class="accordion-body"></div>')

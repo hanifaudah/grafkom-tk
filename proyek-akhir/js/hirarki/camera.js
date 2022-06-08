@@ -37,7 +37,7 @@ function drawCameraBase(state, shadow) {
   setMatrixUniforms(state, shadow);
   chooseTexture(state, 6, shadow);
   setupMaterial(state, state.cameraMaterial, shadow);
-  state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 
@@ -49,7 +49,7 @@ function drawCameraLeg(state, shadow) {
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
   chooseTexture(state, 6, shadow);
-  state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 
@@ -61,7 +61,7 @@ function drawCameraFirstBody(state, shadow) {
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
   chooseTexture(state, 7, shadow);
-  state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 
@@ -73,7 +73,7 @@ function drawCameraSecondBody(state, shadow) {
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
   chooseTexture(state, 7, shadow);
-  state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 
@@ -85,7 +85,7 @@ function drawCameraThirdBody(state, shadow) {
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
   chooseTexture(state, 7, shadow);
-  state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 
@@ -97,7 +97,7 @@ function drawCameraFourthBody(state, shadow) {
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
   chooseTexture(state, 7, shadow);
-  state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 
@@ -110,7 +110,7 @@ function drawLensCamera(state, shadow) {
   setupToDrawCylinder(state, shadow);
   setMatrixUniforms(state, shadow);
   chooseTexture(state, 8, shadow);
-  state.gl.drawElements(state.gl.TRIANGLES, state.cylinderVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  state.gl.drawElements(state.drawMode, state.cylinderVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 
@@ -122,7 +122,7 @@ function drawShutterCamera(state, shadow) {
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
   chooseTexture(state, 6, shadow);
-  state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 

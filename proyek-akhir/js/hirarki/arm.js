@@ -35,7 +35,7 @@ function drawArmBase(state, shadow) {
   setMatrixUniforms(state, shadow);
   chooseTexture(state, 3, shadow);
   setupMaterial(state, state.armMaterial, shadow);
-  state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 
@@ -47,7 +47,7 @@ function drawFirstArm(state, shadow) {
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
   chooseTexture(state, 2, shadow);
-  state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 
@@ -59,7 +59,7 @@ function drawSecondArm(state, shadow) {
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
   chooseTexture(state, 2, shadow);
-  state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 
@@ -71,7 +71,7 @@ function drawPalm(state, shadow) {
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
   chooseTexture(state, 0, shadow);
-  state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 
@@ -83,7 +83,7 @@ function drawFingerBase(state, shadow) {
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
   chooseTexture(state, 0, shadow);
-  state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 
@@ -95,7 +95,7 @@ function drawFingerTop(state, shadow) {
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
   chooseTexture(state, 0, shadow);
-  state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 

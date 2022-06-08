@@ -10,7 +10,7 @@ function drawRoom(state, shadow) {
   setMatrixUniforms(state, shadow);
   chooseTexture(state, 1, shadow);
   setupMaterial(state, state.roomMaterial, shadow);
-  state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 

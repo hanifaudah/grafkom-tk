@@ -33,7 +33,7 @@ function drawCreeperBase(state, shadow) {
   setMatrixUniforms(state, shadow);
   chooseTexture(state, 2, shadow);
   setupMaterial(state, state.armMaterial, shadow);
-  state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 
@@ -45,7 +45,7 @@ function drawLeg(state, shadow) {
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
   chooseTexture(state, 2, shadow);
-  state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 
@@ -58,7 +58,7 @@ function drawHead(state, shadow) {
   setMatrixUniforms(state, shadow);
   chooseTexture(state, 13, shadow);
   setupMaterial(state, state.armMaterial, shadow);
-  state.gl.drawElements(state.gl.TRIANGLES, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 

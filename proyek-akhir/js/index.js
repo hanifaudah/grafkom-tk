@@ -78,6 +78,7 @@ function initGL(canvas) {
         state.gl = canvas.getContext("webgl2");
         state.gl.viewportWidth = canvas.width;
         state.gl.viewportHeight = canvas.height;
+        state.drawMode = state.gl.TRIANGLES
     } catch (e) {
     }
     if (!state.gl) {
