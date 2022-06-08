@@ -64,7 +64,7 @@ export function drawShadowMap(state, side) {
     
     mat4.identity(state.mvMatrix);
     traverse(state, state.roomNode, true);
-    mat4.translate(state.mvMatrix, [0, 0, -20]);
+    mat4.translate(state.mvMatrix, [0, 0, 0]);
     // traverse(state, state.baseArmNode, true);
     traverse(state, state.basePigNode, true);
     traverse(state, state.baseCreeperNode, true);

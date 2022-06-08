@@ -16,5 +16,5 @@ function drawRoom(state, shadow) {
 
 export function assembleRoom(state) {
   state.roomNode = {"draw" : drawRoom, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(state.roomNode.matrix, [0, 15, -20]);
+  mat4.translate(state.roomNode.matrix, [0, 15, 0]);
 }

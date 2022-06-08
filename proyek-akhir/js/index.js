@@ -97,7 +97,20 @@ function drawScene() {
 		  0.0, 1.0, 0.0);
 
     // Camera Movement
-    let cameraTranslation = [document.getElementById("cameraPositionX").value / -10.0, document.getElementById("cameraPositionY").value / -10.0, document.getElementById("cameraPositionZ").value / 10.0]
+    let cameraTranslation
+
+    // pig pov
+    switch (state.pov) {
+        case 0:
+            cameraTranslation = [document.getElementById("cameraPositionX").value / -10.0, document.getElementById("cameraPositionY").value / -10.0, document.getElementById("cameraPositionZ").value / 10.0]
+            break
+        case 1:
+            cameraTranslation = [-state.pigX, 4, -state.pigZ]
+            mat4.rotate(state.lookAtMatrix, state.basePigAngle, [0, -1, 0])
+            break
+        default:
+    }
+
     mat4.translate(state.lookAtMatrix, cameraTranslation)
     mat4.perspective(45, state.gl.viewportWidth / state.gl.viewportHeight, 0.1, 100.0, state.pMatrix);
     mat4.multiply(state.pMatrix, state.lookAtMatrix);
@@ -140,7 +153,7 @@ function drawScene() {
     traverse(state, state.lightSourceNode, false);
     traverse(state, state.roomNode, false);
     
-    mat4.translate(state.mvMatrix, [0, 0, -20]);
+    mat4.translate(state.mvMatrix, [0, 0, 0]);
     // traverse(state, state.baseArmNode, false);
     traverse(state, state.basePigNode, false);
     traverse(state, state.baseCreeperNode, false);
