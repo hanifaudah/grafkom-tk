@@ -36,7 +36,7 @@ Semua node pada object melalui traversal, kemudian di render pada tiap tahapan t
     - Research cara menggunakan multiple lightsource dalam satu scene
   - Mushaffa Huda:
     - Membuat basis Hirarki untuk model steve
-    - Mencoba menambahkan texture untuk model
+    - menambahkan texture untuk model steve
 - 08/06/2022
   - Hanif Arkan Audah:
     - Merapikan environment
@@ -47,7 +47,6 @@ Semua node pada object melalui traversal, kemudian di render pada tiap tahapan t
   - Muhammad Hanif Anggawi
     - Implementasi direct light, point light, spot light
   - Mushaffa Huda:
-    - Memberikan 
     - Refactor dan Merapihkan codebase
     - Merapihkan Laporan
 
