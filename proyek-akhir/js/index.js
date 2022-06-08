@@ -138,8 +138,10 @@ function drawScene() {
     );
     
     // Spot Light
-    state.gl.uniform1f(state.shaderProgram.uInnerLimit, 0)
-    state.gl.uniform1f(state.shaderProgram.uInnerLimit, 90)
+    const innerLimit = parseFloat(document.getElementById("innerLimit").value)
+    const outerLimit = parseFloat(document.getElementById("outerLimit").value)
+    state.gl.uniform1f(state.shaderProgram.uInnerLimit, Math.cos(innerLimit))
+    state.gl.uniform1f(state.shaderProgram.uOuterLimit, Math.cos(outerLimit))
 
     state.gl.uniform3f(
         state.shaderProgram.uSpotLightDirectionUniform, 

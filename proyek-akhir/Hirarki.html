@@ -346,6 +346,30 @@
         </div>
       </div>
       <div class="accordion-item">
+        <h2 class="accordion-header" id="panelsStayOpen-headingLimits">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#panelsStayOpen-collapseLimits" aria-expanded="true"
+            aria-controls="panelsStayOpen-collapseLimits">
+            Spotlight Limits
+          </button>
+        </h2>
+        <div id="panelsStayOpen-collapseLimits" class="accordion-collapse collapse"
+          aria-labelledby="panelsStayOpen-headingLimits">
+          <div class="accordion-body">
+            <div id="inner-limit">
+              <div>
+                Inner Limit<br />
+                <input type="range" min="-100" max="100" value="0" class="slider" id="innerLimit">
+              </div>
+              <div>
+                Outer Limit<br />
+                <input type="range" min="-50" max="400" value="20" class="slider" id="outerLimit">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
         <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
             data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
