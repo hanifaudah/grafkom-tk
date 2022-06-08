@@ -138,7 +138,6 @@ function drawShutterCamera(state, shadow) {
   var shutterCameraNode; 
 
   state.baseCameraNode = {"draw" : drawCameraBase, "matrix" : mat4.identity(mat4.create())};
-  // console.log(state.baseCameraNode)
   mat4.translate(state.baseCameraNode.matrix, [5.0, 1.0, 0.0]);
   mat4.rotate(state.baseCameraNode.matrix, state.baseCameraAngle, [0.0, 1.0, 0.0]);
   
@@ -177,7 +176,6 @@ function drawShutterCamera(state, shadow) {
   mat4.translate(shutterCameraNode.matrix, [0.0, 0.35, state.shutterCameraTranslation]); //0.45 - 0.55
   
   state.baseArmNode.sibling = state.baseCameraNode;
-  // console.log(state.baseCameraNode)
   state.baseCameraNode.child = firstCameraLegNode;
   firstCameraLegNode.sibling = secondCameraLegNode;
   secondCameraLegNode.sibling = thirdCameraLegNode;
