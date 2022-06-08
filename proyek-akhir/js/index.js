@@ -160,7 +160,7 @@ function drawScene() {
     );
     state.gl.uniform3f(
         state.shaderProgram.spotLightingColorUniform,
-        0.6, 0.6, 0.6
+        0.4, 0.4, 0.4
     );
     
     state.gl.activeTexture(state.gl.TEXTURE31);
