@@ -1,6 +1,6 @@
 // a representation of vector 3
 // taken from http://learnwebgl.brown37.net/lib/learn_webgl_vector3.js
-export var Vector3 = function () {
+ var Vector3 = function () {
 
 	var self = this;
 
@@ -180,7 +180,7 @@ export var Vector3 = function () {
 
 // a method to generate lookat matrix
 // taken from http://learnwebstate.gl.brown37.net/lib/learn_webgl_matrix.js because mat4.lookat seems buggy
-export const lookAt = function (state, M, eye_x, eye_y, eye_z, center_x, center_y, center_z, up_dx, up_dy, up_dz) {
+ const lookAt = function (state, M, eye_x, eye_y, eye_z, center_x, center_y, center_z, up_dx, up_dy, up_dz) {
 
 	// Local coordinate system for the camera:
 	//   state.u maps to the x-axis
@@ -211,13 +211,13 @@ export const lookAt = function (state, M, eye_x, eye_y, eye_z, center_x, center_
 	M[3] = 0;     M[7] = 0;     M[11] = 0;     M[15] = 1;
 };
 
-export function mvPushMatrix(state) {
+ function mvPushMatrix(state) {
 	var copy = mat4.create();
 	mat4.set(state.mvMatrix, copy);
 	state.mvMatrixStack.push(copy);
 }
 
-export function mvPopMatrix(state, shadow) {
+ function mvPopMatrix(state, shadow) {
 	if (state.mvMatrixStack.length == 0) {
 			throw "Invalid popMatrix!";
 	}
@@ -236,7 +236,7 @@ export function mvPopMatrix(state, shadow) {
 }
 
 //adapted from http://learnwebstate.gl.brown37.net/11_advanced_rendering/shadows.html
-export function createFrameBufferObject(state, width, height) {
+ function createFrameBufferObject(state, width, height) {
     var frameBuffer, depthBuffer;
 	
     frameBuffer = state.gl.createFramebuffer();
@@ -256,6 +256,6 @@ export function createFrameBufferObject(state, width, height) {
     return frameBuffer;
 }
 
-export function degToRad(degrees) {
+ function degToRad(degrees) {
 	return degrees * Math.PI / 180;
 }

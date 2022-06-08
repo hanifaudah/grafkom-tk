@@ -1,20 +1,3 @@
-import { initInputs, initTexture, initShaders, initBuffers, initializeAtrributes } from "./init.js"
-import { Vector3, lookAt } from "./util.js"
-import { drawShadowMap, initObjectTree, animate } from "./hirarki/index.js"
-import { traverse } from "./hirarki/utils.js"
-
-// object animation state
-import { state as armState } from "./hirarki/arm.js"
-import { state as cameraState } from "./hirarki/camera.js"
-
-// ADD OBJECT HERE: import state
-import { state as pigState } from "./hirarki/pig.js"
-import { state as creeperState } from "./hirarki/creeper.js"
-import { state as steveState } from "./hirarki/steve.js"
-import { state as pistonState } from "./hirarki/piston.js"
-import { state as chestState } from "./hirarki/chest.js"
-
-
 let state = {
     pov: 0,
     gl: undefined,

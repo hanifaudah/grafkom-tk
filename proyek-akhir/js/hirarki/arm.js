@@ -1,7 +1,7 @@
-import { mvPushMatrix, mvPopMatrix } from "../util.js"
-import { setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture } from "./utils.js"
+// import{ mvPushMatrix, mvPopMatrix } from "../util.js"
+// import{ setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture } from "./utils.js"
 
-export const state = {
+ const armState = {
   baseArmNode: undefined,
   armMaterial: undefined,
 
@@ -99,7 +99,7 @@ function drawFingerTop(state, shadow) {
   mvPopMatrix(state, shadow);
 }
 
-export function assembleArm(state) {
+ function assembleArm(state) {
   var firstArmNode;
   var secondArmNode; 
   var palmNode; 
@@ -170,7 +170,7 @@ export function assembleArm(state) {
   thirdFingerBaseNode.child = thirdFingerTopNode;
 }
 
-export function handleArmAnimation(state) {
+ function handleArmAnimation(state) {
   var update = (0.05 * Math.PI * 10/ 180);
       
   //ARM

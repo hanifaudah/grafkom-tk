@@ -1,7 +1,7 @@
-import { mvPushMatrix, mvPopMatrix, degToRad } from "../util.js"
-import { setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture } from "./utils.js"
+// import{ mvPushMatrix, mvPopMatrix, degToRad } from "../util.js"
+// import{ setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture } from "./utils.js"
 
-export const state = {
+ const steveState = {
   baseSteveNode: undefined,
   headSteveNode: undefined,
   armMaterial: undefined,
@@ -85,7 +85,7 @@ function drawLeftArm(state, shadow) {
   mvPopMatrix(state, shadow);
 }
 
-function drawHead(state, shadow) {
+function drawSteveHead(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
   mat4.scale(state.mvMatrix, [1, 1, 1]);
@@ -98,7 +98,7 @@ function drawHead(state, shadow) {
   mvPopMatrix(state, shadow);
 }
 
-export function assemble(state) {
+ function assembleSteve(state) {
   var frontLeftLegNode;
   var frontRightLegNode;
   var leftArm
@@ -107,7 +107,7 @@ export function assemble(state) {
   mat4.translate(state.baseSteveNode.matrix, [state.steveX, 1, state.steveZ]);
   mat4.rotate(state.baseSteveNode.matrix, state.baseSteveAngle, [0.0, 1.0, 0.0]);
 
-  state.headSteveNode = {"draw" : drawHead, "matrix" : mat4.identity(mat4.create())};
+  state.headSteveNode = {"draw" : drawSteveHead, "matrix" : mat4.identity(mat4.create())};
   mat4.translate(state.headSteveNode.matrix, [0, 3, 0]);
   mat4.rotate(state.headSteveNode.matrix, state.headSteveAngle, [0.0, 1.0, 0.0]);
   
@@ -140,7 +140,7 @@ export function assemble(state) {
   leftArm.sibling = rightArm
 }
 
-export function handleAnimation(state) {
+ function handleSteveAnimation(state) {
   var update = (0.05 * Math.PI * 10/ 180);
   state.baseSteveAngle = degToRad(state.steveAngle) - degToRad(90)
 

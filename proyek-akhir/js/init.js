@@ -1,4 +1,4 @@
-import { createFrameBufferObject } from "./util.js"
+// import{ createFrameBufferObject } from "./util.js"
 
 function renderCameraInputs(state) {
     const $camControls = $("#cam-controls")
@@ -9,7 +9,7 @@ function renderCameraInputs(state) {
     $(`#cam-btns #${state.pov}`).addClass("active")
 }
 
-export function initInputs(state) {
+ function initInputs(state) {
   const controls = {
     "Steve": {
         baseSteveAngle: "Steve Rotation",
@@ -210,7 +210,7 @@ export function initInputs(state) {
 //   }
 }
 
-export function initTexture(state) {
+ function initTexture(state) {
     const { gl } = state
     var image0 = new Image();
     image0.onload = function() {
@@ -387,7 +387,7 @@ function configureTexture(image, textureno, state) {
     
 }
 
-export function initShaders(state) {
+ function initShaders(state) {
     const { gl } = state
     var shaderProgram;
     var shadowMapShaderProgram;
@@ -481,7 +481,7 @@ function getShader(gl, id) {
     return shader;
 }
 
-export function initBuffers(state) {
+ function initBuffers(state) {
     //DEFINING CUBE
     state.cubeVertexPositionBuffer = state.gl.createBuffer();
     state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexPositionBuffer);
@@ -777,7 +777,7 @@ export function initBuffers(state) {
 	state.shadowFrameBuffer = createFrameBufferObject(state, 512, 512);
 }
 
-export function initializeAtrributes(state, ) {
+ function initializeAtrributes(state, ) {
 	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexPositionBuffer);
 	state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, state.cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
 	state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexPositionBuffer);

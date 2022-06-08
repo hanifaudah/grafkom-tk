@@ -1,7 +1,7 @@
-import { mvPushMatrix, mvPopMatrix } from "../util.js"
-import { setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture } from "./utils.js"
+// import{ mvPushMatrix, mvPopMatrix } from "../util.js"
+// import{ setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture } from "./utils.js"
 
-export const state = {
+ const chestState = {
   baseChestNode: undefined,
   armMaterial: undefined,
 
@@ -28,7 +28,7 @@ function drawChestBase(state, shadow) {
   mvPopMatrix(state, shadow);
 }
 
-function drawNeck(state, shadow) {
+function drawChestNeck(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
   mat4.scale(state.mvMatrix, [2/5, 2/4, 2/4]);
@@ -53,7 +53,7 @@ function drawNeck(state, shadow) {
 //   mvPopMatrix(state, shadow);
 // }
 
-export function assemble(state) {
+ function assembleChest(state) {
   var neckChestNode
   var headChestNode
   
@@ -61,7 +61,7 @@ export function assemble(state) {
   mat4.translate(state.baseChestNode.matrix, [1, -3, 0]);
   // mat4.rotate(state.baseChestNode.matrix, state.baseChestAngle, [0.0, 1.0, 0.0]);
 
-  neckChestNode = {"draw" : drawNeck, "matrix" : mat4.identity(mat4.create())};
+  neckChestNode = {"draw" : drawChestNeck, "matrix" : mat4.identity(mat4.create())};
   mat4.translate(neckChestNode.matrix, [0, 0.5, 2]);
 
   // headChestNode = {"draw" : drawHead, "matrix" : mat4.identity(mat4.create())};
@@ -71,4 +71,4 @@ export function assemble(state) {
   state.baseChestNode.child = neckChestNode
 }
 
-export function handleAnimation(state) {}
+ function handleChestAnimation(state) {}

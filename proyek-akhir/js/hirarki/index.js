@@ -1,21 +1,21 @@
-import { lookAt } from "../util.js"
-import { assembleArm, handleArmAnimation } from "./arm.js"
-import { assembleCamera,handleCameraAnimation } from "./camera.js";
-import { assembleLightSource } from "./lightSource.js"
-import { assembleRoom } from "./room.js"
-import { traverse } from "./utils.js"
+// import{ lookAt } from "../util.js"
+// import{ assembleArm, handleArmAnimation } from "./arm.js"
+// import{ assembleCamera,handleCameraAnimation } from "./camera.js";
+// import{ assembleLightSource } from "./lightSource.js"
+// import{ assembleRoom } from "./room.js"
+// import{ traverse } from "./utils.js"
 
-// ADD OBJECT HERE: import assemble and handleAnimation func
+// ADD OBJECT HERE: // importassemble and handleAnimation func
 
-import { assemble as assemblePig, handleAnimation as handlePigAnimation } from "./pig.js"
-import { assemble as assembleCreeper, handleAnimation as handleCreeperAnimation } from "./creeper.js"
-import { assemble as assembleSteve, handleAnimation as handleSteveAnimation } from "./steve.js"
-import { assemble as assemblePiston, handleAnimation as handlePistonAnimation } from "./piston.js"
-import { assemble as assembleChest, handleAnimation as handleChestAnimation } from "./chest.js"
+// import{ assemble as assemblePig, handleAnimation as handlePigAnimation } from "./pig.js"
+// import{ assemble as assembleCreeper, handleAnimation as handleCreeperAnimation } from "./creeper.js"
+// import{ assemble as assembleSteve, handleAnimation as handleSteveAnimation } from "./steve.js"
+// import{ assemble as assemblePiston, handleAnimation as handlePistonAnimation } from "./piston.js"
+// import{ assemble as assembleChest, handleAnimation as handleChestAnimation } from "./chest.js"
 
 //draws shadowmap for the side of the texture
 //0: positive x, ..., 5: negative z
-export function drawShadowMap(state, side) {
+ function drawShadowMap(state, side) {
 	var centers = [
 		1.0, 0.0,  0.0, //positive x
 		-1.0, 0.0, 0.0, //negative x
@@ -77,7 +77,7 @@ export function drawShadowMap(state, side) {
     state.gl.bindFramebuffer(state.gl.FRAMEBUFFER,  null);
 }
 
-export function initObjectTree(state) {
+ function initObjectTree(state) {
   // lightSource
   assembleLightSource(state)
 
@@ -98,7 +98,7 @@ export function initObjectTree(state) {
   assembleChest(state)
 }
 
-export function animate(state) {
+ function animate(state) {
   if (state.animating) {
       //var update = (0.05 * Math.PI * (timeNow - lastTime)/ 180); //use elapsed time, which is faulty on changing tabs
 

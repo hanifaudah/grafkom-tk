@@ -1,5 +1,5 @@
-import { mvPushMatrix, mvPopMatrix } from "../util.js"
-import { setMatrixUniforms, setupMaterial, setupToDrawSphere, chooseTexture } from "./utils.js"
+// import{ mvPushMatrix, mvPopMatrix } from "../util.js"
+// import{ setMatrixUniforms, setupMaterial, setupToDrawSphere, chooseTexture } from "./utils.js"
 
 function drawLightSource(state, shadow) {
   mvPushMatrix(state);
@@ -13,7 +13,7 @@ function drawLightSource(state, shadow) {
   mvPopMatrix(state, shadow);
 }
 
-export function assembleLightSource(state) {
+ function assembleLightSource(state) {
   state.lightSourceNode = {"draw" : drawLightSource, "matrix" : mat4.identity(mat4.create())};
   mat4.translate(state.lightSourceNode.matrix, [document.getElementById("lightPositionX").value / 10.0, document.getElementById("lightPositionY").value / 10.0, document.getElementById("lightPositionZ").value / 10.0]);
 }

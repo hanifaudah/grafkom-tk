@@ -1,7 +1,7 @@
-import { mvPushMatrix, mvPopMatrix } from "../util.js"
-import { setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture } from "./utils.js"
+// import{ mvPushMatrix, mvPopMatrix } from "../util.js"
+// import{ setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture } from "./utils.js"
 
-export const state = {
+ const pistonState = {
   basePistonNode: undefined,
   armMaterial: undefined,
 
@@ -28,7 +28,7 @@ function drawPistonBase(state, shadow) {
   mvPopMatrix(state, shadow);
 }
 
-function drawNeck(state, shadow) {
+function drawPistonNeck(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
   mat4.scale(state.mvMatrix, [1/4*2, 1*2 , 1/4*2]);
@@ -40,7 +40,7 @@ function drawNeck(state, shadow) {
   mvPopMatrix(state, shadow);
 }
 
-function drawHead(state, shadow) {
+function drawPistonHead(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
   mat4.scale(state.mvMatrix, [1*2, 1/4*2 ,1*2]);
@@ -53,7 +53,7 @@ function drawHead(state, shadow) {
   mvPopMatrix(state, shadow);
 }
 
-export function assemble(state) {
+ function assemblePiston(state) {
   var neckPistonNode
   var headPistonNode
   
@@ -61,10 +61,10 @@ export function assemble(state) {
   mat4.translate(state.basePistonNode.matrix, [-3, -3, 0]);
   // mat4.rotate(state.basePistonNode.matrix, state.basePistonAngle, [0.0, 1.0, 0.0]);
 
-  neckPistonNode = {"draw" : drawNeck, "matrix" : mat4.identity(mat4.create())};
+  neckPistonNode = {"draw" : drawPistonNeck, "matrix" : mat4.identity(mat4.create())};
   mat4.translate(neckPistonNode.matrix, [0, state.neckPistonTranslate, 0]);
 
-  headPistonNode = {"draw" : drawHead, "matrix" : mat4.identity(mat4.create())};
+  headPistonNode = {"draw" : drawPistonHead, "matrix" : mat4.identity(mat4.create())};
   mat4.translate(headPistonNode.matrix, [0, 2, 0]);
   mat4.rotate(headPistonNode.matrix, state.headPistonAngle, [0.0, 1.0, 0.0]);
 
@@ -72,7 +72,7 @@ export function assemble(state) {
   neckPistonNode.child = headPistonNode
 }
 
-export function handleAnimation(state) {
+ function handlePistonAnimation(state) {
   var update = (0.05 * Math.PI * 10/ 180);
       
   //ARM

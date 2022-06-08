@@ -1,6 +1,6 @@
-import { mvPushMatrix, mvPopMatrix } from "../util.js"
+// import{ mvPushMatrix, mvPopMatrix } from "../util.js"
 
-export function setupToDrawCube(state, shadow) {
+ function setupToDrawCube(state, shadow) {
 	if(shadow) {
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexPositionBuffer);
 		state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, state.cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
@@ -16,7 +16,7 @@ export function setupToDrawCube(state, shadow) {
 	}
 }
 
-export function setupToDrawCubeInsides(state, shadow) {
+ function setupToDrawCubeInsides(state, shadow) {
 	if(shadow) {
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cubeVertexPositionBuffer);
 		state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, state.cubeVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
@@ -32,7 +32,7 @@ export function setupToDrawCubeInsides(state, shadow) {
 	}
 }
 
-export function setupToDrawCylinder(state, shadow) {
+ function setupToDrawCylinder(state, shadow) {
 	if(shadow) {
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.cylinderVertexPositionBuffer);
 		state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, state.cylinderVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
@@ -48,7 +48,7 @@ export function setupToDrawCylinder(state, shadow) {
 	}
 }
 
-export function setupToDrawSphere(state, shadow) {
+ function setupToDrawSphere(state, shadow) {
 	if(shadow) {
 		state.gl.bindBuffer(state.gl.ARRAY_BUFFER, state.sphereVertexPositionBuffer);
 		state.gl.vertexAttribPointer(state.shadowMapShaderProgram.vertexPositionAttribute, state.sphereVertexPositionBuffer.itemSize, state.gl.FLOAT, false, 0, 0);
@@ -64,7 +64,7 @@ export function setupToDrawSphere(state, shadow) {
 	}
 }
 
-export function setMatrixUniforms(state, shadow) {
+ function setMatrixUniforms(state, shadow) {
   if(shadow) {
   state.gl.uniformMatrix4fv(state.shadowMapShaderProgram.pMatrixUniform, false, state.pMatrix);
   state.gl.uniformMatrix4fv(state.shadowMapShaderProgram.mvMatrixUniform, false, state.mvMatrix);
@@ -78,7 +78,7 @@ export function setMatrixUniforms(state, shadow) {
 }
 }
 
-export function setupMaterial(state, material, shadow) {
+ function setupMaterial(state, material, shadow) {
 	if(!shadow) {
 		state.gl.uniform1i(state.shaderProgram.useMaterialUniform, true);
 		if(material == "brass") {
@@ -94,7 +94,7 @@ export function setupMaterial(state, material, shadow) {
 	}
 }
 
-export function chooseTexture(state, i, shadow) {
+ function chooseTexture(state, i, shadow) {
 	if(!shadow) state.gl.uniform1i(state.gl.getUniformLocation(state.shaderProgram, "thetexture"), i);
 }
 
@@ -119,7 +119,7 @@ function setupMaterialChrome(state, ) {
   state.gl.uniform1f(state.shaderProgram.uMaterialShininessUniform, 76.8);
 }
 
-export function traverse(state, node, shadow) {
+ function traverse(state, node, shadow) {
   mvPushMatrix(state);
   //modifications
   mat4.multiply(state.mvMatrix, node.matrix);

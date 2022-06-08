@@ -1,7 +1,7 @@
 #program to resize image to power of 2
 
-from skimage import io
-import sys
+from skimage // importio
+// importsys
 if len(sys.argv) < 3:
     print "give filenames"
     exit()

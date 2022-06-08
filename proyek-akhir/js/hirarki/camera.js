@@ -1,7 +1,7 @@
-import { mvPushMatrix, mvPopMatrix } from "../util.js"
-import { setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture, setupToDrawCylinder } from "./utils.js"
+// import{ mvPushMatrix, mvPopMatrix } from "../util.js"
+// import{ setMatrixUniforms, setupMaterial, setupToDrawCube, chooseTexture, setupToDrawCylinder } from "./utils.js"
 
-export const state = {
+ const cameraState = {
   cameraMaterial: undefined,
   baseCameraNode: undefined,
 
@@ -126,7 +126,7 @@ function drawShutterCamera(state, shadow) {
   mvPopMatrix(state, shadow);
 }
 
-export function assembleCamera(state) {
+ function assembleCamera(state) {
   var firstCameraLegNode; 
   var secondCameraLegNode; 
   var thirdCameraLegNode; 
@@ -189,7 +189,7 @@ export function assembleCamera(state) {
   secondCameraBodyNode.sibling = shutterCameraNode;
 }
 
-export function handleCameraAnimation(state) {
+ function handleCameraAnimation(state) {
   var update = (0.05 * Math.PI * 10/ 180);
   
   state.baseCameraAngle = (state.baseCameraAngle + update)%(2*Math.PI);
