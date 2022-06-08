@@ -440,17 +440,25 @@ function configureTexture(image, textureno, state) {
     shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
     shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
     shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
+
     shaderProgram.useLightingUniform = gl.getUniformLocation(shaderProgram, "uUseLighting");
     shaderProgram.useMaterialUniform = gl.getUniformLocation(shaderProgram, "uUseMaterial");
     shaderProgram.useTextureUniform = gl.getUniformLocation(shaderProgram, "uUseTexture");
+
     shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram, "uAmbientColor");
+
     shaderProgram.pointLightingLocationUniform = gl.getUniformLocation(shaderProgram, "uPointLightingLocation");
+    shaderProgram.directLightingLocationUniform = gl.getUniformLocation(shaderProgram, "uDirectLightingLocation");
+
     shaderProgram.pointLightingSpecularColorUniform = gl.getUniformLocation(shaderProgram, "uPointLightingSpecularColor");
     shaderProgram.pointLightingDiffuseColorUniform = gl.getUniformLocation(shaderProgram, "uPointLightingDiffuseColor");
+    shaderProgram.directLightingColorUniform = gl.getUniformLocation(shaderProgram, "uDirectLightingColor");
+    shaderProgram.uMaterialDirlightColor = gl.getUniformLocation(shaderProgram, "uMaterialDirlightColor");
     shaderProgram.uMaterialAmbientColorUniform = gl.getUniformLocation(shaderProgram, "uMaterialAmbientColor");
     shaderProgram.uMaterialDiffuseColorUniform = gl.getUniformLocation(shaderProgram, "uMaterialDiffuseColor");
     shaderProgram.uMaterialSpecularColorUniform = gl.getUniformLocation(shaderProgram, "uMaterialSpecularColor");
     shaderProgram.uMaterialShininessUniform = gl.getUniformLocation(shaderProgram, "uMaterialShininess");
+
     shaderProgram.uFarPlaneUniform = gl.getUniformLocation(shaderProgram, "uFarPlane");
     shaderProgram.shadowMapUniform = gl.getUniformLocation(shaderProgram, "shadowmap");
     
@@ -467,6 +475,7 @@ function configureTexture(image, textureno, state) {
     shadowMapShaderProgram.mvMatrixUniform = gl.getUniformLocation(shadowMapShaderProgram, "uMVMatrix");
     shadowMapShaderProgram.pMatrixUniform = gl.getUniformLocation(shadowMapShaderProgram, "uPMatrix");
     shadowMapShaderProgram.pointLightingLocationUniform = gl.getUniformLocation(shadowMapShaderProgram, "uPointLightingLocation");
+    shadowMapShaderProgram.directLightingLocationUniform = gl.getUniformLocation(shadowMapShaderProgram, "uDirectLightingLocation");
     shadowMapShaderProgram.uFarPlaneUniform = gl.getUniformLocation(shadowMapShaderProgram, "uFarPlane");
     shadowMapShaderProgram.vertexPositionAttribute = gl.getAttribLocation(shadowMapShaderProgram, "aVertexPosition");
     gl.enableVertexAttribArray(shadowMapShaderProgram.vertexPositionAttribute);

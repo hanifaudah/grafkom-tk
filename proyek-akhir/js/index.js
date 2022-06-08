@@ -126,6 +126,14 @@ function drawScene() {
         parseFloat(document.getElementById("pointG").value),
         parseFloat(document.getElementById("pointB").value)
     );
+    state.gl.uniform3f(
+        state.shaderProgram.directLightingLocationUniform,
+        0, 20, 0
+    );
+    state.gl.uniform3f(
+        state.shaderProgram.directLightingColorUniform,
+        0.005, 0.005, 0.005
+    );
     
     state.gl.activeTexture(state.gl.TEXTURE31);
     state.gl.bindTexture(state.gl.TEXTURE_CUBE_MAP, state.shadowFrameBuffer.depthBuffer);
