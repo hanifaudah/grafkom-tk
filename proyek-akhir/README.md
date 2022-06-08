@@ -1,6 +1,6 @@
 # Kelompok Raster
-(1906293070) Hanif Arkan Audah
-(1906350963) Muhammad Hanif Anggawi
+(1906293070) Hanif Arkan Audah \
+(1906350963) Muhammad Hanif Anggawi \
 (1806186572) Mushaffa Huda
 
 # Penjelasan cara penggunaan/menjalankan program
