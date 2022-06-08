@@ -57,8 +57,16 @@ function renderCameraInputs(state) {
 
   // shading toggle
   $("#shading").change(function () {
-      if ($(this).is(":checked")) state.drawMode = state.gl.LINE_STRIP
-      else state.drawMode = state.gl.TRIANGLES
+      if ($(this).is(":checked")) {
+        state.drawMode = state.gl.LINE_STRIP
+        document.getElementById("texture").checked = false
+        state.gl.uniform1i(state.shaderProgram.useTextureUniform, false)
+      }
+      else {
+        state.drawMode = state.gl.TRIANGLES
+        document.getElementById("texture").checked = true
+        state.gl.uniform1i(state.shaderProgram.useTextureUniform, true)
+      }
   })
 
   // render sliders
