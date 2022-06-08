@@ -357,6 +357,19 @@ export function initTexture(state) {
        configureTexture(image23, gl.TEXTURE23, state);
     }
     image23.src = "img/pistonNeck.png"
+
+    // Chest
+    var image24 = new Image();
+    image24.onload = function() {
+       configureTexture(image24, gl.TEXTURE24, state);
+    }
+    image24.src = "img/chestBase.png"
+
+    var image25 = new Image();
+    image25.onload = function() {
+       configureTexture(image25, gl.TEXTURE25, state);
+    }
+    image25.src = "img/chestNeck.png"
 }
 
 function configureTexture(image, textureno, state) {

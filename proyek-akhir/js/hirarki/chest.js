@@ -18,11 +18,11 @@ export const state = {
 function drawChestBase(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
-  mat4.scale(state.mvMatrix, [2, 6/4, 2]);
+  mat4.scale(state.mvMatrix, [2, 2, 2]);
   //draw
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
-  chooseTexture(state, 2, shadow);
+  chooseTexture(state, 24, shadow);
   setupMaterial(state, state.armMaterial, shadow);
   state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
@@ -31,27 +31,27 @@ function drawChestBase(state, shadow) {
 function drawNeck(state, shadow) {
   mvPushMatrix(state);
   //item specific modifications
-  mat4.scale(state.mvMatrix, [2/4, 2/4, 2/4]);
+  mat4.scale(state.mvMatrix, [2/5, 2/4, 2/4]);
   //draw
   setupToDrawCube(state, shadow);
   setMatrixUniforms(state, shadow);
-  chooseTexture(state, 2, shadow);
+  chooseTexture(state, 25, shadow);
   state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
   mvPopMatrix(state, shadow);
 }
 
-function drawHead(state, shadow) {
-  mvPushMatrix(state);
-  //item specific modifications
-  mat4.scale(state.mvMatrix, [2, 2/4 ,2]);
-  //draw
-  setupToDrawCube(state, shadow);
-  setMatrixUniforms(state, shadow);
-  chooseTexture(state, 2, shadow);
-  setupMaterial(state, state.armMaterial, shadow);
-  state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
-  mvPopMatrix(state, shadow);
-}
+// function drawHead(state, shadow) {
+//   mvPushMatrix(state);
+//   //item specific modifications
+//   mat4.scale(state.mvMatrix, [2, 2/4 ,2]);
+//   //draw
+//   setupToDrawCube(state, shadow);
+//   setMatrixUniforms(state, shadow);
+//   chooseTexture(state, 2, shadow);
+//   setupMaterial(state, state.armMaterial, shadow);
+//   state.gl.drawElements(state.drawMode, state.cubeVertexIndexBuffer.numItems, state.gl.UNSIGNED_SHORT, 0);
+//   mvPopMatrix(state, shadow);
+// }
 
 export function assemble(state) {
   var neckChestNode
@@ -62,14 +62,13 @@ export function assemble(state) {
   // mat4.rotate(state.baseChestNode.matrix, state.baseChestAngle, [0.0, 1.0, 0.0]);
 
   neckChestNode = {"draw" : drawNeck, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(neckChestNode.matrix, [0, -1, 2]);
+  mat4.translate(neckChestNode.matrix, [0, 0.5, 2]);
 
-  headChestNode = {"draw" : drawHead, "matrix" : mat4.identity(mat4.create())};
-  mat4.translate(headChestNode.matrix, [0, 2, 0]);
-  mat4.rotate(headChestNode.matrix, state.headChestAngle, [1.0, 0, 0.0]);
+  // headChestNode = {"draw" : drawHead, "matrix" : mat4.identity(mat4.create())};
+  // mat4.translate(headChestNode.matrix, [0, 2, 0]);
+  // mat4.rotate(headChestNode.matrix, state.headChestAngle, [1.0, 0, 0.0]);
 
-  state.baseChestNode.child = headChestNode
-  headChestNode.child = neckChestNode
+  state.baseChestNode.child = neckChestNode
 }
 
 export function handleAnimation(state) {}
